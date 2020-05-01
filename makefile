@@ -118,6 +118,8 @@ OBJ_FILES_HOST          := $(patsubst ${WM_SRC_DIR}/host/%.cpp,$(WM_OBJ_DIR)/%.o
 OBJ_FILES_CUDA          := $(patsubst ${WM_SRC_DIR}/cuda/%.cu,$(WM_OBJ_DIR)/%.o,$(SRC_FILES_CUDA))
 
 LIB_OBJECTS := ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_CUDA} ${OBJ_FILES_HYBRID_DEVICE} ${CU_O_TARGET}
+LIB_SOURCES := ${HEADER_FILES} ${SRC_FILES_HYBRID} ${SRC_FILES_HOST} ${SRC_FILES_CUDA}
+export HWPP_OUT=${WM_HDR_DIR}/HWPP.hpp
 
 .PHONY: final preprocess postprocess
 
@@ -128,7 +130,7 @@ final: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} $
 	${CC_HOST} -fPIC -shared ${LIB_OBJECTS} ${WM_IFLAGS} ${COMPILE_TIME_OPT} ${LZLIB} ${LCUDA} -o ${TARGET}
 
 preprocess:
-	${PY_EXE} ${PREPROCESSOR}
+	${PY_EXE} ${PREPROCESSOR} ${LIB_SOURCES}
 
 ${OBJ_FILES_HYBRID_DEVICE}: ${WM_OBJ_DIR}/K_%.o : ${WM_SRC_DIR}/hybrid/%.cpp
 	${CC_DEVICE} ${DEVICE_FLAGS} ${COMPILE_TIME_OPT} ${WM_IFLAGS} $< -o $@

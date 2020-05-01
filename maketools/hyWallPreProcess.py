@@ -1,4 +1,5 @@
 import sys
 import os
 
-print("hello from preprocessor")
+target_location = os.getenv("HWPP_OUT")
+print("Creating HWPP resource {}...".format(target_location))

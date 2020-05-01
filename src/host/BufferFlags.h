@@ -1,6 +1,7 @@
 #ifndef BUF_FLAGS_H
 #define BUF_FLAGS_H
 
+
 enum class bflag
 {
     input           = 0b00000000000000000000000000000001,

@@ -3,7 +3,7 @@
 
 namespace HyWall
 {
-    
+
 }
 
 #endif

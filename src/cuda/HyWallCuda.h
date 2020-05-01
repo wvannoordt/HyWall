@@ -2,6 +2,6 @@
 #define HYWALL_CU_H
 namespace HyWall
 {
-    
+
 }
 #endif
