@@ -5,13 +5,13 @@
 
 namespace HyWall
 {
-    namespace parallel
+    namespace Parallel
     {
         extern int pnum, pid, nameLength;
         extern char nodeName[MPI_MAX_PROCESSOR_NAME];
         extern MPI_Comm globalComm;
-        void initialize(MPI_Comm globalComm_in);
-        void finalize(void);
+        void Initialize(MPI_Comm globalComm_in);
+        void Finalize(void);
     }
 }
 

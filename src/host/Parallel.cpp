@@ -3,13 +3,13 @@
 
 namespace HyWall
 {
-    namespace parallel
+    namespace Parallel
     {
         int pNum, pId, nameLength;
         char nodeName[MPI_MAX_PROCESSOR_NAME];
         MPI_Comm globalComm;
 
-        void initialize(MPI_Comm globalComm_in)
+        void Initialize(MPI_Comm globalComm_in)
         {
             MPI_Comm_dup(globalComm_in, &globalComm);
             MPI_Comm_size(globalComm, &pNum);
@@ -17,9 +17,6 @@ namespace HyWall
             MPI_Get_processor_name(nodeName, &nameLength);
         }
 
-        void finalize(void)
-        {
-            MPI_Finalize();
-        }
+        void Finalize(void) {}
     }
 }

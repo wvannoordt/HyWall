@@ -1,13 +1,14 @@
 #ifndef ALLOC_MODES_H
 #define ALLOC_MODES_H
 
-
-enum amode
+namespace HyWall
 {
-    userDef = 0b00000000000000000000000000000001,
-    allGpu  = 0b00000000000000000000000000000010,
-    allCpu  = 0b00000000000000000000000000000100,
-    auto    = 0b00000000000000000000000000001000
-};
+    enum amode
+    {
+        userDef,
+        allGpu,
+        allCpu
+    };
+}
 
 #endif
