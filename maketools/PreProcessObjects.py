@@ -1,4 +1,5 @@
 import os
+from abc import ABC, abstractmethod
 class PreProcessorSourceObject:
     def __init__(self, source_in):
         self.source = source_in
@@ -7,6 +8,14 @@ class PreProcessorSourceObject:
         self.build_error = "success"
         self.error_line = -1
         self.has_any_preprocessor_usage = False
+        self.lines = []
+        self.hwpp_pragma_invocation_types = ["SerialIoStructStart", "SerialIoMember", "SerialIoStructEnd"]
+        with open(source_in) as fp:
+            while True:
+                line = fp.readline()
+                self.lines.append(line)
+                if not line:
+                    break
 
     def analyze(self):
         if not (self.extension in [".cu", ".cpp", ".h"]):
@@ -20,10 +29,82 @@ class PreProcessorSourceObject:
         output.append("//Generated from {}".format(self.source))
         output.append("//Begin {}".format(self.basename))
         output.append("")
+        macros = self.make_macros()
+        for macro in macros:
+            macro_lines = macro.get_code_lines()
+            for line in macro_lines:
+                output.append(line)
         output.append("")
         output.append("//End {}".format(self.basename))
         output.append("")
         return output
+
+    def make_macros(self):
+        macros = []
+        lines = self.lines
+        for i in range(len(lines)):
+            line = lines[i]
+            if self.is_hwpp_pragma_invocation_type(line):
+                pragmatype = self.get_pragma_type(line)
+                if self.get_closing_pragma(pragmatype):
+                    j = self.check_closure(i, lines, pragmatype)
+                    if j > 0:
+                        macros.append(self.process_closed_pragma(i, j, lines, pragmatype))
+        return macros
+
+    def get_pragma_arg(self, line, pragmatype, argnum):
+        ar = line.strip().split(" ")
+        output = ar[ar.index(pragmatype)+argnum+1]
+        return output
+
+    def seek_namespaces(self, idx, lines):
+        output = []
+        for i in range(idx):
+            line = lines[i].strip().rstrip("}").rstrip("\n")
+            if line.startswith("namespace"):
+                ar = line.split(" ")
+                output.append(ar[ar.index("namespace") + 1])
+        return output
+
+    def process_closed_pragma(self, i, j, lines, pragmatype):
+        if (pragmatype=="SerialIoStructStart"):
+            output_object = HwppSerialIoStruct()
+            output_object.define_struct_name(self.get_pragma_arg(lines[i], pragmatype, 0))
+            relevant_namespaces = self.seek_namespaces(i, lines)
+            output_object.define_namespaces(relevant_namespaces)
+            for z in range(i+1, j-1):
+                line = lines[z]
+                if self.is_hwpp_pragma_invocation_type(line):
+                    intermediate_pragmatype = self.get_pragma_type(line)
+                    if intermediate_pragmatype == "SerialIoMember":
+                        output_object.add_member(self.get_pragma_arg(lines[z], intermediate_pragmatype, 0), self.get_pragma_arg(lines[z], intermediate_pragmatype, 1))
+            return output_object
+
+
+
+    def check_closure(self, i, lines, pragmatype):
+        outputval = -1
+        for z in range(i, len(lines)):
+            line = lines[z]
+            if self.is_hwpp_pragma_invocation_type(line):
+                pragmatype_loc = self.get_pragma_type(line)
+                if pragmatype_loc == self.get_closing_pragma(pragmatype):
+                    outputval = z
+                    return outputval
+        return outputval
+
+    def get_closing_pragma(self, pragmatype):
+        if (pragmatype == "SerialIoStructStart"):
+            return "SerialIoStructEnd"
+        return None
+
+
+    def get_pragma_type(self, line):
+        ar = line.strip().split(" ")
+        return ar[ar.index("HWPP")+1]
+
+    def is_hwpp_pragma_invocation_type(self, line):
+        return line.strip().startswith("#pragma HWPP")
 
     def get_error_message(self):
         line_num_str = ""
@@ -62,3 +143,45 @@ class HwppOutputObject:
 
     def make_footer(self):
         self.output_code.append("#endif")
+
+class HwppMacro(ABC):
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def get_code_lines(self):
+        pass
+
+class HwppSerialIoStruct(HwppMacro):
+    def __init__(self):
+        self.dummy_name = "object"
+        self.struct_name = None
+        self.member_default_values = {}
+        self.namespaces = []
+
+    def define_struct_name(self, name_in):
+        self.struct_name = name_in
+
+    def define_namespaces(self, namespaces_in):
+        self.namespaces = namespaces_in
+
+    def add_member(self, name_in, val_in):
+        self.member_default_values[name_in] = val_in
+
+    def get_code_lines(self):
+        output = []
+        ftablevel = "".rjust(len(self.namespaces), "\t")
+        for nlevel in range(len(self.namespaces)):
+            tablevel = "".rjust(nlevel, "\t")
+            output.append(tablevel + "namespace {}".format(self.namespaces[nlevel]))
+            output.append(tablevel + "{")
+        output.append(ftablevel + "void HWPP_SetDefaultValues({}* {})".format(self.struct_name, self.dummy_name))
+        output.append(ftablevel + "{")
+        for memname in self.member_default_values.keys():
+            output.append(ftablevel + "\t{}->{} = {};".format(self.dummy_name, memname, self.member_default_values[memname]))
+        output.append(ftablevel + "}")
+        for nlevel in range(len(self.namespaces)):
+            tablevel = "".rjust(nlevel, "\t")
+            output.append(tablevel + "}")
+        return output

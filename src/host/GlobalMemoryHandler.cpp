@@ -5,7 +5,7 @@ namespace HyWall
 {
     GlobalMemoryHandler::GlobalMemoryHandler(void){}
 
-    GlobalMemoryHandler::GlobalMemoryHandler(int numPoints_in, int rayDim_in)
+    void GlobalMemoryHandler::SetSize(int numPoints_in, int rayDim_in)
     {
         rayDim = rayDim_in;
         localTotalPoints = numPoints_in;
@@ -15,6 +15,11 @@ namespace HyWall
         //int globalGpuPoints;
         //int globalCpuPoints;
         //int globalTotalPoints;
+    }
+
+    void GlobalMemoryHandler::SetUserAssociatedVariable(std::string name, double* ptr)
+    {
+
     }
 
     template <typename vartype>

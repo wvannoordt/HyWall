@@ -9,9 +9,10 @@ namespace HyWall
     {
         public:
             GlobalMemoryHandler(void);
-            GlobalMemoryHandler(int numPoints_in, int rayDim_in);
+            void SetSize(int numPoints_in, int rayDim_in);
             template <typename vartype>
             void AddStaticVariable(std::string name, int num_per_ray, int dimension, const int managemode);
+            void SetUserAssociatedVariable(std::string name, double* ptr);
             int localCpuPoints;
             int localGpuPoints;
             int localTotalPoints;
@@ -20,6 +21,12 @@ namespace HyWall
             int globalTotalPoints;
         private:
             int rayDim;
+            void* hostBuffers[MAX_BUFFERS];
+            void* deviceBuffers[MAX_BUFFERS];
+            std::string variableNames[MAX_BUFFERS];
+            int manageModes[MAX_BUFFERS];
+
+
     };
 }
 #endif
