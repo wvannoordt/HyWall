@@ -22,6 +22,53 @@ module HyWallF
 
 
 
+    subroutine HyWallAllocate
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        interface
+            subroutine hywall_allocate_f() bind (c)
+                use iso_c_binding
+            end subroutine hywall_allocate_f
+        end interface
+        call hywall_allocate_f()
+
+    end subroutine HyWallAllocate
+
+
+
+    subroutine HyWallSetTimeStep(timestep)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        real*8, intent(in) :: timestep
+        interface
+            subroutine hywall_settimestep_f(timestepF) bind (c)
+                use iso_c_binding
+                real (c_double), intent(in) :: timestepF
+            end subroutine hywall_settimestep_f
+        end interface
+        call hywall_settimestep_f(timestep)
+
+    end subroutine HyWallSetTimeStep
+
+
+
+    subroutine HyWallSolve
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        interface
+            subroutine hywall_solve_f() bind (c)
+                use iso_c_binding
+            end subroutine hywall_solve_f
+        end interface
+        call hywall_solve_f()
+
+    end subroutine HyWallSolve
+
+
+
     subroutine HyWallPassVariable(arrayName, arrayPointer)
 
         use, intrinsic :: iso_c_binding

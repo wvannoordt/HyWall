@@ -18,6 +18,21 @@ namespace HyWall
         DefineVariables();
     }
 
+    void hywall_allocate_f(void)
+    {
+        Allocate();
+    }
+
+    void hywall_settimestep_f(double* timeStep)
+    {
+        SetTimeStep(*timeStep);
+    }
+
+    void hywall_solve_f(void)
+    {
+        Solve();
+    }
+
     void hywall_passvariable_f(char* name, double* ptr, int* nameLen)
     {
         char namebuf[120] = {0};

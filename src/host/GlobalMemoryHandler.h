@@ -13,6 +13,10 @@ namespace HyWall
             template <typename vartype>
             void AddStaticVariable(std::string name, int num_per_ray, int dimension, const int managemode);
             void SetUserAssociatedVariable(std::string name, double* ptr);
+            void* GetVariable(std::string name);
+            void ApplyInitializationPolicies(void);
+            void ApplyRuntimePolicies(void);
+            void ApplyFinalizationPolicies(void);
             int localCpuPoints;
             int localGpuPoints;
             int localTotalPoints;
@@ -28,7 +32,9 @@ namespace HyWall
             bool isAllocated[MAX_BUFFERS];
             bool userHasProvided[MAX_BUFFERS];
             size_t bufferSizes[MAX_BUFFERS];
+            int accessBounds[MAX_BUFFERS];
             int numGlobalVariables;
+            bool initializePoliciesWereApplied;
 
 
     };

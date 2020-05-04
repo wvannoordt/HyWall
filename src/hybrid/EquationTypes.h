@@ -1,5 +1,6 @@
 #ifndef EQ_TYPES_H
 #define EQ_TYPES_H
+#include "HybridComputing.h"
 
 #pragma HWPP include
 

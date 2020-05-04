@@ -9,6 +9,9 @@ namespace HyWall
         void hywall_passvariable_f(char* name, double* ptr, int* nameLen);
         void hywall_passflowfieldvariables_f(double* arrayPointer, int* memOffset);
         void hywall_definevariables_f(void);
+        void hywall_allocate_f(void);
+        void hywall_solve_f(void);
+        void hywall_settimestep_f(double* timeStep);
     }
 }
 

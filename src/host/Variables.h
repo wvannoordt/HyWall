@@ -11,6 +11,7 @@ namespace HyWall
     void DefineEnergyVariables(void);
     void DefineTurbulentVariables(void);
     void DefineOutputVariables(void);
+    bool HasFlag(int a, int flag);
 }
 
 #endif

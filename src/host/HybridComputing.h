@@ -1,6 +1,8 @@
 #ifndef HYB_COMP_H
 #define HYB_COMP_H
 
+#pragma HWPP include
+
 #ifdef __CUDACC__
 #define __common __device__
 #define __gpu 1

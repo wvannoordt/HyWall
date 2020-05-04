@@ -1,6 +1,8 @@
 #include "HyWall.h"
 #include "UserSettings.h"
 #include "AllocationModes.h"
+#include "HybridComputing.h"
+#include "DebugTools.h"
 #include "TransitionSensors.h"
 #include <string>
 #include "Variables.h"
@@ -26,9 +28,19 @@ namespace HyWall
         DefineOutputVariables();
     }
 
+    void Allocate(void)
+    {
+        memory.ApplyInitializationPolicies();
+    }
+
     void SetDomainSize(int numWallPoints_in)
     {
         memory.SetSize(numWallPoints_in, settings.rayDim);
+    }
+
+    void SetTimeStep(double timeStep_in)
+    {
+        settings.timeStep = timeStep_in;
     }
 
     void PassFlowfieldVariables(double* ptr, int offset)
@@ -46,8 +58,18 @@ namespace HyWall
         memory.SetUserAssociatedVariable(strname, ptr);
     }
 
+    void Solve(void)
+    {
+        double* u = (double*)memory.GetVariable("in:p");
+        for (int i = 0; i < memory.localCpuPoints; i++)
+        {
+            __dump(u[i]);
+        }
+    }
+
     void Finalize(void)
     {
+        memory.ApplyFinalizationPolicies();
         Parallel::Finalize();
     }
 }
