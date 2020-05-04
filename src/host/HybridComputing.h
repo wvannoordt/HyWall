@@ -1,10 +1,6 @@
 #ifndef HYB_COMP_H
 #define HYB_COMP_H
 
-#ifndef CUDA_ENABLE
-#define CUDA_ENABLE 0
-#endif
-
 #ifdef __CUDACC__
 #define __common __device__
 #define __gpu 1

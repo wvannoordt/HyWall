@@ -25,6 +25,10 @@ namespace HyWall
             void* deviceBuffers[MAX_BUFFERS];
             std::string variableNames[MAX_BUFFERS];
             int manageModes[MAX_BUFFERS];
+            bool isAllocated[MAX_BUFFERS];
+            bool userHasProvided[MAX_BUFFERS];
+            size_t bufferSizes[MAX_BUFFERS];
+            int numGlobalVariables;
 
 
     };

@@ -8,6 +8,7 @@ namespace HyWall
         void hywall_setdomainsize_f(int* numWallPoints_in);
         void hywall_passvariable_f(char* name, double* ptr, int* nameLen);
         void hywall_passflowfieldvariables_f(double* arrayPointer, int* memOffset);
+        void hywall_definevariables_f(void);
     }
 }
 

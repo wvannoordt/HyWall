@@ -9,13 +9,15 @@ class PreProcessorSourceObject:
         self.error_line = -1
         self.has_any_preprocessor_usage = False
         self.lines = []
-        self.hwpp_pragma_invocation_types = ["SerialIoStructStart", "SerialIoMember", "SerialIoStructEnd"]
+        self.hwpp_pragma_invocation_types = ["SerialIoStructStart", "SerialIoMember", "SerialIoStructEnd", "include"]
+        self.is_hwpp_dependency = False
         with open(source_in) as fp:
             while True:
                 line = fp.readline()
                 self.lines.append(line)
                 if not line:
                     break
+        self.get_is_include()
 
     def analyze(self):
         if not (self.extension in [".cu", ".cpp", ".h"]):
@@ -39,6 +41,14 @@ class PreProcessorSourceObject:
         output.append("")
         return output
 
+    def get_is_include(self):
+        for i in range(len(self.lines)):
+            line = self.lines[i]
+            if self.is_hwpp_pragma_invocation_type(line):
+                pragmatype = self.get_pragma_type(line)
+                if pragmatype == "include":
+                    self.is_hwpp_dependency = True
+
     def make_macros(self):
         macros = []
         lines = self.lines
@@ -46,6 +56,8 @@ class PreProcessorSourceObject:
             line = lines[i]
             if self.is_hwpp_pragma_invocation_type(line):
                 pragmatype = self.get_pragma_type(line)
+                if pragmatype == "include":
+                    self.is_hwpp_dependency = True
                 if self.get_closing_pragma(pragmatype):
                     j = self.check_closure(i, lines, pragmatype)
                     if j > 0:
@@ -122,6 +134,9 @@ class HwppOutputObject:
 
     def build_from_objects(self, obj_list):
         self.make_header()
+        for obj in obj_list:
+            if obj.is_hwpp_dependency:
+                self.output_code.append("#include \"{}\"".format(obj.basename))
         for obj in obj_list:
             obj_code = obj.generate_code_lines()
             for line in obj_code:

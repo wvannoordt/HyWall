@@ -1,25 +1,36 @@
 #ifndef EQ_TYPES_H
 #define EQ_TYPES_H
 
+#pragma HWPP include
+
 namespace HyCore
 {
-    enum momentum
+    namespace momentum
     {
-        allmaras         = 1,
-        ODE              = 2
-    };
+        enum momentumenum
+        {
+            allmaras         = 34534,
+            ODE              = 26323
+        };
+    }
 
-    enum turbulence
+    namespace turbulence
     {
-        linear           = 1,
-        spallartAllmaras = 2
-    };
+        enum turbulenceenum
+        {
+            linear           = 29823,
+            ODE              = 23414
+        };
+    }
 
-    enum energy
+    namespace energy
     {
-        croccoBusemann   = 1,
-        ODE              = 2
-    };
+        enum energyenum
+        {
+            croccoBusemann   = 98304,
+            ODE              = 70209
+        };
+    }
 }
 
 #endif

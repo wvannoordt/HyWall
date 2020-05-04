@@ -1,3 +1,4 @@
+#include "EquationTypes.h"
 #include "EnergyEquation.h"
 #include "TurbulenceEquation.h"
 #include "MomentumEquation.h"
@@ -5,6 +6,7 @@
 #include "UserSettings.h"
 #include "AllocationModes.h"
 #include "GlobalMemoryHandler.h"
+#include "Variables.h"
 #include "mpi.h"
 
 namespace HyWall
@@ -16,6 +18,7 @@ namespace HyWall
         void Initialize(MPI_Comm host_comm_in, int verboseLevel_in);
         void SetDomainSize(int numWallPoints_in);
         void PassVariable(std::string strname, double* ptr);
+        void DefineVariables(void);
         void PassFlowfieldVariables(double* ptr, int offset);
         void Finalize(void);
     }

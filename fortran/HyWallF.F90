@@ -42,6 +42,21 @@ module HyWallF
 
 
 
+    subroutine HyWallDefineVariables()
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        interface
+            subroutine hywall_definevariables_f() bind (c)
+                use iso_c_binding
+            end subroutine hywall_definevariables_f
+        end interface
+        call hywall_definevariables_f()
+
+    end subroutine HyWallDefineVariables
+
+
+
     subroutine HyWallPassFlowfieldVariables(arrayPointer, memOffset)
 
         use, intrinsic :: iso_c_binding

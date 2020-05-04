@@ -1,7 +1,6 @@
 #ifndef USER_SETTINGS_H
 #define USER_SETTINGS_H
-
-#include "AllocationModes.h"
+#pragma HWPP include
 
 namespace HyWall
 {
@@ -61,8 +60,17 @@ namespace HyWall
         #pragma HWPP SerialIoMember timeStep -1e50
     	double timeStep;
 
-        #pragma HWPP SerialIoMember transitionSensorThreshold 0.25
-    	double transitionSensorThreshold;
+        #pragma HWPP SerialIoMember sensorThreshold 0.25
+    	double sensorThreshold;
+
+        #pragma HWPP SerialIoMember momentumEquationType HyCore::momentum::allmaras
+    	int momentumEquationType;
+
+        #pragma HWPP SerialIoMember turbulenceEquationType HyCore::turbulence::linear
+    	int turbulenceEquationType;
+
+        #pragma HWPP SerialIoMember energyEquationType HyCore::energy::croccoBusemann
+    	int energyEquationType;
     };
     #pragma HWPP SerialIoStructEnd
 

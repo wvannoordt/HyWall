@@ -3,6 +3,7 @@
 #include "AllocationModes.h"
 #include "TransitionSensors.h"
 #include <string>
+#include "Variables.h"
 #include "HWPP.hpp"
 namespace HyWall
 {
@@ -13,6 +14,16 @@ namespace HyWall
         HWPP_SetDefaultValues(&settings);
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
+    }
+
+    void DefineVariables(void)
+    {
+        DefineInputVariables();
+        DefineAuxilaryVariables();
+        DefineMomentumVariables();
+        DefineEnergyVariables();
+        DefineTurbulentVariables();
+        DefineOutputVariables();
     }
 
     void SetDomainSize(int numWallPoints_in)
@@ -27,7 +38,7 @@ namespace HyWall
         memory.SetUserAssociatedVariable("in:v",    ptr+2*offset);
         memory.SetUserAssociatedVariable("in:w",    ptr+3*offset);
         memory.SetUserAssociatedVariable("in:T",    ptr+4*offset);
-        memory.SetUserAssociatedVariable("in:mu_t", ptr+5*offset);
+        memory.SetUserAssociatedVariable("in:turb", ptr+5*offset);
     }
 
     void PassVariable(std::string strname, double* ptr)

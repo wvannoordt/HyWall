@@ -13,6 +13,11 @@ namespace HyWall
         PassFlowfieldVariables(arrayPointer, *memOffset);
     }
 
+    void hywall_definevariables_f(void)
+    {
+        DefineVariables();
+    }
+
     void hywall_passvariable_f(char* name, double* ptr, int* nameLen)
     {
         char namebuf[120] = {0};
