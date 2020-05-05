@@ -4,6 +4,7 @@
 #include "HybridComputing.h"
 #include "CoreData.h"
 #include "UserSettings.h"
+#include "Solver.h"
 namespace HyWall
 {
     __global__ void K_set_settings(UserSettings settings_in)
@@ -16,11 +17,17 @@ namespace HyWall
         HyCore::majorAccessPitch = ap;
     }
 
+    __global__ void K_meta(void)
+    {
+        HyCore::MetaDataSet();
+    }
+
     void CopyCudaSymbols(void)
     {
 
         K_set_settings<<<1,1>>>(settings);
         K_set_access_pitch<<<1,1>>>(memory.localGpuPoints);
+        K_meta<<<1,1>>>();
         //TODO: calls to cudaMemcpyToSymbol for global pointers!!!!!
     }
 

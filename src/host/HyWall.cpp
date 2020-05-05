@@ -78,6 +78,7 @@ namespace HyWall
         HyCore::w_F    = (double*)memory.GetVariable("in:w");
         HyCore::T_F    = (double*)memory.GetVariable("in:T");
         HyCore::turb_F = (double*)memory.GetVariable("in:turb");
+        HyCore::MetaDataSet();
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));

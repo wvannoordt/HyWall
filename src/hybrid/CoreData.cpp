@@ -34,7 +34,7 @@ namespace HyCore
     __common double* iterations;
     __common int majorAccessPitch;
     __common int momentumEquationClassification;
-    __common int turbuleceEquationClassification;
+    __common int turbulenceEquationClassification;
     __common int energyEquationClassification;
     __common HyWall::UserSettings settings;
 }
