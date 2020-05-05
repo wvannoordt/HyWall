@@ -1,8 +1,11 @@
 #include "HybridComputing.h"
 #include "UserSettings.h"
 #include "CoreData.h"
+#include "Typedef.h"
+
 namespace HyCore
 {
+    __common int N;
     __common double* u;
     __common double* d;
     __common double* T;
@@ -15,6 +18,7 @@ namespace HyCore
     __common double* w_F;
     __common double* T_F;
     __common double* turb_F;
+    __common double* distance;
     __common double* mom0;
     __common double* mom1;
     __common double* mom2;
@@ -37,4 +41,7 @@ namespace HyCore
     __common int turbulenceEquationClassification;
     __common int energyEquationClassification;
     __common HyWall::UserSettings settings;
+    __common tdsys momSystem;
+    __common tdsys turbSystem;
+    __common tdsys engySystem;
 }

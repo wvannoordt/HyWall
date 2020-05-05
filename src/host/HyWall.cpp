@@ -11,6 +11,7 @@
 #include "HWPP.hpp"
 #include "HyWallCuda.h"
 #include "Solver.h"
+#include "Typedef.h"
 namespace HyWall
 {
     UserSettings settings;
@@ -66,18 +67,35 @@ namespace HyWall
         WriteLine(2, "Copy symbols start");
         HyCore::settings = settings;
         HyCore::majorAccessPitch = memory.localCpuPoints;
-        HyCore::u      = (double*)memory.GetVariable("sol:u");
-        HyCore::d      = (double*)memory.GetVariable("sol:d");
-        HyCore::T      = (double*)memory.GetVariable("sol:T");
-        HyCore::rho    = (double*)memory.GetVariable("sol:rho");
-        HyCore::mu     = (double*)memory.GetVariable("sol:mu");
-        HyCore::turb   = (double*)memory.GetVariable("sol:turb");
-        HyCore::p_F    = (double*)memory.GetVariable("in:p");
-        HyCore::u_F    = (double*)memory.GetVariable("in:u");
-        HyCore::v_F    = (double*)memory.GetVariable("in:v");
-        HyCore::w_F    = (double*)memory.GetVariable("in:w");
-        HyCore::T_F    = (double*)memory.GetVariable("in:T");
-        HyCore::turb_F = (double*)memory.GetVariable("in:turb");
+        HyCore::u            = (double*)memory.GetVariable("sol:u");
+        HyCore::d            = (double*)memory.GetVariable("sol:d");
+        HyCore::T            = (double*)memory.GetVariable("sol:T");
+        HyCore::rho          = (double*)memory.GetVariable("sol:rho");
+        HyCore::mu           = (double*)memory.GetVariable("sol:mu");
+        HyCore::turb         = (double*)memory.GetVariable("sol:turb");
+        HyCore::p_F          = (double*)memory.GetVariable("in:p");
+        HyCore::u_F          = (double*)memory.GetVariable("in:u");
+        HyCore::v_F          = (double*)memory.GetVariable("in:v");
+        HyCore::w_F          = (double*)memory.GetVariable("in:w");
+        HyCore::T_F          = (double*)memory.GetVariable("in:T");
+        HyCore::turb_F       = (double*)memory.GetVariable("in:turb");
+        HyCore::distance     = (double*)memory.GetVariable("in:distance");
+
+        HyCore::momSystem[TD_SUB]  = (double*)memory.GetVariable("jac:mom0");
+        HyCore::momSystem[TD_DIA]  = (double*)memory.GetVariable("jac:mom1");
+        HyCore::momSystem[TD_SUP]  = (double*)memory.GetVariable("jac:mom2");
+        HyCore::momSystem[TD_RHS]  = (double*)memory.GetVariable("jac:mom3");
+
+        HyCore::turbSystem[TD_SUB] = (double*)memory.GetVariable("jac:turb0");
+        HyCore::turbSystem[TD_DIA] = (double*)memory.GetVariable("jac:turb1");
+        HyCore::turbSystem[TD_SUP] = (double*)memory.GetVariable("jac:turb2");
+        HyCore::turbSystem[TD_RHS] = (double*)memory.GetVariable("jac:turb3");
+
+        HyCore::engySystem[TD_SUB] = (double*)memory.GetVariable("jac:engy0");
+        HyCore::engySystem[TD_DIA] = (double*)memory.GetVariable("jac:engy1");
+        HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
+        HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
+
         HyCore::MetaDataSet();
         if (memory.localGpuPoints>0)
         {

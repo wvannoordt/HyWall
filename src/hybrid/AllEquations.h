@@ -5,9 +5,13 @@
 
 namespace HyCore
 {
-    __common void InitializeTurbulence(void);
-    __common void InitializeMomentum(void);
-    __common void InitializeEnergy(void);
+    __common void InitializeTurbulence(const int widx);
+    __common void InitializeMomentum(const int widx);
+    __common void InitializeEnergy(const int widx);
+    __common void ComputeExplicitExpressions(const int widx);
+    __common void ComputeExplicitMomentumEquation(const int widx, const int momEq);
+    __common void ComputeExplicitTurbulenceEquation(const int widx, const int turbEq);
+    __common void ComputeExplicitEnergyEquation(const int widx, const int engyEq);
 }
 
 #endif

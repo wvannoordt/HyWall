@@ -3,9 +3,11 @@
 #include "HybridComputing.h"
 #include "UserSettings.h"
 #include "EquationTypes.h"
+#include "Typedef.h"
 
 namespace HyCore
 {
+    __common extern int N;
     __common extern double* u;
     __common extern double* d;
     __common extern double* T;
@@ -18,6 +20,7 @@ namespace HyCore
     __common extern double* w_F;
     __common extern double* T_F;
     __common extern double* turb_F;
+    __common extern double* distance;
     __common extern double* mom0;
     __common extern double* mom1;
     __common extern double* mom2;
@@ -40,6 +43,9 @@ namespace HyCore
     __common extern int turbulenceEquationClassification;
     __common extern int energyEquationClassification;
     __common extern HyWall::UserSettings settings;
+    __common extern tdsys momSystem;
+    __common extern tdsys turbSystem;
+    __common extern tdsys engySystem;
 }
 
 #endif

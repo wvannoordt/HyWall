@@ -59,6 +59,7 @@ namespace HyWall
     {
         //IMPORTANT: will need to add buffer mirroring for gpu variables
         size_t newVariableSize = numPerRay * dimension * localCpuPoints * sizeof(vartype);
+        if (HasFlag(manageMode, bflag::serialHostUsage)) newVariableSize = numPerRay * dimension * sizeof(vartype);
         int newUpperAccessBound = newVariableSize / sizeof(vartype);
 
         userHasProvided[numGlobalVariables] = false;

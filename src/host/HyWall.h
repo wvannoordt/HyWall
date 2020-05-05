@@ -1,7 +1,5 @@
 #include "EquationTypes.h"
-#include "EnergyEquation.h"
-#include "TurbulenceEquation.h"
-#include "MomentumEquation.h"
+#include "AllEquations.h"
 #include "TransitionSensors.h"
 #include "UserSettings.h"
 #include "AllocationModes.h"
