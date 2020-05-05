@@ -6,6 +6,16 @@
 
 namespace HyCore
 {
+    namespace equationType
+    {
+        enum equationTypeenum
+        {
+            explicitEq     = 83982,
+            algebraicEq    = 20943,
+            differentialEq = 79828
+        };
+    }
+
     namespace momentum
     {
         enum momentumenum
@@ -29,7 +39,8 @@ namespace HyCore
         enum energyenum
         {
             croccoBusemann   = 98304,
-            ODE              = 70209
+            ODE              = 70209,
+            linear           = 27498
         };
     }
 }

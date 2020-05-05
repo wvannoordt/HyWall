@@ -69,7 +69,7 @@ namespace HyWall
         #pragma HWPP SerialIoMember turbulenceEquationType HyCore::turbulence::linear
     	int turbulenceEquationType;
 
-        #pragma HWPP SerialIoMember energyEquationType HyCore::energy::croccoBusemann
+        #pragma HWPP SerialIoMember energyEquationType HyCore::energy::linear
     	int energyEquationType;
     };
     #pragma HWPP SerialIoStructEnd

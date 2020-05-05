@@ -15,5 +15,26 @@ namespace HyCore
     __common double* w_F;
     __common double* T_F;
     __common double* turb_F;
+    __common double* mom0;
+    __common double* mom1;
+    __common double* mom2;
+    __common double* mom3;
+    __common double* engy0;
+    __common double* engy1;
+    __common double* engy2;
+    __common double* engy3;
+    __common double* turb0;
+    __common double* turb1;
+    __common double* turb2;
+    __common double* turb3;
+    __common double* vorticity;
+    __common double* tau;
+    __common double* heatflux;
+    __common double* error;
+    __common double* iterations;
+    __common int majorAccessPitch;
+    __common int momentumEquationClassification;
+    __common int turbuleceEquationClassification;
+    __common int energyEquationClassification;
     __common HyWall::UserSettings settings;
 }

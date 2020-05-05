@@ -2,6 +2,7 @@
 #define CORE_DAT_H
 #include "HybridComputing.h"
 #include "UserSettings.h"
+#include "EquationTypes.h"
 
 namespace HyCore
 {
@@ -17,11 +18,27 @@ namespace HyCore
     __common extern double* w_F;
     __common extern double* T_F;
     __common extern double* turb_F;
+    __common extern double* mom0;
+    __common extern double* mom1;
+    __common extern double* mom2;
+    __common extern double* mom3;
+    __common extern double* engy0;
+    __common extern double* engy1;
+    __common extern double* engy2;
+    __common extern double* engy3;
+    __common extern double* turb0;
+    __common extern double* turb1;
+    __common extern double* turb2;
+    __common extern double* turb3;
     __common extern double* vorticity;
     __common extern double* tau;
     __common extern double* heatflux;
     __common extern double* error;
     __common extern double* iterations;
+    __common extern int majorAccessPitch;
+    __common extern int momentumEquationClassification;
+    __common extern int turbuleceEquationClassification;
+    __common extern int energyEquationClassification;
     __common extern HyWall::UserSettings settings;
 }
 

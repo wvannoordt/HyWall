@@ -2,6 +2,8 @@
 #define HYWALL_CU_H
 namespace HyWall
 {
-
+    void CopyCudaSymbols(void);
+    void InitGpuSolution(void);
+    void BeginGpuSolution(void);
 }
 #endif

@@ -6,6 +6,7 @@ namespace HyWall
 {
     void DefineInputVariables(void)
     {
+        //Pnce GPU implementation is good, should ideally pass in host and device symbols and immediately copy when available.
         memory.AddStaticVariable<double>("in:x",        1, 1, bflag::constInput | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:y",        1, 1, bflag::constInput | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:z",        1, 1, bflag::constInput | bflag::userMustProvide);
@@ -28,7 +29,7 @@ namespace HyWall
             memory.AddStaticVariable<double>("aux:strain_rate",     1, 1, bflag::auxilary);
             memory.AddStaticVariable<double>("aux:strain_rate_avg", 1, 1, bflag::auxilary);
             memory.AddStaticVariable<double>("aux:k",               1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:k_avg",           1, 1, bflag::auxilary);
+            memory.AddStaticVariable<double>("aux:k_avg",           1, 1, bflag::auxilary | bflag::vtkOutput);
             memory.AddStaticVariable<double>("aux:rho_avg",         1, 1, bflag::auxilary);
             memory.AddStaticVariable<double>("aux:mu_avg",          1, 1, bflag::auxilary);
             memory.AddStaticVariable<double>("aux:u_avg",           1, 1, bflag::auxilary);
@@ -43,20 +44,41 @@ namespace HyWall
 
     void DefineMomentumVariables(void)
     {
-        memory.AddStaticVariable<double>("sol:u",     settings.rayDim, 1, bflag::solution);
-        memory.AddStaticVariable<double>("sol:d",     settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:u", settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:d", settings.rayDim, 1, bflag::solution);
+        if (HasFlag(settings.momentumEquationType, HyCore::momentum::ODE))
+        {
+            memory.AddStaticVariable<double>("jac:mom0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:mom1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:mom2", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:mom3", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+        }
     }
 
     void DefineEnergyVariables(void)
     {
-        memory.AddStaticVariable<double>("sol:T",     settings.rayDim, 1, bflag::solution);
-        memory.AddStaticVariable<double>("sol:rho",   settings.rayDim, 1, bflag::solution);
-        memory.AddStaticVariable<double>("sol:mu",    settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:T",   settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:rho", settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:mu",  settings.rayDim, 1, bflag::solution);
+        if (HasFlag(settings.momentumEquationType, HyCore::energy::ODE))
+        {
+            memory.AddStaticVariable<double>("jac:engy0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:engy1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:engy2", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:engy3", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+        }
     }
 
     void DefineTurbulentVariables(void)
     {
         memory.AddStaticVariable<double>("sol:turb",  settings.rayDim, 1, bflag::solution);
+        if (HasFlag(settings.momentumEquationType, HyCore::turbulence::ODE))
+        {
+            memory.AddStaticVariable<double>("jac:turb0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:turb1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:turb2", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
+            memory.AddStaticVariable<double>("jac:turb3", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
+        }
     }
 
     void DefineOutputVariables(void)
