@@ -6,14 +6,18 @@
 #include "CoreData.h"
 #include "AllEquations.h"
 #include "CoreUtils.h"
+#if(__cpu)
+#include <cmath>
+using std::sqrt;
+#endif
 namespace HyCore
 {
-    __common void MetaDataSet(void)
+    __common void MetaDataSet(HyWall::UserSettings* inputSettings)
     {
-        SetMomentumEquationType();
-        SetEnergyEquationType();
-        SetTurbulenceEquationType();
-        N = settings.rayDim;
+        SetMomentumEquationType(inputSettings);
+        SetEnergyEquationType(inputSettings);
+        SetTurbulenceEquationType(inputSettings);
+        N = inputSettings->rayDim;
     }
 
     __common void BuildGrid(const int widx)
@@ -41,6 +45,8 @@ namespace HyCore
         elem(u,    widx, N-1) = elem(u_F,    widx);
         elem(T,    widx, N-1) = elem(T_F,    widx);
         elem(turb, widx, N-1) = elem(turb_F, widx);
+        elem(rho,  widx, N-1) = elem(rho_F,  widx);
+        elem(mu,   widx, N-1) = elem(mu_F,   widx);
     }
 
     __common void MainSolver(const int widx)
@@ -48,23 +54,42 @@ namespace HyCore
         bool done = false;
         bool failed = false;
         double totalError = 0.0;
+        double totalIts = 0.0;
+        double localError = 0.0;
+        double localIts = 0.0;
         int numIts = 0;
         UpdateBoundaryConditions(widx);
-        ComputeExplicitExpressions(widx);
+        ComputeExplicitExpressions(widx, &localError, &localIts);
+        totalError += localError;
+        totalIts += localIts;
+        localError = 0.0;
+        localIts = 0.0;
         while (!done)
         {
-
-            done = (abs(totalError) < settings.errorTolerance) || (numIts++ < settings.maxIterations);
-            failed = abs(totalError) > settings.errorTolerance;
+            ComputeLinearSystems(widx);
+            SolveUpdateLinearSystems(widx, &localError);
+            ComputeAlgebraicExpressions(widx);
+            done = (abs(localError) < settings.errorTolerance) || (numIts++ < settings.maxIterations);
+            failed = abs(localError) > settings.errorTolerance;
+            localIts+=1.0;
         }
+        totalError += localError;
+        totalIts += localIts;
+        if (failed) __erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx)));
 
-        if (failed) __erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
+        double u1  = elem(u, widx, 1);
+        double mu1 = elem(mu, widx, 1);
+        elem(error, widx) = totalError;
+        elem(iterations, widx) = totalIts;
+        elem(tau, widx) = mu1*u1/settings.wallSpacing;
+        elem(vorticity, widx) = u1/settings.wallSpacing;
+        elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
 
     }
 
-    __common void SetMomentumEquationType(void)
+    __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)
     {
-        switch(settings.momentumEquationType)
+        switch(inputSettings->momentumEquationType)
         {
             case momentum::allmaras:
             {
@@ -79,9 +104,9 @@ namespace HyCore
         }
     }
 
-    __common void SetEnergyEquationType(void)
+    __common void SetEnergyEquationType(HyWall::UserSettings* inputSettings)
     {
-        switch(settings.energyEquationType)
+        switch(inputSettings->energyEquationType)
         {
             case energy::croccoBusemann:
             {
@@ -101,9 +126,9 @@ namespace HyCore
         }
     }
 
-    __common void SetTurbulenceEquationType(void)
+    __common void SetTurbulenceEquationType(HyWall::UserSettings* inputSettings)
     {
-        switch(settings.turbulenceEquationType)
+        switch(inputSettings->turbulenceEquationType)
         {
             case turbulence::linear:
             {

@@ -131,8 +131,8 @@ namespace HyWall
 
             if (freeHostMirror)
             {
-                free(hostBuffers[i]);
                 WriteLine(2, "Freeing host-side buffer for \"" + variableNames[i] + "\"");
+                free(hostBuffers[i]);
             }
         }
     }

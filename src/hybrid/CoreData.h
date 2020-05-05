@@ -20,6 +20,8 @@ namespace HyCore
     __common extern double* w_F;
     __common extern double* T_F;
     __common extern double* turb_F;
+    __common extern double* rho_F;
+    __common extern double* mu_F;
     __common extern double* distance;
     __common extern double* mom0;
     __common extern double* mom1;

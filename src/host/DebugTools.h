@@ -1,6 +1,7 @@
 #ifndef DEBUG_TOOLS_H
 #define DEBUG_TOOLS_H
 #include "HybridComputing.h"
+#include <iostream>
 
 #define __longline "---------------------------------------------------------"
 

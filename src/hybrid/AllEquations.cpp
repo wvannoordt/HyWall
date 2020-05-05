@@ -1,21 +1,84 @@
 #include "HybridComputing.h"
 #include "AllEquations.h"
 #include "CoreData.h"
+#include "DebugTools.h"
 namespace HyCore
 {
-    __common void ComputeExplicitExpressions(const int widx)
+    __common void ComputeExplicitExpressions(const int widx, double* errorOut, double* itsOut)
     {
+        double localError = 0;
+        double localIts = 0;
         if (momentumEquationClassification == equationType::explicitEq)
         {
-            ComputeExplicitMomentumEquation(widx, settings.momentumEquationType);
+            ComputeExplicitMomentumEquation(widx, settings.momentumEquationType, &localError, &localIts);
+            *errorOut += localError;
+            *itsOut += localIts;
         }
         if (turbulenceEquationClassification == equationType::explicitEq)
         {
-            ComputeExplicitTurbulenceEquation(widx, settings.turbulenceEquationType);
+            ComputeExplicitTurbulenceEquation(widx, settings.turbulenceEquationType, &localError, &localIts);
+            *errorOut += localError;
+            *itsOut += localIts;
         }
         if (energyEquationClassification == equationType::explicitEq)
         {
-            ComputeExplicitEnergyEquation(widx, settings.energyEquationType);
+            ComputeExplicitEnergyEquation(widx, settings.energyEquationType, &localError, &localIts);
+            *errorOut += localError;
+            *itsOut += localIts;
+        }
+    }
+
+
+    __common void ComputeLinearSystems(const int widx)
+    {
+        if (momentumEquationClassification == equationType::differentialEq)
+        {
+            ComputeLhsRhsMomentum(widx);
+        }
+        if (turbulenceEquationClassification == equationType::differentialEq)
+        {
+            ComputeLhsRhsTurbulence(widx);
+        }
+        if (energyEquationClassification == equationType::differentialEq)
+        {
+            ComputeLhsRhsEnergy(widx);
+        }
+    }
+
+    __common void SolveUpdateLinearSystems(const int widx, double* errorOut)
+    {
+        double errorLocal = 0.0;
+        if (momentumEquationClassification == equationType::differentialEq)
+        {
+            SolveUpdateSystemMomentum(widx, &errorLocal);
+            *errorOut += errorLocal;
+        }
+        if (turbulenceEquationClassification == equationType::differentialEq)
+        {
+            SolveUpdateSystemTurbulence(widx, &errorLocal);
+            *errorOut += errorLocal;
+        }
+        if (energyEquationClassification == equationType::differentialEq)
+        {
+            SolveUpdateSystemEnergy(widx, &errorLocal);
+            *errorOut += errorLocal;
+        }
+    }
+
+
+    __common void ComputeAlgebraicExpressions(const int widx)
+    {
+        if (momentumEquationClassification == equationType::algebraicEq)
+        {
+            __erkill("NOT YET IMPLEMENTED");
+        }
+        if (turbulenceEquationClassification == equationType::algebraicEq)
+        {
+            __erkill("NOT YET IMPLEMENTED");
+        }
+        if (energyEquationClassification == equationType::algebraicEq)
+        {
+            __erkill("NOT YET IMPLEMENTED");
         }
     }
 }

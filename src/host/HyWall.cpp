@@ -80,23 +80,40 @@ namespace HyWall
         HyCore::T_F          = (double*)memory.GetVariable("in:T");
         HyCore::turb_F       = (double*)memory.GetVariable("in:turb");
         HyCore::distance     = (double*)memory.GetVariable("in:distance");
+        HyCore::rho_F        = (double*)memory.GetVariable("in:rho");
+        HyCore::mu_F         = (double*)memory.GetVariable("in:mu_lam");
 
-        HyCore::momSystem[TD_SUB]  = (double*)memory.GetVariable("jac:mom0");
-        HyCore::momSystem[TD_DIA]  = (double*)memory.GetVariable("jac:mom1");
-        HyCore::momSystem[TD_SUP]  = (double*)memory.GetVariable("jac:mom2");
-        HyCore::momSystem[TD_RHS]  = (double*)memory.GetVariable("jac:mom3");
+        HyCore::tau          = (double*)memory.GetVariable("out:tau");
+        HyCore::iterations   = (double*)memory.GetVariable("out:iterations");
+        HyCore::error        = (double*)memory.GetVariable("out:error");
+        HyCore::vorticity    = (double*)memory.GetVariable("out:vorticity");
+        HyCore::heatflux     = (double*)memory.GetVariable("out:heatflux");
+        HyCore::MetaDataSet(&settings);
 
-        HyCore::turbSystem[TD_SUB] = (double*)memory.GetVariable("jac:turb0");
-        HyCore::turbSystem[TD_DIA] = (double*)memory.GetVariable("jac:turb1");
-        HyCore::turbSystem[TD_SUP] = (double*)memory.GetVariable("jac:turb2");
-        HyCore::turbSystem[TD_RHS] = (double*)memory.GetVariable("jac:turb3");
+        if (HyCore::MomentumHasJacobian(&settings))
+        {
+            HyCore::momSystem[TD_SUB]  = (double*)memory.GetVariable("jac:mom0");
+            HyCore::momSystem[TD_DIA]  = (double*)memory.GetVariable("jac:mom1");
+            HyCore::momSystem[TD_SUP]  = (double*)memory.GetVariable("jac:mom2");
+            HyCore::momSystem[TD_RHS]  = (double*)memory.GetVariable("jac:mom3");
+        }
 
-        HyCore::engySystem[TD_SUB] = (double*)memory.GetVariable("jac:engy0");
-        HyCore::engySystem[TD_DIA] = (double*)memory.GetVariable("jac:engy1");
-        HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
-        HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
+        if (HyCore::TurbulenceHasJacobian(&settings))
+        {
+            HyCore::turbSystem[TD_SUB] = (double*)memory.GetVariable("jac:turb0");
+            HyCore::turbSystem[TD_DIA] = (double*)memory.GetVariable("jac:turb1");
+            HyCore::turbSystem[TD_SUP] = (double*)memory.GetVariable("jac:turb2");
+            HyCore::turbSystem[TD_RHS] = (double*)memory.GetVariable("jac:turb3");
+        }
 
-        HyCore::MetaDataSet();
+        if (HyCore::EnergyHasJacobian(&settings))
+        {
+            HyCore::engySystem[TD_SUB] = (double*)memory.GetVariable("jac:engy0");
+            HyCore::engySystem[TD_DIA] = (double*)memory.GetVariable("jac:engy1");
+            HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
+            HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
+        }
+
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));
@@ -124,8 +141,9 @@ namespace HyWall
 
     void Finalize(void)
     {
+        WriteLine(1, "Closing HyWall");
         memory.ApplyFinalizationPolicies();
         Parallel::Finalize();
-        WriteLine(1, "Close HyWall");
+        WriteLine(1, "Closed HyWall");
     }
 }

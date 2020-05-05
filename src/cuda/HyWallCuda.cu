@@ -19,7 +19,7 @@ namespace HyWall
 
     __global__ void K_meta(void)
     {
-        HyCore::MetaDataSet();
+        HyCore::MetaDataSet(&HyCore::settings);
     }
 
     void CopyCudaSymbols(void)

@@ -46,7 +46,7 @@ namespace HyWall
     {
         memory.AddStaticVariable<double>("sol:u", settings.rayDim, 1, bflag::solution);
         memory.AddStaticVariable<double>("sol:d", settings.rayDim, 1, bflag::solution);
-        if (HasFlag(settings.momentumEquationType, HyCore::momentum::ODE))
+        if (HyCore::MomentumHasJacobian(&settings))
         {
             memory.AddStaticVariable<double>("jac:mom0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
             memory.AddStaticVariable<double>("jac:mom1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
@@ -60,7 +60,7 @@ namespace HyWall
         memory.AddStaticVariable<double>("sol:T",   settings.rayDim, 1, bflag::solution);
         memory.AddStaticVariable<double>("sol:rho", settings.rayDim, 1, bflag::solution);
         memory.AddStaticVariable<double>("sol:mu",  settings.rayDim, 1, bflag::solution);
-        if (HasFlag(settings.momentumEquationType, HyCore::energy::ODE))
+        if (HyCore::EnergyHasJacobian(&settings))
         {
             memory.AddStaticVariable<double>("jac:engy0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
             memory.AddStaticVariable<double>("jac:engy1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
@@ -72,7 +72,7 @@ namespace HyWall
     void DefineTurbulentVariables(void)
     {
         memory.AddStaticVariable<double>("sol:turb",  settings.rayDim, 1, bflag::solution);
-        if (HasFlag(settings.momentumEquationType, HyCore::turbulence::ODE))
+        if (HyCore::TurbulenceHasJacobian(&settings))
         {
             memory.AddStaticVariable<double>("jac:turb0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
             memory.AddStaticVariable<double>("jac:turb1", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
