@@ -48,21 +48,23 @@ namespace HyCore
     __common void SolveUpdateLinearSystems(const int widx, double* errorOut)
     {
         double errorLocal = 0.0;
+        double temp;
         if (momentumEquationClassification == equationType::differentialEq)
         {
-            SolveUpdateSystemMomentum(widx, &errorLocal);
-            *errorOut += errorLocal;
+            SolveUpdateSystemMomentum(widx, &temp);
+            errorLocal += temp;
         }
         if (turbulenceEquationClassification == equationType::differentialEq)
         {
-            SolveUpdateSystemTurbulence(widx, &errorLocal);
-            *errorOut += errorLocal;
+            SolveUpdateSystemTurbulence(widx, &temp);
+            errorLocal += temp;
         }
         if (energyEquationClassification == equationType::differentialEq)
         {
-            SolveUpdateSystemEnergy(widx, &errorLocal);
-            *errorOut += errorLocal;
+            SolveUpdateSystemEnergy(widx, &temp);
+            errorLocal += temp;
         }
+        *errorOut = errorLocal/3;
     }
 
 

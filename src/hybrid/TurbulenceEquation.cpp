@@ -77,7 +77,8 @@ namespace HyCore
 
             double df = 0.5*(nuLoc[1]+nuLoc[2]+turbLoc[1]+turbLoc[2]);
             double db = 0.5*(nuLoc[1]+nuLoc[0]+turbLoc[1]+turbLoc[0]);
-            double t = (yLoc[1]-yLoc[0])/(yLoc[2]-yLoc[0]);
+            //double t = (yLoc[1]-yLoc[0])/(yLoc[2]-yLoc[0]);
+            double t = 0.5;
             double dturb_dy = (1-t)*(turbLoc[1]-turbLoc[0])*dyinvb + t*(turbLoc[2]-turbLoc[1])*dyinvf;
             double du_dy    = (1-t)*(   uLoc[1]-   uLoc[0])*dyinvb + t*(   uLoc[2]-   uLoc[1])*dyinvf;
             double P, D;
@@ -107,6 +108,14 @@ namespace HyCore
 
     __common void SolveUpdateSystemTurbulence(const int widx, double* errorOut)
     {
+        *errorOut = 0.0;
+        double loc_sq_error = 0.0;
         TDMASolve(turbSystem, N-2);
+        for (int i = 0; i < N-2; i++)
+        {
+            loc_sq_error = turbSystem[TD_RHS][i] / elem(turb_F, widx);
+            *errorOut += loc_sq_error*loc_sq_error;
+            elem(turb, widx, i+1) -= settings.underRelaxationODE*turbSystem[TD_RHS][i];
+        }
     }
 }

@@ -37,8 +37,9 @@ namespace HyCore
             case momentum::ODE:
             {
                 LinearUInit(widx);
-                double dummy1, dummy2;
-                ComputeExplicitMomentumEquation(widx, momentum::allmaras, &dummy1, &dummy2);
+                double dummy1 = 0.0;
+                double dummy2 = 0.0;
+                ComputeAllmarasMomentum(widx, &dummy1, &dummy2);
                 break;
             }
         }
@@ -76,10 +77,8 @@ namespace HyCore
         {
             loc_sq_error = momSystem[TD_RHS][i] / elem(u_F, widx);
             *errorOut += loc_sq_error*loc_sq_error;
-            elem(u, widx, i) -= settings.underRelaxationODE*momSystem[TD_RHS][i];
+            elem(u, widx, i+1) -= settings.underRelaxationODE*momSystem[TD_RHS][i];
         }
-        *errorOut = sqrt(*errorOut);
-        __dump(*errorOut);
     }
 
     __common void ComputeLhsRhsMomentumODE(const int widx)

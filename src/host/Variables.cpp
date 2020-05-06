@@ -6,7 +6,7 @@ namespace HyWall
 {
     void DefineInputVariables(void)
     {
-        //Pnce GPU implementation is good, should ideally pass in host and device symbols and immediately copy when available.
+        //Once GPU implementation is good, should ideally pass in host and device symbols and immediately copy when available.
         memory.AddStaticVariable<double>("in:x",        1, 1, bflag::constInput | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:y",        1, 1, bflag::constInput | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:z",        1, 1, bflag::constInput | bflag::userMustProvide);
@@ -26,19 +26,8 @@ namespace HyWall
     {
         if (settings.enableTransitionSensor)
         {
-            memory.AddStaticVariable<double>("aux:strain_rate",     1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:strain_rate_avg", 1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:k",               1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:k_avg",           1, 1, bflag::auxilary | bflag::vtkOutput);
-            memory.AddStaticVariable<double>("aux:rho_avg",         1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:mu_avg",          1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:u_avg",           1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:u_sq_avg",        1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:v_avg",           1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:v_sq_avg",        1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:w_avg",           1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:w_sq_avg",        1, 1, bflag::auxilary);
-            memory.AddStaticVariable<double>("aux:sensor_val",      1, 1, bflag::auxilary | bflag::vtkOutput);
+            sensor = TransitionSensor(settings.sensorType);
+            sensor.DefineSensorVariables();
         }
     }
 

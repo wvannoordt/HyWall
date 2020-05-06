@@ -1,6 +1,7 @@
 #include "EquationTypes.h"
 #include "AllEquations.h"
-#include "TransitionSensors.h"
+#include "TransitionSensorTypes.h"
+#include "TransitionSensor.h"
 #include "UserSettings.h"
 #include "AllocationModes.h"
 #include "GlobalMemoryHandler.h"
@@ -11,6 +12,7 @@ namespace HyWall
 {
     extern UserSettings settings;
     extern GlobalMemoryHandler memory;
+    extern TransitionSensor sensor;
     extern "C"
     {
         void Initialize(MPI_Comm host_comm_in, int verboseLevel_in);

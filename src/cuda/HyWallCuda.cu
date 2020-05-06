@@ -31,6 +31,12 @@ namespace HyWall
         //TODO: calls to cudaMemcpyToSymbol for global pointers!!!!!
     }
 
+    void ComputeGpuSolution(void)
+    {
+        std::cout << "TERMINATED from file " << __FILE__ << ", line " << __LINE__ << ": no cuda support yet." << std::endl;
+        abort();
+    }
+
     void InitGpuSolution(void)
     {
         std::cout << "TERMINATED from file " << __FILE__ << ", line " << __LINE__ << ": no cuda support yet." << std::endl;

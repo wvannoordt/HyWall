@@ -4,7 +4,8 @@
 #include "AllocationModes.h"
 #include "HybridComputing.h"
 #include "DebugTools.h"
-#include "TransitionSensors.h"
+#include "TransitionSensorTypes.h"
+#include "TransitionSensor.h"
 #include <string>
 #include "Variables.h"
 #include "ScreenOutput.h"
@@ -16,6 +17,7 @@ namespace HyWall
 {
     UserSettings settings;
     GlobalMemoryHandler memory;
+    TransitionSensor sensor;
     bool isFirstSolve;
     void Initialize(MPI_Comm host_comm_in, int verboseLevel_in)
     {
@@ -65,6 +67,7 @@ namespace HyWall
     void CopySymbols(void)
     {
         WriteLine(2, "Copy symbols start");
+        sensor.CopySymbols();
         HyCore::settings = settings;
         HyCore::majorAccessPitch = memory.localCpuPoints;
         HyCore::u            = (double*)memory.GetVariable("sol:u");
@@ -135,6 +138,7 @@ namespace HyWall
             if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
             for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
         }
+        if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
         for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
         isFirstSolve = false;
     }
