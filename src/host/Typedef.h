@@ -10,5 +10,6 @@
 //lhs superdiagonal = tdsys[2]
 //rhs               = tdsys[3]
 typedef double* tdsys[4];
+typedef double  dvec3[3];
 
 #endif

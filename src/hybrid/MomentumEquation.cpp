@@ -4,6 +4,7 @@
 #include "DebugTools.h"
 #include "Indexing.h"
 #include "CoreUtils.h"
+#include "Typedef.h"
 #if (__cpu)
 #include <cmath>
 using std::sqrt;
@@ -55,7 +56,7 @@ namespace HyCore
         }
     }
 
-    __common void ComputeLhsRhsMomentum(const int widx)
+    __common void ComputeLhsRhsMomentum(const int widx, const double relaxationFactor)
     {
         switch(settings.momentumEquationType)
         {
@@ -68,12 +69,44 @@ namespace HyCore
 
     __common void SolveUpdateSystemMomentum(const int widx, double* errorOut)
     {
-
+        *errorOut = 0.0;
+        double loc_sq_error = 0.0;
+        TDMASolve(momSystem, N-2);
+        for (int i = 0; i < N-2; i++)
+        {
+            loc_sq_error = momSystem[TD_RHS][i] / elem(u_F, widx);
+            *errorOut += loc_sq_error*loc_sq_error;
+            elem(u, widx, i) -= settings.underRelaxationODE*momSystem[TD_RHS][i];
+        }
+        *errorOut = sqrt(*errorOut);
+        __dump(*errorOut);
     }
 
     __common void ComputeLhsRhsMomentumODE(const int widx)
     {
-        
+        for (int i = 1; i < N-1; i++)
+        {
+            localtriple(uLoc, u, widx, i);
+            localtriple(muLoc, mu, widx, i);
+            localtriple(turbLoc, turb, widx, i);
+            localtriple(rhoLoc, rho, widx, i);
+            localtriple(yLoc, d, widx, i);
+            dvec3 mutLoc;
+            mutLoc[0] = MutSA(turbLoc[0],rhoLoc[0],muLoc[0]);
+            mutLoc[1] = MutSA(turbLoc[1],rhoLoc[1],muLoc[1]);
+            mutLoc[2] = MutSA(turbLoc[2],rhoLoc[2],muLoc[2]);
+            double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
+            double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
+            double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);
+
+            //Should we divide by rho???????
+            double df = 0.5*(muLoc[1]+muLoc[2]+mutLoc[1]+mutLoc[2]);
+            double db = 0.5*(muLoc[1]+muLoc[0]+mutLoc[1]+mutLoc[0]);
+            momSystem[TD_RHS][i-1]  = dy2inv*(df*(uLoc[2]-uLoc[1])*dyinvf - db*(uLoc[1]-uLoc[0])*dyinvb);
+            momSystem[TD_DIA][i-1] = -dy2inv*(df*dyinvf + db*dyinvb);
+            if (i>1)   momSystem[TD_SUB][i-2] = dy2inv*db*dyinvb;
+            if (i<N-2) momSystem[TD_SUP][i-1] = dy2inv*df*dyinvf;
+        }
     }
 
     __common double NewtonIterationAllmaras(const int widx, double* errorOut, double* itsOut)

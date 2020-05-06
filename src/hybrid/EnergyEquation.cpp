@@ -3,6 +3,7 @@
 #include "CoreData.h"
 #include "Indexing.h"
 #include "DebugTools.h"
+#include "CoreUtils.h"
 namespace HyCore
 {
     __common bool EnergyHasJacobian(HyWall::UserSettings* inputSettings)
@@ -48,7 +49,7 @@ namespace HyCore
         }
     }
 
-    __common void ComputeLhsRhsEnergy(const int widx)
+    __common void ComputeLhsRhsEnergy(const int widx, const double relaxationFactor)
     {
         switch(settings.energyEquationType)
         {
@@ -61,11 +62,14 @@ namespace HyCore
 
     __common void ComputeLhsRhsEnergyODE(const int widx)
     {
-        
+        for (int i = 1; i < N-1; i++)
+        {
+            __erkill("energy ODE not yet implemented");
+        }
     }
 
     __common void SolveUpdateSystemEnergy(const int widx, double* errorOut)
     {
-
+        TDMASolve(turbSystem, N-2);
     }
 }

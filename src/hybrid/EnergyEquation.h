@@ -7,7 +7,7 @@ namespace HyCore
 {
     __common void SolveUpdateSystemEnergy(const int widx, double* errorOut);
     __common void ComputeLhsRhsEnergyODE(const int widx);
-    __common void ComputeLhsRhsEnergy(const int widx);
+    __common void ComputeLhsRhsEnergy(const int widx, const double relaxationFactor);
     __common void ComputeExplicitEnergyEquation(const int widx, const int engyEq, double* errorOut, double* itsOut);
     __common void InitializeEnergy(const int widx);
     __common void LinearTInit(const int widx);

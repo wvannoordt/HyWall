@@ -6,4 +6,6 @@
 #define elem1(myarr, myglobalidx) myarr[(myglobalidx)]
 #define elem2(myarr, myglobalidx, mylocalidx) myarr[(myglobalidx)*N + (mylocalidx)]
 
+#define localtriple(mytrip, myarr, myglobalidx, mylocalidx) dvec3 mytrip; mytrip[0] = elem(myarr, myglobalidx, mylocalidx-1); mytrip[1] = elem(myarr, myglobalidx, mylocalidx); mytrip[2] = elem(myarr, myglobalidx, mylocalidx+1);
+
 #endif

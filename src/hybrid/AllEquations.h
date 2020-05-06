@@ -9,7 +9,7 @@
 
 namespace HyCore
 {
-    __common void ComputeLinearSystems(const int widx);
+    __common void ComputeLinearSystems(const int widx, const double relaxationFactor);
     __common void SolveUpdateLinearSystems(const int widx, double* errorOut);
     __common void ComputeAlgebraicExpressions(const int widx);
     __common void ComputeExplicitExpressions(const int widx, double* errorOut, double* itsOut);

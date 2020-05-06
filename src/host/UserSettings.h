@@ -71,6 +71,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember energyEquationType HyCore::energy::linear
     	int energyEquationType;
+
+        #pragma HWPP SerialIoMember underRelaxationODE 0.4
+    	double underRelaxationODE;
     };
     #pragma HWPP SerialIoStructEnd
 

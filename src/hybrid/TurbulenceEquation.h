@@ -7,8 +7,8 @@
 namespace HyCore
 {
     __common void SolveUpdateSystemTurbulence(const int widx, double* errorOut);
-    __common void ComputeLhsRhsTurbulenceODE(const int widx);
-    __common void ComputeLhsRhsTurbulence(const int widx);
+    __common void ComputeLhsRhsTurbulenceODE(const int widx, const double relaxationFactor);
+    __common void ComputeLhsRhsTurbulence(const int widx, const double relaxationFactor);
     __common void ComputeExplicitTurbulenceEquation(const int widx, const int turbEq, double* errorOut, double* itsOut);
     __common void InitializeTurbulence(const int widx);
     __common void LinearTurbInit(const int widx);

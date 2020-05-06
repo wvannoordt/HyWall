@@ -58,6 +58,8 @@ namespace HyCore
         double localError = 0.0;
         double localIts = 0.0;
         int numIts = 0;
+        double relaxationFactor = 0.2;
+        double growth = 1.1;
         UpdateBoundaryConditions(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
         totalError += localError;
@@ -66,13 +68,16 @@ namespace HyCore
         localIts = 0.0;
         while (!done)
         {
-            ComputeLinearSystems(widx);
+            ComputeLinearSystems(widx, relaxationFactor);
             SolveUpdateLinearSystems(widx, &localError);
             ComputeAlgebraicExpressions(widx);
-            done = (abs(localError) < settings.errorTolerance) || (numIts++ < settings.maxIterations);
-            failed = abs(localError) > settings.errorTolerance;
             localIts+=1.0;
+            relaxationFactor *= growth;
+            relaxationFactor = (relaxationFactor>1.0)?1.0:relaxationFactor;
+            done = (d_abs(localError) < settings.errorTolerance) || (numIts > settings.maxIterations);
+            numIts++;
         }
+        failed = abs(localError) > settings.errorTolerance;
         totalError += localError;
         totalIts += localIts;
         if (failed) __erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx)));

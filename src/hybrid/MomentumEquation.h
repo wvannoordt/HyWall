@@ -10,7 +10,7 @@ namespace HyCore
     __common double NewtonIterationAllmaras(const int widx, double* errorOut, double* itsOut);
     __common void ComputeLhsRhsMomentumODE(const int widx);
     __common void SolveUpdateSystemMomentum(const int widx, double* errorOut);
-    __common void ComputeLhsRhsMomentum(const int widx);
+    __common void ComputeLhsRhsMomentum(const int widx, const double relaxationFactor);
     __common void ComputeExplicitMomentumEquation(const int widx, const int momEq, double* errorOut, double* itsOut);
     __common void InitializeMomentum(const int widx);
     __common void LinearUInit(const int widx);

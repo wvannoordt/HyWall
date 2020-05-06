@@ -29,19 +29,19 @@ namespace HyCore
     }
 
 
-    __common void ComputeLinearSystems(const int widx)
+    __common void ComputeLinearSystems(const int widx, const double relaxationFactor)
     {
         if (momentumEquationClassification == equationType::differentialEq)
         {
-            ComputeLhsRhsMomentum(widx);
+            ComputeLhsRhsMomentum(widx, relaxationFactor);
         }
         if (turbulenceEquationClassification == equationType::differentialEq)
         {
-            ComputeLhsRhsTurbulence(widx);
+            ComputeLhsRhsTurbulence(widx, relaxationFactor);
         }
         if (energyEquationClassification == equationType::differentialEq)
         {
-            ComputeLhsRhsEnergy(widx);
+            ComputeLhsRhsEnergy(widx, relaxationFactor);
         }
     }
 
