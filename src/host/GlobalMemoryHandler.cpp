@@ -69,8 +69,6 @@ namespace HyWall
         bufferSizes[numGlobalVariables]     = newVariableSize;
         accessBounds[numGlobalVariables]    = newUpperAccessBound;
 
-        __dump(numGlobalVariables);
-
         WriteLine(3, "Declaring static associated variable:");
         WriteLine(3, "name:       " + name);
         WriteLine(3, "managemode: " + std::to_string(manageMode));

@@ -2,6 +2,7 @@
 #define CORE_UTIL_H
 
 #include "HybridComputing.h"
+#include "Typedef.h"
 #define d_abs(myvalue) ((myvalue>0)?myvalue:-myvalue)
 namespace HyCore
 {

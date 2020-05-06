@@ -5,10 +5,13 @@
 
 namespace HyWall
 {
-    enum sensor
+    namespace sensor
     {
-        mettu18         = 0b00000000000000000000000000000001
-    };
+        enum sensorenum
+        {
+            mettu18         = 734927
+        };
+    }
 }
 
 #endif

@@ -13,11 +13,11 @@ namespace HyWall
             {
                 if (messageVerboseLevel==1)
                 {
-                    std::cout << "[I] " << message << std::endl;
+                    std::cout << "[I] HyWall :: " << message << std::endl;
                 }
                 else
                 {
-                    std::cout << "[Debug " << std::to_string(messageVerboseLevel) << "]: " << message << std::endl;
+                    std::cout << "[Debug " << std::to_string(messageVerboseLevel) << "] HyWall :: " << message << std::endl;
                 }
             }
         }

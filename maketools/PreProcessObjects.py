@@ -159,14 +159,12 @@ class HwppOutputObject:
     def make_footer(self):
         self.output_code.append("#endif")
 
-class HwppMacro(ABC):
-    @abstractmethod
+class HwppMacro:
     def __init__(self):
-        pass
+        self.id = hash(1)
 
-    @abstractmethod
     def get_code_lines(self):
-        pass
+        dummy = 100
 
 class HwppSerialIoStruct(HwppMacro):
     def __init__(self):

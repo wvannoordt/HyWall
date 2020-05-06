@@ -12,7 +12,7 @@ namespace HyWall
 {
     extern UserSettings settings;
     extern GlobalMemoryHandler memory;
-    extern TransitionSensor sensor;
+    extern TransitionSensor tSensor;
     extern "C"
     {
         void Initialize(MPI_Comm host_comm_in, int verboseLevel_in);

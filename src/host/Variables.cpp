@@ -26,8 +26,8 @@ namespace HyWall
     {
         if (settings.enableTransitionSensor)
         {
-            sensor = TransitionSensor(settings.sensorType);
-            sensor.DefineSensorVariables();
+            tSensor = TransitionSensor(settings.sensorType, memory.localTotalPoints);
+            tSensor.DefineSensorVariables();
         }
     }
 

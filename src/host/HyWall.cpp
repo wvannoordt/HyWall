@@ -13,15 +13,18 @@
 #include "HyWallCuda.h"
 #include "Solver.h"
 #include "Typedef.h"
+#include "HostUtils.h"
 namespace HyWall
 {
     UserSettings settings;
     GlobalMemoryHandler memory;
-    TransitionSensor sensor;
+    TransitionSensor tSensor;
     bool isFirstSolve;
+    double* residualOutput;
+    double* iterationsOutput;
     void Initialize(MPI_Comm host_comm_in, int verboseLevel_in)
     {
-        WriteLine(1, "Initialize HyWall");
+        WriteLine(1, "Initialize");
         HWPP_SetDefaultValues(&settings);
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
@@ -47,6 +50,7 @@ namespace HyWall
     void SetDomainSize(int numWallPoints_in)
     {
         memory.SetSize(numWallPoints_in, settings.rayDim);
+        Parallel::MarkActiveRanks(numWallPoints_in>0);
     }
 
     void SetTimeStep(double timeStep_in)
@@ -67,7 +71,7 @@ namespace HyWall
     void CopySymbols(void)
     {
         WriteLine(2, "Copy symbols start");
-        sensor.CopySymbols();
+        if (settings.enableTransitionSensor) tSensor.CopySymbols();
         HyCore::settings = settings;
         HyCore::majorAccessPitch = memory.localCpuPoints;
         HyCore::u            = (double*)memory.GetVariable("sol:u");
@@ -91,6 +95,10 @@ namespace HyWall
         HyCore::error        = (double*)memory.GetVariable("out:error");
         HyCore::vorticity    = (double*)memory.GetVariable("out:vorticity");
         HyCore::heatflux     = (double*)memory.GetVariable("out:heatflux");
+
+        residualOutput   = (double*)memory.GetVariable("out:error");
+        iterationsOutput = (double*)memory.GetVariable("out:iterations");
+
         HyCore::MetaDataSet(&settings);
 
         if (HyCore::MomentumHasJacobian(&settings))
@@ -134,20 +142,28 @@ namespace HyWall
     {
         if (isFirstSolve)
         {
+            if (settings.enableTransitionSensor) tSensor.OnFirstSolve();
             WriteLine(1, "Initializing wall model solution");
             if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
             for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
         }
+        WriteLine(1, "Solve start");
+        if (settings.enableTransitionSensor) tSensor.OnEverySolve();
         if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
         for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
+
+        double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
+        double totError = Parallel::GlobalTotalAbs(residualOutput, memory.localTotalPoints);
+        double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
+        WriteLine(1, "Solve end, residual total: " + to_estring(totError) + ", residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
         isFirstSolve = false;
     }
 
     void Finalize(void)
     {
-        WriteLine(1, "Closing HyWall");
+        WriteLine(1, "Closing");
         memory.ApplyFinalizationPolicies();
         Parallel::Finalize();
-        WriteLine(1, "Closed HyWall");
+        WriteLine(1, "Closed");
     }
 }
