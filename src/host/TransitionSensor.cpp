@@ -153,7 +153,7 @@ namespace HyWall
 
         for (int i = 0; i < pointNum; i++)
         {
-            sensor_val[i] = 0.15 * rho_avg[i]*k_avg[i] / (mu_avg[i] * strain_rate_avg[i]);
+            sensor_val[i] = (0.15 * rho_avg[i]*k_avg[i] / (mu_avg[i] * strain_rate_avg[i]))/settings.sensorThreshold;
         }
         double smin = Parallel::GlobalMin(sensor_val, pointNum);
         double smax = Parallel::GlobalMax(sensor_val, pointNum);
