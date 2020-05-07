@@ -1,6 +1,7 @@
 #include "HyWall.h"
 #include "FortranInterface.h"
 #include <string>
+#include <cstring>
 namespace HyWall
 {
     void hywall_setdomainsize_f(int* numWallPoints_in)
