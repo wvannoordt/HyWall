@@ -1,1 +1,1 @@
-cmd: make
+cmd: CUDA_ENABLE=1 make
