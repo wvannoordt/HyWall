@@ -38,6 +38,7 @@ namespace HyCore
     __common double* heatflux;
     __common double* error;
     __common double* iterations;
+    __common double* sensorValue;
     __common int majorAccessPitch;
     __common int momentumEquationClassification;
     __common int turbulenceEquationClassification;

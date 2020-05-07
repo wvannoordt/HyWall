@@ -13,6 +13,7 @@ namespace HyCore
     __common void InitializeTurbulence(const int widx);
     __common void LinearTurbInit(const int widx);
     __common bool TurbulenceHasJacobian(HyWall::UserSettings* inputSettings);
+    __common void ZeroTurbInit(const int widx);
 }
 
 #endif

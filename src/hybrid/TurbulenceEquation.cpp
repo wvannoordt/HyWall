@@ -17,6 +17,11 @@ namespace HyCore
         for (int i = 0; i < N; i++) elem(turb, widx, i) = elem(turb_F, widx)*elem(d, widx, i)/elem(distance, widx);
     }
 
+    __common void ZeroTurbInit(const int widx)
+    {
+        for (int i = 0; i < N; i++) elem(turb, widx, i) = 0.0;
+    }
+
     __common void InitializeTurbulence(const int widx)
     {
         switch (settings.turbulenceEquationType)
@@ -37,6 +42,11 @@ namespace HyCore
 
     __common void ComputeExplicitTurbulenceEquation(const int widx, const int turbEq, double* errorOut, double* itsOut)
     {
+        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0)
+        {
+            ZeroTurbInit(widx);
+            return;
+        }
         switch (turbEq)
         {
             case turbulence::linear:
@@ -48,6 +58,11 @@ namespace HyCore
 
     __common void ComputeLhsRhsTurbulence(const int widx, const double relaxationFactor)
     {
+        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0)
+        {
+            ZeroTurbInit(widx);
+            return;
+        }
         switch(settings.turbulenceEquationType)
         {
             case turbulence::ODE:
@@ -109,6 +124,7 @@ namespace HyCore
     __common void SolveUpdateSystemTurbulence(const int widx, double* errorOut)
     {
         *errorOut = 0.0;
+        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0) return;
         double loc_sq_error = 0.0;
         TDMASolve(turbSystem, N-2);
         for (int i = 0; i < N-2; i++)

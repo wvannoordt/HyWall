@@ -13,18 +13,24 @@ namespace HyCore
             ComputeExplicitMomentumEquation(widx, settings.momentumEquationType, &localError, &localIts);
             *errorOut += localError;
             *itsOut += localIts;
+            localError = 0.0;
+            localIts = 0.0;
         }
         if (turbulenceEquationClassification == equationType::explicitEq)
         {
             ComputeExplicitTurbulenceEquation(widx, settings.turbulenceEquationType, &localError, &localIts);
             *errorOut += localError;
             *itsOut += localIts;
+            localError = 0.0;
+            localIts = 0.0;
         }
         if (energyEquationClassification == equationType::explicitEq)
         {
             ComputeExplicitEnergyEquation(widx, settings.energyEquationType, &localError, &localIts);
             *errorOut += localError;
             *itsOut += localIts;
+            localError = 0.0;
+            localIts = 0.0;
         }
     }
 
@@ -48,21 +54,24 @@ namespace HyCore
     __common void SolveUpdateLinearSystems(const int widx, double* errorOut)
     {
         double errorLocal = 0.0;
-        double temp;
+        double temp = 0;
         if (momentumEquationClassification == equationType::differentialEq)
         {
             SolveUpdateSystemMomentum(widx, &temp);
             errorLocal += temp;
+            temp = 0;
         }
         if (turbulenceEquationClassification == equationType::differentialEq)
         {
             SolveUpdateSystemTurbulence(widx, &temp);
             errorLocal += temp;
+            temp = 0;
         }
         if (energyEquationClassification == equationType::differentialEq)
         {
             SolveUpdateSystemEnergy(widx, &temp);
             errorLocal += temp;
+            temp = 0;
         }
         *errorOut = errorLocal/3;
     }
