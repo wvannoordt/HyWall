@@ -1,5 +1,6 @@
 #include "HyWall.h"
 #include <string>
+#include <iostream>
 #ifndef SCREEN_OUT_H
 #define SCREEN_OUT_H
 

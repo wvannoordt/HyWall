@@ -2,6 +2,7 @@
 #include "ScreenOutput.h"
 #include "Parallel.h"
 #include <string>
+#include <iostream>
 
 namespace HyWall
 {
