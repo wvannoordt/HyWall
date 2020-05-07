@@ -99,7 +99,7 @@ namespace HyWall
         residualOutput   = (double*)memory.GetVariable("out:error");
         iterationsOutput = (double*)memory.GetVariable("out:iterations");
 
-        HyCore::sensorValue = (double*)memory.GetVariable("aux:sensor_val");
+        if (settings.enableTransitionSensor) HyCore::sensorValue = (double*)memory.GetVariable("aux:sensor_val");
 
         HyCore::MetaDataSet(&settings);
 
