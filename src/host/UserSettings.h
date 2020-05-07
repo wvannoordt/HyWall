@@ -74,6 +74,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember underRelaxationODE 0.4
     	double underRelaxationODE;
+
+        #pragma HWPP SerialIoMember solveSkip 1
+        int solveSkip;
     };
     #pragma HWPP SerialIoStructEnd
 

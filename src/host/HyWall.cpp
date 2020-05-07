@@ -22,10 +22,12 @@ namespace HyWall
     bool isFirstSolve;
     double* residualOutput;
     double* iterationsOutput;
+    int solveCount;
     void Initialize(MPI_Comm host_comm_in, int verboseLevel_in)
     {
         WriteLine(1, "Initialize");
         HWPP_SetDefaultValues(&settings);
+        solveCount = 0;
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
         isFirstSolve = true;
@@ -142,23 +144,26 @@ namespace HyWall
 
     void Solve(void)
     {
-        if (isFirstSolve)
+        if (solveCount++ % settings.solveSkip == 0)
         {
-            if (settings.enableTransitionSensor) tSensor.OnFirstSolve();
-            WriteLine(1, "Initializing wall model solution");
-            if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
-            for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
-        }
-        WriteLine(1, "Solve start");
-        if (settings.enableTransitionSensor) tSensor.OnEverySolve();
-        if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
-        for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
+            if (isFirstSolve)
+            {
+                if (settings.enableTransitionSensor) tSensor.OnFirstSolve();
+                WriteLine(1, "Initializing wall model solution");
+                if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
+                for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
+            }
+            WriteLine(1, "Solve start");
+            if (settings.enableTransitionSensor) tSensor.OnEverySolve();
+            if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
+            for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
 
-        double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
-        double totError = Parallel::GlobalTotalAbs(residualOutput, memory.localTotalPoints);
-        double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
-        WriteLine(1, "Solve end, residual total: " + to_estring(totError) + ", residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
-        isFirstSolve = false;
+            double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
+            double totError = Parallel::GlobalTotalAbs(residualOutput, memory.localTotalPoints);
+            double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
+            WriteLine(1, "Solve end, residual total: " + to_estring(totError) + ", residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
+            isFirstSolve = false;
+        }
     }
 
     void Finalize(void)
