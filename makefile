@@ -8,8 +8,8 @@ ifndef ALLOW_DEBUG_EXT
 ALLOW_DEBUG_EXT := 0
 endif
 
-ifndef OPT_LEVEL
-OPT_LEVEL := 0
+ifndef OPTLEVEL
+OPTLEVEL := 0
 endif
 
 ifndef CUDA_ENABLE
@@ -24,13 +24,21 @@ ifndef DEBUG_LEVEL
 DEBUG_LEVEL := 0
 endif
 
+ifndef BITCART_SOURCE_PATH
+BITCART_SOURCE_PATH := THEREISNOBASEPATHFORHYWALLINSTALL
+endif
+
 WM_BASEIDIR = $(shell pwd)
 WM_SRC_DIR := ${WM_BASEIDIR}/src
-
 WM_LIB_DIR := ${WM_BASEIDIR}/lib
 WM_OBJ_DIR := ${WM_BASEIDIR}/obj
 WM_HDR_DIR := ${WM_BASEIDIR}/include
 WM_PRP_DIR := ${WM_BASEIDIR}/maketools
+WM_DOC_DIR := ${WM_BASEIDIR}/docs
+WM_FRT_DIR := ${WM_BASEIDIR}/fortran
+WM_TST_DIR := ${WM_BASEIDIR}/testing
+
+
 PREPROCESSOR := ${WM_PRP_DIR}/hyWallPreProcess.py
 POSTPROCESSOR := ${WM_PRP_DIR}/hyWallPostProcess.py
 
@@ -89,9 +97,9 @@ COMPILE_TIME_OPT += -DPARALLEL=${PARALLEL}
 COMPILE_TIME_OPT += -DMAX_BUFFERS=1024
 
 
-DEVICE_FLAGS := -O${OPT_LEVEL} -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
+DEVICE_FLAGS := -O${OPTLEVEL} -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
 DEVICE_DLINK_FLAGS := -Xcompiler -fPIC -rdc=true -dlink
-HOST_FLAGS := -O${OPT_LEVEL} -fPIC -fpermissive -std=c++11 -c ${LCUDA}
+HOST_FLAGS := -O${OPTLEVEL} -fPIC -fpermissive -std=c++11 -c ${LCUDA}
 
 LZLIB :=
 ifeq (${ALLOW_DEBUG_EXT}, 1)
@@ -176,3 +184,10 @@ clean:
 	-rm -r ${WM_LIB_DIR}
 	-rm -r ${WM_OBJ_DIR}
 	-rm -r ${WM_HDR_DIR}
+
+install: clean
+	cp -r ${WM_SRC_DIR} ${BITCART_SOURCE_PATH}/HyWall
+	cp -r ${WM_PRP_DIR} ${BITCART_SOURCE_PATH}/HyWall
+	cp -r ${WM_DOC_DIR} ${BITCART_SOURCE_PATH}/HyWall
+	cp -r ${WM_FRT_DIR} ${BITCART_SOURCE_PATH}/HyWall
+	cp -r ${WM_TST_DIR} ${BITCART_SOURCE_PATH}/HyWall
