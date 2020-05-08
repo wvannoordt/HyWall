@@ -71,8 +71,8 @@ namespace HyCore
         for (int i = 0; i < N; i++)
         {
             double yPlus = elem(d, widx, i) * sqrt(tau*elem(rho, widx, i))/elem(mu, widx, i);
-            double expfactor = 1.0 - exp(-yPlus/25.0);
-            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yPlus * expfactor;
+            double expfactor = 1.0 - exp(-yPlus/17.0);
+            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yPlus * expfactor*expfactor;
         }
     }
 
