@@ -13,7 +13,9 @@ namespace HyCore
     __common void InitializeTurbulence(const int widx);
     __common void LinearTurbInit(const int widx);
     __common bool TurbulenceHasJacobian(HyWall::UserSettings* inputSettings);
+    __common void ComputeAlgebraicTurbulence(const int widx, const int turbEq);
     __common void ZeroTurbInit(const int widx);
+    __common void ComputeVanDriestTurbulence(const int widx);
 }
 
 #endif

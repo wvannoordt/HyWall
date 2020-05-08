@@ -90,10 +90,8 @@ namespace HyCore
             localtriple(turbLoc, turb, widx, i);
             localtriple(rhoLoc, rho, widx, i);
             localtriple(yLoc, d, widx, i);
-            dvec3 mutLoc;
-            mutLoc[0] = MutSA(turbLoc[0],rhoLoc[0],muLoc[0]);
-            mutLoc[1] = MutSA(turbLoc[1],rhoLoc[1],muLoc[1]);
-            mutLoc[2] = MutSA(turbLoc[2],rhoLoc[2],muLoc[2]);
+            localtriple(mutLoc, mu_t, widx, i);
+
             double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
             double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
             double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);

@@ -11,6 +11,7 @@ namespace HyCore
     __common double MutSA(double turb, double rho, double mu);
     __common void ComputeProductionDestructionSA(double* P, double* D, double rho_in, double mu_in, double turb_in, double y_in, double dudy_in);
     __common void TDMASolve(tdsys& linearSystem, const int num);
+    __common double SaBacksolve(double mutIn, double muIn, double rhoIn);
 }
 
 #endif

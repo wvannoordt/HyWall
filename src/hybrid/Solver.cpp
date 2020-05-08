@@ -36,6 +36,7 @@ namespace HyCore
     __common void Initialize(const int widx)
     {
         BuildGrid(widx);
+        UpdateBoundaryConditions(widx);
         InitializeEnergy(widx);
         InitializeTurbulence(widx);
         InitializeMomentum(widx);
@@ -45,9 +46,15 @@ namespace HyCore
     {
         elem(u,    widx, N-1) = elem(u_F,    widx);
         elem(T,    widx, N-1) = elem(T_F,    widx);
-        elem(turb, widx, N-1) = elem(turb_F, widx);
+        elem(mu_t, widx, N-1) = elem(mu_t_F, widx);
+        elem(turb, widx, N-1) = SaBacksolve(elem(mu_t_F, widx), elem(mu_F, widx), elem(rho_F, widx));
         elem(rho,  widx, N-1) = elem(rho_F,  widx);
         elem(mu,   widx, N-1) = elem(mu_F,   widx);
+    }
+
+    __common void EquationsOfState(const int widx)
+    {
+        if (settings.turbulenceEquationType == turbulence::ODE) for (int i = 0; i < N; i++) elem(mu_t, widx, i) = MutSA(elem(turb, widx, i), elem(rho, widx, i), elem(mu, widx, i));
     }
 
     __common void MainSolver(const int widx)
@@ -61,6 +68,7 @@ namespace HyCore
         double relaxationFactor = 0.2;
         double growth = 1.1;
         UpdateBoundaryConditions(widx);
+        EquationsOfState(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
         totalError += localError;
         totalIts += localIts;
@@ -71,6 +79,7 @@ namespace HyCore
         {
             ComputeLinearSystems(widx, relaxationFactor);
             SolveUpdateLinearSystems(widx, &localError);
+            EquationsOfState(widx);
             ComputeAlgebraicExpressions(widx);
             localIts+=1.0;
             relaxationFactor *= growth;
@@ -82,7 +91,7 @@ namespace HyCore
         if (d_abs(localError) > settings.errorTolerance)
         {
             double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
-            //__erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << umag << ", error=" << localError << ", " << "numIts=" << numIts);
+            __erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << umag << ", error=" << localError << ", " << "numIts=" << numIts);
         }
 
         double u1  = elem(u, widx, 1);

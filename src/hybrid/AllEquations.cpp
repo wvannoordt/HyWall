@@ -85,7 +85,7 @@ namespace HyCore
         }
         if (turbulenceEquationClassification == equationType::algebraicEq)
         {
-            __erkill("NOT YET IMPLEMENTED");
+            ComputeAlgebraicTurbulence(widx, settings.turbulenceEquationType);
         }
         if (energyEquationClassification == equationType::algebraicEq)
         {

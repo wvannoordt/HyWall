@@ -16,7 +16,7 @@ namespace HyWall
         memory.AddStaticVariable<double>("in:v",        1, 1, bflag::input | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:w",        1, 1, bflag::input | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:T",        1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:turb",     1, 1, bflag::input | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("in:mu_t",     1, 1, bflag::input | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:rho",      1, 1, bflag::input | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:mu_lam",   1, 1, bflag::input | bflag::userMustProvide);
         memory.AddStaticVariable<double>("in:distance", 1, 1, bflag::input | bflag::userMustProvide);
@@ -61,6 +61,7 @@ namespace HyWall
     void DefineTurbulentVariables(void)
     {
         memory.AddStaticVariable<double>("sol:turb",  settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:mu_t",  settings.rayDim, 1, bflag::solution);
         if (HyCore::TurbulenceHasJacobian(&settings))
         {
             memory.AddStaticVariable<double>("jac:turb0", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);

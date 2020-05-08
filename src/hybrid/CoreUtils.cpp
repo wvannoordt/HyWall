@@ -31,6 +31,26 @@ namespace HyCore
         return guess;
     }
 
+    __common double SaBacksolve(double mutIn, double muIn, double rhoIn)
+    {
+        int k = 0;
+        if (mutIn/muIn < 0.00004) return 0.0;
+        double chi = mutIn / muIn;
+        double epsilon = 100000;
+        while (d_abs(epsilon) > 1e-8 && k < 1000)
+        {
+            double deriv = (4*CONST_SA_CV1_CUBED * pow(chi,3) + pow(chi,6))/(pow((CONST_SA_CV1_CUBED + pow(chi,3)), 2));
+            epsilon = (((pow(chi,4))/(pow(chi,3) + CONST_SA_CV1_CUBED)) - (mutIn/muIn)) / deriv;
+            chi = chi - 0.8*epsilon;
+            k++;
+        }
+        if (d_abs(epsilon) > 1e-7)
+        {
+            __erkill("Divergent turbulent variable backsolve.");
+        }
+        return muIn*chi/rhoIn;
+    }
+
     __common void ComputeProductionDestructionSA(double* P, double* D, double rho_in, double mu_in, double turb_in, double y_in, double dudy_in)
     {
         double omega = d_abs(dudy_in);

@@ -30,7 +30,8 @@ namespace HyCore
         enum turbulenceenum
         {
             linear           = 29823,
-            ODE              = 23414
+            ODE              = 23414,
+            vanDriest        = 82984
         };
     }
 

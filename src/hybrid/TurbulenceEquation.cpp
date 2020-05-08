@@ -14,7 +14,11 @@ namespace HyCore
 
     __common void LinearTurbInit(const int widx)
     {
-        for (int i = 0; i < N; i++) elem(turb, widx, i) = elem(turb_F, widx)*elem(d, widx, i)/elem(distance, widx);
+        for (int i = 0; i < N; i++)
+        {
+            elem(mu_t, widx, i) = elem(mu_t_F, widx)*elem(d, widx, i)/elem(distance, widx);
+            elem(turb, widx, i) = SaBacksolve(elem(mu_t_F, widx), elem(mu_F, widx), elem(rho_F, widx))*elem(d, widx, i)/elem(distance, widx);
+        }
     }
 
     __common void ZeroTurbInit(const int widx)
@@ -52,6 +56,23 @@ namespace HyCore
             case turbulence::linear:
             {
                 LinearTurbInit(widx);
+            }
+        }
+    }
+
+    __common void ComputeVanDriestTurbulence(const int widx)
+    {
+
+    }
+
+    __common void ComputeAlgebraicTurbulence(const int widx, const int turbEq)
+    {
+        switch (turbEq)
+        {
+            case turbulence::vanDriest:
+            {
+                ComputeVanDriestTurbulence(widx);
+                break;
             }
         }
     }
@@ -129,7 +150,7 @@ namespace HyCore
         TDMASolve(turbSystem, N-2);
         for (int i = 0; i < N-2; i++)
         {
-            loc_sq_error = turbSystem[TD_RHS][i] / elem(turb_F, widx);
+            loc_sq_error = turbSystem[TD_RHS][i] / (elem(turb, widx, N-1) + 1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
             elem(turb, widx, i+1) -= settings.underRelaxationODE*turbSystem[TD_RHS][i];
         }

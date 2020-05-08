@@ -67,7 +67,7 @@ namespace HyWall
         memory.SetUserAssociatedVariable("in:v",    ptr+2*offset);
         memory.SetUserAssociatedVariable("in:w",    ptr+3*offset);
         memory.SetUserAssociatedVariable("in:T",    ptr+4*offset);
-        memory.SetUserAssociatedVariable("in:turb", ptr+5*offset);
+        memory.SetUserAssociatedVariable("in:mu_t", ptr+5*offset);
     }
 
     void CopySymbols(void)
@@ -81,13 +81,14 @@ namespace HyWall
         HyCore::T            = (double*)memory.GetVariable("sol:T");
         HyCore::rho          = (double*)memory.GetVariable("sol:rho");
         HyCore::mu           = (double*)memory.GetVariable("sol:mu");
+        HyCore::mu_t         = (double*)memory.GetVariable("sol:mu_t");
         HyCore::turb         = (double*)memory.GetVariable("sol:turb");
         HyCore::p_F          = (double*)memory.GetVariable("in:p");
         HyCore::u_F          = (double*)memory.GetVariable("in:u");
         HyCore::v_F          = (double*)memory.GetVariable("in:v");
         HyCore::w_F          = (double*)memory.GetVariable("in:w");
         HyCore::T_F          = (double*)memory.GetVariable("in:T");
-        HyCore::turb_F       = (double*)memory.GetVariable("in:turb");
+        HyCore::mu_t_F       = (double*)memory.GetVariable("in:mu_t");
         HyCore::distance     = (double*)memory.GetVariable("in:distance");
         HyCore::rho_F        = (double*)memory.GetVariable("in:rho");
         HyCore::mu_F         = (double*)memory.GetVariable("in:mu_lam");
