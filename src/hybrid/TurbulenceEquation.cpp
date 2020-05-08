@@ -5,11 +5,16 @@
 #include "Indexing.h"
 #include "CoreUtils.h"
 #include "Constants.h"
+#if(__cpu)
+#include <cmath>
+using std::sqrt;
+using std::exp;
+#endif
 namespace HyCore
 {
     __common bool TurbulenceHasJacobian(HyWall::UserSettings* inputSettings)
     {
-        return settings.turbulenceEquationType = turbulence::ODE;
+        return settings.turbulenceEquationType == turbulence::ODE;
     }
 
     __common void LinearTurbInit(const int widx)
@@ -62,7 +67,13 @@ namespace HyCore
 
     __common void ComputeVanDriestTurbulence(const int widx)
     {
-
+        double tau = elem(mu, widx, 0)*elem(u, widx, 1)/settings.wallSpacing;
+        for (int i = 0; i < N; i++)
+        {
+            double yPlus = elem(d, widx, i) * sqrt(tau*elem(rho, widx, i))/elem(mu, widx, i);
+            double expfactor = 1.0 - exp(-yPlus/25.0);
+            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yPlus * expfactor;
+        }
     }
 
     __common void ComputeAlgebraicTurbulence(const int widx, const int turbEq)

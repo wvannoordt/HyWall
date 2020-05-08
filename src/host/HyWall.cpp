@@ -129,7 +129,6 @@ namespace HyWall
             HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
             HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
         }
-
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));

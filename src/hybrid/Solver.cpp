@@ -157,6 +157,11 @@ namespace HyCore
                 turbulenceEquationClassification = equationType::differentialEq;
                 break;
             }
+            case turbulence::vanDriest:
+            {
+                turbulenceEquationClassification = equationType::algebraicEq;
+                break;
+            }
         }
     }
 }
