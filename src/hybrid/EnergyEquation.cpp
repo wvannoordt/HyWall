@@ -62,14 +62,45 @@ namespace HyCore
 
     __common void ComputeLhsRhsEnergyODE(const int widx)
     {
+        double Pr = settings.fluidPrandtl;
+        double Pr_t = settings.turbPradntl;
+        double Cp = settings.fluidCp;
         for (int i = 1; i < N-1; i++)
         {
-            __erkill("energy ODE not yet implemented");
+            localtriple(uLoc, u, widx, i);
+            localtriple(muLoc, mu, widx, i);
+            localtriple(mutLoc, mu_t, widx, i);
+            localtriple(yLoc, d, widx, i);
+            localtriple(TLoc, T, widx, i);
+
+            double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
+            double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
+            double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);
+
+            double df_engy = 0.5*Cp*((muLoc[1]+muLoc[2])/Pr+(mutLoc[1]+mutLoc[2])/Pr_t);
+            double db_engy = 0.5*Cp*((muLoc[1]+muLoc[0])/Pr+(mutLoc[1]+mutLoc[0])/Pr_t);
+
+            double df_mom = 0.5*((muLoc[2]+mutLoc[2])*uLoc[2] + (muLoc[1]+mutLoc[1])*uLoc[1]);
+            double db_mom = 0.5*((muLoc[0]+mutLoc[0])*uLoc[0] + (muLoc[1]+mutLoc[1])*uLoc[1]);
+
+            engySystem[TD_RHS][i-1]  = dy2inv*(df_engy*(TLoc[2]-TLoc[1])*dyinvf - db_engy*(TLoc[1]-TLoc[0])*dyinvb) + dy2inv*(df_mom*(uLoc[2]-uLoc[1])*dyinvf - db_mom*(uLoc[1]-uLoc[0])*dyinvb);
+            engySystem[TD_DIA][i-1] = -dy2inv*(df_engy*dyinvf + db_engy*dyinvb);
+            if (i>1)   engySystem[TD_SUB][i-2] = dy2inv*db_engy*dyinvb;
+            if (i<N-2) engySystem[TD_SUP][i-1] = dy2inv*df_engy*dyinvf;
         }
     }
 
     __common void SolveUpdateSystemEnergy(const int widx, double* errorOut)
     {
-        TDMASolve(turbSystem, N-2);
+        *errorOut = 0.0;
+        double loc_sq_error = 0.0;
+        TDMASolve(engySystem, N-2);
+        for (int i = 0; i < N-2; i++)
+        {
+            loc_sq_error = engySystem[TD_RHS][i] / (elem(turb, widx, N-1) + 1e-9);
+            *errorOut += loc_sq_error*loc_sq_error;
+            elem(T, widx, i+1) -= settings.energyUnderRelaxationODE*engySystem[TD_RHS][i];
+        }
+        if (settings.adiabaticWall) elem(T, widx, 0) -= settings.energyUnderRelaxationODE*engySystem[TD_RHS][0];
     }
 }

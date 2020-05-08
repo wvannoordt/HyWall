@@ -72,8 +72,14 @@ namespace HyWall
         #pragma HWPP SerialIoMember energyEquationType HyCore::energy::linear
     	int energyEquationType;
 
-        #pragma HWPP SerialIoMember underRelaxationODE 0.4
-    	double underRelaxationODE;
+        #pragma HWPP SerialIoMember momentumUnderRelaxationODE 0.8
+    	double momentumUnderRelaxationODE;
+
+        #pragma HWPP SerialIoMember turbulenceUnderRelaxationODE 0.6
+    	double turbulenceUnderRelaxationODE;
+
+        #pragma HWPP SerialIoMember energyUnderRelaxationODE 0.7
+    	double energyUnderRelaxationODE;
 
         #pragma HWPP SerialIoMember solveSkip 1
         int solveSkip;

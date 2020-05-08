@@ -77,7 +77,7 @@ namespace HyCore
         {
             loc_sq_error = momSystem[TD_RHS][i] / elem(u_F, widx);
             *errorOut += loc_sq_error*loc_sq_error;
-            elem(u, widx, i+1) -= settings.underRelaxationODE*momSystem[TD_RHS][i];
+            elem(u, widx, i+1) -= settings.momentumUnderRelaxationODE*momSystem[TD_RHS][i];
         }
     }
 
@@ -87,8 +87,6 @@ namespace HyCore
         {
             localtriple(uLoc, u, widx, i);
             localtriple(muLoc, mu, widx, i);
-            localtriple(turbLoc, turb, widx, i);
-            localtriple(rhoLoc, rho, widx, i);
             localtriple(yLoc, d, widx, i);
             localtriple(mutLoc, mu_t, widx, i);
 

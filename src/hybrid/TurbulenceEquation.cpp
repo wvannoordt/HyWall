@@ -14,7 +14,7 @@ namespace HyCore
 {
     __common bool TurbulenceHasJacobian(HyWall::UserSettings* inputSettings)
     {
-        return settings.turbulenceEquationType == turbulence::ODE;
+        return inputSettings->turbulenceEquationType == turbulence::ODE;
     }
 
     __common void LinearTurbInit(const int widx)
@@ -163,7 +163,7 @@ namespace HyCore
         {
             loc_sq_error = turbSystem[TD_RHS][i] / (elem(turb, widx, N-1) + 1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
-            elem(turb, widx, i+1) -= settings.underRelaxationODE*turbSystem[TD_RHS][i];
+            elem(turb, widx, i+1) -= settings.turbulenceUnderRelaxationODE*turbSystem[TD_RHS][i];
         }
     }
 }

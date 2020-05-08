@@ -1,6 +1,7 @@
 #include "Variables.h"
 #include "HyWall.h"
 #include "DebugTools.h"
+#include "EquationTypes.h"
 
 namespace HyWall
 {
