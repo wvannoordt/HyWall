@@ -1,2 +1,7 @@
 [ ] automatic symbol copying with void double pointers and copying stage
-[ ] VTK output
+[ ] VTK output / multiformat output for time history
+[ ] VD damping
+[ ] Energy ODE
+[ ] Analytical jacobian
+[ ] (main) sampling interpolation
+
