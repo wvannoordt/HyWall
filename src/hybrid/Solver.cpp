@@ -75,6 +75,7 @@ namespace HyCore
         localError = 100000;
         localIts = 0.0;
 
+
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
             ComputeLinearSystems(widx, relaxationFactor);

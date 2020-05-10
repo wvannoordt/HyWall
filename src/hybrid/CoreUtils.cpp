@@ -37,6 +37,7 @@ namespace HyCore
         if (mutIn/muIn < 0.00004) return 0.0;
         double chi = mutIn / muIn;
         double epsilon = 100000;
+        if (mutIn<1e-9) return 0;
         while (d_abs(epsilon) > 1e-8 && k < 1000)
         {
             double deriv = (4*CONST_SA_CV1_CUBED * pow(chi,3) + pow(chi,6))/(pow((CONST_SA_CV1_CUBED + pow(chi,3)), 2));
