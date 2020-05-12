@@ -97,9 +97,9 @@ COMPILE_TIME_OPT += -DPARALLEL=${PARALLEL}
 COMPILE_TIME_OPT += -DMAX_BUFFERS=1024
 
 
-DEVICE_FLAGS := -O${OPTLEVEL} -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
+DEVICE_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
 DEVICE_DLINK_FLAGS := -Xcompiler -fPIC -rdc=true -dlink
-HOST_FLAGS := -O${OPTLEVEL} -fPIC -fpermissive -std=c++11 -c ${LCUDA}
+HOST_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -fPIC -fpermissive -std=c++11 -c ${LCUDA}
 
 LZLIB :=
 ifeq (${ALLOW_DEBUG_EXT}, 1)

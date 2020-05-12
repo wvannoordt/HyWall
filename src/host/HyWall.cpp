@@ -77,6 +77,7 @@ namespace HyWall
         HyCore::settings = settings;
         HyCore::majorAccessPitch = memory.localCpuPoints;
         HyCore::u            = (double*)memory.GetVariable("sol:u");
+        HyCore::x            = (double*)memory.GetVariable("in:x");
         HyCore::d            = (double*)memory.GetVariable("sol:d");
         HyCore::T            = (double*)memory.GetVariable("sol:T");
         HyCore::rho          = (double*)memory.GetVariable("sol:rho");

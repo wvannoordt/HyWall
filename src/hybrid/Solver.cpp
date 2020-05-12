@@ -102,7 +102,6 @@ namespace HyCore
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
         elem(vorticity, widx) = u1/settings.wallSpacing;
         elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
-
     }
 
     __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)
