@@ -23,6 +23,7 @@ namespace HyWall
         void PassFlowfieldVariables(double* ptr, int offset);
         void Solve(void);
         void CopySymbols(void);
+        void Await(void);
         void SetTimeStep(double timeStep_in);
         void Finalize(void);
     }

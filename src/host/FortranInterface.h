@@ -12,6 +12,7 @@ namespace HyWall
         void hywall_allocate_f(void);
         void hywall_solve_f(void);
         void hywall_settimestep_f(double* timeStep);
+        void hywall_await_f(void);
     }
 }
 

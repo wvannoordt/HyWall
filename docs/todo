@@ -1,7 +1,10 @@
 [ ] automatic symbol copying with void double pointers and copying stage
-[ ] VTK output / multiformat output for time history
-[ ] VD damping
-[ ] Energy ODE
-[ ] Analytical jacobian
+[ ] VTK output / multiformat output for time history (parallel)
+[ ] GPU kernel
+[x] VD damping
+[x] Energy ODE
+[x] Analytical jacobian
 [ ] (main) sampling interpolation
-
+[ ] Momentum rhs
+[ ] Test cases
+[ ] rewrite the HWPP

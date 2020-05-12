@@ -70,6 +70,11 @@ namespace HyWall
         memory.SetUserAssociatedVariable("in:mu_t", ptr+5*offset);
     }
 
+    void Await(void)
+    {
+
+    }
+
     void CopySymbols(void)
     {
         WriteLine(2, "Copy symbols start");

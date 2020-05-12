@@ -43,6 +43,11 @@ namespace HyWall
             memory.AddStaticVariable<double>("jac:mom2", settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
             memory.AddStaticVariable<double>("jac:mom3", settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
         }
+
+        if (settings.includeMomentumRhs)
+        {
+            memory.AddStaticVariable<double>("in:momRHS",     1, 1, bflag::input | bflag::userMustProvide);
+        }
     }
 
     void DefineEnergyVariables(void)

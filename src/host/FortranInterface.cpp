@@ -34,6 +34,11 @@ namespace HyWall
         Solve();
     }
 
+    void hywall_await_f(void)
+    {
+        Await();
+    }
+
     void hywall_passvariable_f(char* name, double* ptr, int* nameLen)
     {
         char namebuf[120] = {0};

@@ -83,6 +83,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember solveSkip 1
         int solveSkip;
+
+        #pragma HWPP SerialIoMember includeMomentumRhs false
+        int includeMomentumRhs;
     };
     #pragma HWPP SerialIoStructEnd
 

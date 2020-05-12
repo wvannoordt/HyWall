@@ -23,6 +23,21 @@ module HyWallF
 
 
 
+    subroutine HyWallAwait()
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        interface
+			subroutine hywall_await_f() bind (c)
+				use iso_c_binding
+			end subroutine hywall_await_f
+		end interface
+        call hywall_await_f()
+
+    end subroutine HyWallAwait
+
+
+
     subroutine HyWallAllocate
 
         use, intrinsic :: iso_c_binding
