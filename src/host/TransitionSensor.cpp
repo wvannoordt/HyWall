@@ -17,19 +17,19 @@ namespace HyWall
         {
             case sensor::mettu18:
             {
-                memory.AddStaticVariable<double>("aux:strain_rate",     1, 1, bflag::auxilary | bflag::userMustProvide);
-                memory.AddStaticVariable<double>("aux:strain_rate_avg", 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:k",               1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:k_avg",           1, 1, bflag::auxilary | bflag::vtkOutput);
-                memory.AddStaticVariable<double>("aux:rho_avg",         1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:mu_avg",          1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:u_avg",           1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:u_sq_avg",        1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:v_avg",           1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:v_sq_avg",        1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:w_avg",           1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:w_sq_avg",        1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:sensor_val",      1, 1, bflag::auxilary | bflag::vtkOutput);
+                memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,     NULL, 1, 1, bflag::auxilary | bflag::userMustProvide);
+                memory.AddStaticVariable<double>("aux:strain_rate_avg", &strain_rate_avg, NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:k",               &k,               NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:k_avg",           &k_avg,           NULL, 1, 1, bflag::auxilary | bflag::vtkOutput);
+                memory.AddStaticVariable<double>("aux:rho_avg",         &rho_avg,         NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:mu_avg",          &mu_avg,          NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:u_avg",           &u_avg,           NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:u_sq_avg",        &u_sq_avg,        NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:v_avg",           &v_avg,           NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:v_sq_avg",        &v_sq_avg,        NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:w_avg",           &w_avg,           NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:w_sq_avg",        &w_sq_avg,        NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,      NULL, 1, 1, bflag::auxilary | bflag::vtkOutput);
                 break;
             }
             default:
@@ -44,7 +44,7 @@ namespace HyWall
         switch(sensorType)
         {
             case sensor::mettu18:
-            {
+            {/*
                 strain_rate = (double*)memory.GetVariable("aux:strain_rate");
                 strain_rate_avg = (double*)memory.GetVariable("aux:strain_rate_avg");
                 k = (double*)memory.GetVariable("aux:k");
@@ -57,7 +57,7 @@ namespace HyWall
                 v_sq_avg = (double*)memory.GetVariable("aux:v_sq_avg");
                 w_avg = (double*)memory.GetVariable("aux:w_avg");
                 w_sq_avg = (double*)memory.GetVariable("aux:w_sq_avg");
-                sensor_val = (double*)memory.GetVariable("aux:sensor_val");
+                sensor_val = (double*)memory.GetVariable("aux:sensor_val");*/
 
                 u   = (double*)memory.GetVariable("in:u");
                 v   = (double*)memory.GetVariable("in:v");

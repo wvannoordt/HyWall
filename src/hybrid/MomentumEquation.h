@@ -7,6 +7,7 @@
 namespace HyCore
 {
     __common void ComputeAllmarasMomentum(const int widx, double* errorOut, double* itsOut);
+    __common void ComputeAllmarasMomentumToTargetBuffer(const int widx, double* errorOut, double* itsOut, double* targetBuffer);
     __common double NewtonIterationAllmaras(const int widx, double* errorOut, double* itsOut);
     __common void ComputeLhsRhsMomentumODE(const int widx);
     __common void SolveUpdateSystemMomentum(const int widx, double* errorOut);

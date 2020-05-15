@@ -9,7 +9,12 @@ namespace HyCore
 {
     __common extern int N;
     __common extern double* u;
+    __common extern double* u_SA;
+    __common extern double* dpdx;
+    __common extern double* momBalancedRHS;
     __common extern double* x;
+    __common extern double* y;
+    __common extern double* z;
     __common extern double* d;
     __common extern double* T;
     __common extern double* rho;

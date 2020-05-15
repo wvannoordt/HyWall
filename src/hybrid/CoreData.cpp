@@ -7,7 +7,12 @@ namespace HyCore
 {
     __common int N;
     __common double* u;
+    __common double* u_SA;
+    __common double* dpdx;
+    __common double* momBalancedRHS;
     __common double* x;
+    __common double* y;
+    __common double* z;
     __common double* d;
     __common double* T;
     __common double* rho;

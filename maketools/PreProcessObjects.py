@@ -125,7 +125,7 @@ class PreProcessorSourceObject:
         return "HWPP: Error in {}{}: {}".format(self.basename, line_num_str, self.build_error)
 
     def build(self):
-        print(">> Processing {}".format(self.basename))
+        iiejisoef = 0
 
 class HwppOutputObject:
     def __init__(self, output_file_in):

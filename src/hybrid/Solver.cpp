@@ -75,6 +75,13 @@ namespace HyCore
         localError = 100000;
         localIts = 0.0;
 
+        if (settings.includeMomentumRhs)
+        {
+            double dummy1 = 0;
+            double dummy2 = 0;
+            ComputeAllmarasMomentumToTargetBuffer(widx, &dummy2, &dummy1, u_SA);
+        }
+
 
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
@@ -102,6 +109,17 @@ namespace HyCore
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
         elem(vorticity, widx) = u1/settings.wallSpacing;
         elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+/*#if(__cpu)
+        //                            vv  sample x coord
+        double qual = elem(x, widx) - 0.972;
+        if (d_abs(qual) < 1e-2)
+        {
+            std::ofstream myfile;
+            myfile.open("whatever.csv");
+            for (int i = 0; i < N; i++) myfile << elem(d, widx, i) << "," << elem(u, widx, i) << "\n";
+            myfile.close();
+        }
+#endif*/
     }
 
     __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)

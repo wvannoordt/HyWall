@@ -98,6 +98,7 @@ namespace HyCore
             double df = 0.5*(muLoc[1]+muLoc[2]+mutLoc[1]+mutLoc[2]);
             double db = 0.5*(muLoc[1]+muLoc[0]+mutLoc[1]+mutLoc[0]);
             momSystem[TD_RHS][i-1]  = dy2inv*(df*(uLoc[2]-uLoc[1])*dyinvf - db*(uLoc[1]-uLoc[0])*dyinvb);
+            if (settings.includeMomentumRhs) momSystem[TD_RHS][i-1] -= (elem(dpdx, widx) + elem(momBalancedRHS, widx)*elem(u_SA, widx, i)/elem(u_F, widx));
             momSystem[TD_DIA][i-1] = -dy2inv*(df*dyinvf + db*dyinvb);
             if (i>1)   momSystem[TD_SUB][i-2] = dy2inv*db*dyinvb;
             if (i<N-2) momSystem[TD_SUP][i-1] = dy2inv*df*dyinvf;
@@ -129,16 +130,20 @@ namespace HyCore
 
     __common void ComputeAllmarasMomentum(const int widx, double* errorOut, double* itsOut)
     {
+        ComputeAllmarasMomentumToTargetBuffer(widx, errorOut, itsOut, u);
+    }
+
+    __common void ComputeAllmarasMomentumToTargetBuffer(const int widx, double* errorOut, double* itsOut, double* targetBuffer)
+    {
         double localError = 1e10;
         double localIts = 0.0;
 		double uTau = NewtonIterationAllmaras(widx, &localError, &localIts);
         for (int i = 0; i < N; i++)
         {
             double yPlus = elem(d, widx, i)*uTau*elem(rho, widx, i)/(elem(mu, widx, i));
-            elem(u, widx, i) = GetUplusAllmaras(yPlus)*uTau;
+            elem(targetBuffer, widx, i) = GetUplusAllmaras(yPlus)*uTau;
         }
         *errorOut += localError;
         *itsOut += localIts;
-
     }
 }

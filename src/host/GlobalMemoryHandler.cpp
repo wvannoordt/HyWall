@@ -50,24 +50,28 @@ namespace HyWall
         __erkill("Could not get appropriate global variable for \"" + name + "\"");
     }
 
-    template void GlobalMemoryHandler::AddStaticVariable<double>(std::string, int, int, const int);
-    template void GlobalMemoryHandler::AddStaticVariable<float>(std::string, int, int, const int);
-    template void GlobalMemoryHandler::AddStaticVariable<int>(std::string, int, int, const int);
-    template void GlobalMemoryHandler::AddStaticVariable<bool>(std::string, int, int, const int);
-    template void GlobalMemoryHandler::AddStaticVariable<char>(std::string, int, int, const int);
-    template <typename vartype> void GlobalMemoryHandler::AddStaticVariable(std::string name, int numPerRay, int dimension, const int manageMode)
+    template void GlobalMemoryHandler::AddStaticVariable<double>(std::string, double**, double**, int, int, const int);
+    template void GlobalMemoryHandler::AddStaticVariable<float> (std::string, float**,  float**,  int, int, const int);
+    template void GlobalMemoryHandler::AddStaticVariable<int>   (std::string, int**,    int**,    int, int, const int);
+    template void GlobalMemoryHandler::AddStaticVariable<bool>  (std::string, bool**,   bool**,   int, int, const int);
+    template void GlobalMemoryHandler::AddStaticVariable<char>  (std::string, char**,   char**,   int, int, const int);
+    template <typename vartype> void GlobalMemoryHandler::AddStaticVariable(std::string name, vartype** hostSymbol, vartype** deviceSymbol,  int numPerRay, int dimension, const int manageMode)
     {
         //IMPORTANT: will need to add buffer mirroring for gpu variables
         size_t newVariableSize = numPerRay * dimension * localCpuPoints * sizeof(vartype);
         if (HasFlag(manageMode, bflag::serialHostUsage)) newVariableSize = numPerRay * dimension * sizeof(vartype);
         int newUpperAccessBound = newVariableSize / sizeof(vartype);
 
-        userHasProvided[numGlobalVariables] = false;
-        isAllocated[numGlobalVariables]     = false;
-        variableNames[numGlobalVariables]   = name;
-        manageModes[numGlobalVariables]     = manageMode;
-        bufferSizes[numGlobalVariables]     = newVariableSize;
-        accessBounds[numGlobalVariables]    = newUpperAccessBound;
+        userHasProvided[numGlobalVariables]        = false;
+        isAllocated[numGlobalVariables]            = false;
+        variableNames[numGlobalVariables]          = name;
+        manageModes[numGlobalVariables]            = manageMode;
+        bufferSizes[numGlobalVariables]            = newVariableSize;
+        accessBounds[numGlobalVariables]           = newUpperAccessBound;
+        hostSymbols[numGlobalVariables]            = (void**)hostSymbol;
+        deviceSymbols[numGlobalVariables]          = (void**)deviceSymbol;
+        doHostSymbolTransfer[numGlobalVariables]   = (hostSymbol != NULL);
+        doDeviceSymbolTransfer[numGlobalVariables] = (deviceSymbol != NULL);
 
         WriteLine(3, "Declaring static associated variable:");
         WriteLine(3, "name:       " + name);
@@ -101,6 +105,11 @@ namespace HyWall
                 WriteLine(2, "Allocating host-side buffer for \"" + variableNames[i] + "\", size " + std::to_string(bufferSizes[i]) + ".");
                 WriteLine(4, "(" + std::to_string(bufferSizes[i]) + " = " + ((localCpuPoints>0)?std::to_string(bufferSizes[i]/localCpuPoints):"( ???? )") + "x" + std::to_string(localCpuPoints) + ")");
                 hostBuffers[i] = malloc(bufferSizes[i]);
+            }
+
+            if (doHostSymbolTransfer[i])
+            {
+                *(hostSymbols[i]) = hostBuffers[i];
             }
 
         }

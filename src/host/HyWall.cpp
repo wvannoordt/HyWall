@@ -80,7 +80,7 @@ namespace HyWall
         WriteLine(2, "Copy symbols start");
         if (settings.enableTransitionSensor) tSensor.CopySymbols();
         HyCore::settings = settings;
-        HyCore::majorAccessPitch = memory.localCpuPoints;
+        HyCore::majorAccessPitch = memory.localCpuPoints;/*
         HyCore::u            = (double*)memory.GetVariable("sol:u");
         HyCore::x            = (double*)memory.GetVariable("in:x");
         HyCore::d            = (double*)memory.GetVariable("sol:d");
@@ -103,14 +103,12 @@ namespace HyWall
         HyCore::iterations   = (double*)memory.GetVariable("out:iterations");
         HyCore::error        = (double*)memory.GetVariable("out:error");
         HyCore::vorticity    = (double*)memory.GetVariable("out:vorticity");
-        HyCore::heatflux     = (double*)memory.GetVariable("out:heatflux");
-
+        HyCore::heatflux     = (double*)memory.GetVariable("out:heatflux");*/
         residualOutput   = (double*)memory.GetVariable("out:error");
         iterationsOutput = (double*)memory.GetVariable("out:iterations");
-
         if (settings.enableTransitionSensor) HyCore::sensorValue = (double*)memory.GetVariable("aux:sensor_val");
 
-        HyCore::MetaDataSet(&settings);
+        HyCore::MetaDataSet(&settings);/*
 
         if (HyCore::MomentumHasJacobian(&settings))
         {
@@ -134,7 +132,7 @@ namespace HyWall
             HyCore::engySystem[TD_DIA] = (double*)memory.GetVariable("jac:engy1");
             HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
             HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
-        }
+        }*/
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));
