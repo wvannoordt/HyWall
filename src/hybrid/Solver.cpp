@@ -96,11 +96,6 @@ namespace HyCore
         }
         totalError += localError;
         totalIts += localIts;
-        if (d_abs(localError) > settings.errorTolerance)
-        {
-            double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
-            __erkill("Failed wall model solve at widx=" << widx << ": |u_F|=" << umag << ", error=" << localError << ", " << "numIts=" << numIts);
-        }
 
         double u1  = elem(u, widx, 1);
         double mu1 = elem(mu, widx, 1);
@@ -109,6 +104,24 @@ namespace HyCore
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
         elem(vorticity, widx) = u1/settings.wallSpacing;
         elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+
+        if (d_abs(localError) > settings.errorTolerance || totalError != totalError || localError != localError)
+        {
+            double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
+            __qdump("Wall model solve failed. Data:");
+            __qdump("widx   = " << widx);
+            __qdump("|u_F|  = " << umag);
+            __qdump("error  = " << localError);
+            __qdump("numIts = " << numIts);
+            __qdump("T_F    = " << elem(T_F, widx));
+            __qdump("mu_t_F = " << elem(mu_t_F, widx));
+            __qdump("rho_F  = " << elem(rho_F, widx));
+            __qdump("tau    = " << elem(tau, widx));
+            __qdump("mu1    = " << mu1);
+            __qdump("u1     = " << u1);
+            __qdump("dx0    = " << settings.wallSpacing);
+            __erkill("stopping");
+        }
 /*#if(__cpu)
         //                            vv  sample x coord
         double qual = elem(x, widx) - 0.972;

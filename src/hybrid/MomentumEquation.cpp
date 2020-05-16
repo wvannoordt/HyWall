@@ -108,6 +108,7 @@ namespace HyCore
     __common double NewtonIterationAllmaras(const int widx, double* errorOut, double* itsOut)
     {
         double uTau = sqrt( (elem(mu_F, widx)/elem(rho_F, widx)) * (elem(u, widx, 2)/elem(d, widx, 2)));
+        double initGuess = uTau;
         double epsilon = 100;
         double uPlus = 0.0;
         double yPlus = 0.0;

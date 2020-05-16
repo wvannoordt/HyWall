@@ -150,10 +150,10 @@ namespace HyWall
     {
         if (solveCount++ % settings.solveSkip == 0)
         {
-            if (isFirstSolve)
+            if (isFirstSolve || settings.alwaysReinitialize)
             {
                 if (settings.enableTransitionSensor) tSensor.OnFirstSolve();
-                WriteLine(1, "Initializing wall model solution");
+                WriteLine(2, "Initializing wall model solution");
                 if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
                 for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
             }

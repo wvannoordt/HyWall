@@ -86,6 +86,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember includeMomentumRhs false
         bool includeMomentumRhs;
+
+        #pragma HWPP SerialIoMember alwaysReinitialize false
+        bool alwaysReinitialize;
     };
     #pragma HWPP SerialIoStructEnd
 
