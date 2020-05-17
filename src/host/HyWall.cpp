@@ -79,60 +79,11 @@ namespace HyWall
     {
         WriteLine(2, "Copy symbols start");
         if (settings.enableTransitionSensor) tSensor.CopySymbols();
-        HyCore::settings = settings;
-        HyCore::majorAccessPitch = memory.localCpuPoints;/*
-        HyCore::u            = (double*)memory.GetVariable("sol:u");
-        HyCore::x            = (double*)memory.GetVariable("in:x");
-        HyCore::d            = (double*)memory.GetVariable("sol:d");
-        HyCore::T            = (double*)memory.GetVariable("sol:T");
-        HyCore::rho          = (double*)memory.GetVariable("sol:rho");
-        HyCore::mu           = (double*)memory.GetVariable("sol:mu");
-        HyCore::mu_t         = (double*)memory.GetVariable("sol:mu_t");
-        HyCore::turb         = (double*)memory.GetVariable("sol:turb");
-        HyCore::p_F          = (double*)memory.GetVariable("in:p");
-        HyCore::u_F          = (double*)memory.GetVariable("in:u");
-        HyCore::v_F          = (double*)memory.GetVariable("in:v");
-        HyCore::w_F          = (double*)memory.GetVariable("in:w");
-        HyCore::T_F          = (double*)memory.GetVariable("in:T");
-        HyCore::mu_t_F       = (double*)memory.GetVariable("in:mu_t");
-        HyCore::distance     = (double*)memory.GetVariable("in:distance");
-        HyCore::rho_F        = (double*)memory.GetVariable("in:rho");
-        HyCore::mu_F         = (double*)memory.GetVariable("in:mu_lam");
-
-        HyCore::tau          = (double*)memory.GetVariable("out:tau");
-        HyCore::iterations   = (double*)memory.GetVariable("out:iterations");
-        HyCore::error        = (double*)memory.GetVariable("out:error");
-        HyCore::vorticity    = (double*)memory.GetVariable("out:vorticity");
-        HyCore::heatflux     = (double*)memory.GetVariable("out:heatflux");*/
+        HyCoreCPU::settings = settings;
+        HyCoreCPU::majorAccessPitch = memory.localCpuPoints;
+        HyCoreCPU::MetaDataSet(&settings);
         residualOutput   = (double*)memory.GetVariable("out:error");
         iterationsOutput = (double*)memory.GetVariable("out:iterations");
-        if (settings.enableTransitionSensor) HyCore::sensorValue = (double*)memory.GetVariable("aux:sensor_val");
-
-        HyCore::MetaDataSet(&settings);/*
-
-        if (HyCore::MomentumHasJacobian(&settings))
-        {
-            HyCore::momSystem[TD_SUB]  = (double*)memory.GetVariable("jac:mom0");
-            HyCore::momSystem[TD_DIA]  = (double*)memory.GetVariable("jac:mom1");
-            HyCore::momSystem[TD_SUP]  = (double*)memory.GetVariable("jac:mom2");
-            HyCore::momSystem[TD_RHS]  = (double*)memory.GetVariable("jac:mom3");
-        }
-
-        if (HyCore::TurbulenceHasJacobian(&settings))
-        {
-            HyCore::turbSystem[TD_SUB] = (double*)memory.GetVariable("jac:turb0");
-            HyCore::turbSystem[TD_DIA] = (double*)memory.GetVariable("jac:turb1");
-            HyCore::turbSystem[TD_SUP] = (double*)memory.GetVariable("jac:turb2");
-            HyCore::turbSystem[TD_RHS] = (double*)memory.GetVariable("jac:turb3");
-        }
-
-        if (HyCore::EnergyHasJacobian(&settings))
-        {
-            HyCore::engySystem[TD_SUB] = (double*)memory.GetVariable("jac:engy0");
-            HyCore::engySystem[TD_DIA] = (double*)memory.GetVariable("jac:engy1");
-            HyCore::engySystem[TD_SUP] = (double*)memory.GetVariable("jac:engy2");
-            HyCore::engySystem[TD_RHS] = (double*)memory.GetVariable("jac:engy3");
-        }*/
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));

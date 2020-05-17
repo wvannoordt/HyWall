@@ -75,6 +75,7 @@ namespace HyCore
         localError = 100000;
         localIts = 0.0;
 
+
         if (settings.includeMomentumRhs)
         {
             double dummy1 = 0;
