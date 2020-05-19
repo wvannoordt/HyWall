@@ -123,17 +123,6 @@ namespace HyCore
             __qdump("dx0    = " << settings.wallSpacing);
             __erkill("stopping");
         }
-/*#if(__cpu)
-        //                            vv  sample x coord
-        double qual = elem(x, widx) - 0.972;
-        if (d_abs(qual) < 1e-2)
-        {
-            std::ofstream myfile;
-            myfile.open("whatever.csv");
-            for (int i = 0; i < N; i++) myfile << elem(d, widx, i) << "," << elem(u, widx, i) << "\n";
-            myfile.close();
-        }
-#endif*/
     }
 
     __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)

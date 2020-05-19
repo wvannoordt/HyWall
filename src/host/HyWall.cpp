@@ -103,7 +103,7 @@ namespace HyWall
         {
             if (isFirstSolve || settings.alwaysReinitialize)
             {
-                if (settings.enableTransitionSensor) tSensor.OnFirstSolve();
+                if (settings.enableTransitionSensor&&isFirstSolve) tSensor.OnFirstSolve();
                 WriteLine(2, "Initializing wall model solution");
                 if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
                 for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
