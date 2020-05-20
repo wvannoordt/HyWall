@@ -44,21 +44,7 @@ namespace HyWall
         switch(sensorType)
         {
             case sensor::mettu18:
-            {/*
-                strain_rate = (double*)memory.GetVariable("aux:strain_rate");
-                strain_rate_avg = (double*)memory.GetVariable("aux:strain_rate_avg");
-                k = (double*)memory.GetVariable("aux:k");
-                k_avg = (double*)memory.GetVariable("aux:k_avg");
-                rho_avg = (double*)memory.GetVariable("aux:rho_avg");
-                mu_avg = (double*)memory.GetVariable("aux:mu_avg");
-                u_avg = (double*)memory.GetVariable("aux:u_avg");
-                u_sq_avg = (double*)memory.GetVariable("aux:u_sq_avg");
-                v_avg = (double*)memory.GetVariable("aux:v_avg");
-                v_sq_avg = (double*)memory.GetVariable("aux:v_sq_avg");
-                w_avg = (double*)memory.GetVariable("aux:w_avg");
-                w_sq_avg = (double*)memory.GetVariable("aux:w_sq_avg");
-                sensor_val = (double*)memory.GetVariable("aux:sensor_val");*/
-
+            {
                 u   = (double*)memory.GetVariable("in:u");
                 v   = (double*)memory.GetVariable("in:v");
                 w   = (double*)memory.GetVariable("in:w");

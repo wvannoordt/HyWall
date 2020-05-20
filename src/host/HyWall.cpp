@@ -114,9 +114,8 @@ namespace HyWall
             for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
 
             double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
-            double totError = Parallel::GlobalTotalAbs(residualOutput, memory.localTotalPoints);
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
-            WriteLine(1, "Solve end, residual total: " + to_estring(totError) + ", residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
+            WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
             isFirstSolve = false;
         }
     }
