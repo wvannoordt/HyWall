@@ -94,8 +94,8 @@ namespace HyWall
         #pragma HWPP SerialIoMember alwaysReinitialize false
         bool alwaysReinitialize;
 
-        #pragma HWPP SerialIoMember laminarSafetyVelocity -1.0
-        double laminarSafetyVelocity;
+        #pragma HWPP SerialIoMember laminarOnSolveFail false
+        bool laminarOnSolveFail;
 
         #pragma HWPP SerialIoMember IOEnable false
         bool IOEnable;

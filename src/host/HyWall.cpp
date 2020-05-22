@@ -25,6 +25,8 @@ namespace HyWall
     bool isFirstSolve;
     double* residualOutput;
     double* iterationsOutput;
+    double* failuresOutput;
+    double* xInput;
     int solveCount;
     void Initialize(MPI_Comm host_comm_in, int verboseLevel_in)
     {
@@ -95,6 +97,8 @@ namespace HyWall
         HyCoreCPU::MetaDataSet(&settings);
         residualOutput   = (double*)memory.GetVariable("out:error");
         iterationsOutput = (double*)memory.GetVariable("out:iterations");
+        failuresOutput   = (double*)memory.GetVariable("in:x");
+        xInput           = (double*)memory.GetVariable("out:failurelevel");
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));
@@ -126,6 +130,13 @@ namespace HyWall
 
             double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
+            if (settings.laminarOnSolveFail)
+            {
+                double xMinFail, xMaxFail;
+                double totalFailedPoints = Parallel::GlobalSum(failuresOutput, memory.localTotalPoints);
+                Parallel::GlobalBoundsProduct(failuresOutput, xInput, memory.localTotalPoints, &xMinFail, &xMaxFail);
+                if (totalFailedPoints > 0.5) WriteLine(1, "Detected failure. Total: " + std::to_string(totalFailedPoints) + ", xmin/xmax: " + std::to_string(xMinFail) + ", " + std::to_string(xMaxFail));
+            }
             WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
             isFirstSolve = false;
             if (settings.averageSolution) ComputeAverages();

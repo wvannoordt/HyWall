@@ -70,6 +70,7 @@ namespace HyCore
         totalIts += localIts;
         localError = 100000;
         localIts = 0.0;
+        elem(failurelevel, widx) = 0.0;
 
 
         if (settings.includeMomentumRhs)
@@ -112,7 +113,7 @@ namespace HyCore
         double u1  = elem(u, widx, 1);
         double mu1 = elem(mu, widx, 1);
         double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
-        if (umag < settings.laminarSafetyVelocity)
+        if (settings.laminarOnSolveFail)
         {
             LinearUInit(widx);
             LinearTInit(widx);
@@ -122,27 +123,27 @@ namespace HyCore
             elem(tau, widx) = elem(mu_F, widx)*umag/elem(distance, widx);
             elem(vorticity, widx) = u1/settings.wallSpacing;
             elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+            elem(failurelevel, widx) = 1.0;
         }
-        __qdump("Wall model solve failed. Data:");
-        __qdump("widx   = " << widx);
-        __qdump("|u_F|  = " << umag);
-        __qdump("u_F    = (" << elem(u_F, widx) << ", " << elem(v_F, widx) << ", " << elem(w_F, widx) << ")");
-        __qdump("x      = (" << elem(x, widx) << ", " << elem(y, widx) << ", " << elem(z, widx) << ")");
-        __qdump("error  = " << localError);
-        __qdump("numIts = " << numIts);
-        __qdump("T_F    = " << elem(T_F, widx));
-        __qdump("mu_t_F = " << elem(mu_t_F, widx));
-        __qdump("rho_F  = " << elem(rho_F, widx));
-        __qdump("tau    = " << elem(tau, widx));
-        __qdump("mu1    = " << mu1);
-        __qdump("u1     = " << u1);
-        __qdump("q      = " << elem(heatflux, widx));
-        __qdump("dx0    = " << settings.wallSpacing);
-        if (umag < settings.laminarSafetyVelocity)
+        else
         {
-            return;
+            __qdump("Wall model solve failed. Data:");
+            __qdump("widx   = " << widx);
+            __qdump("|u_F|  = " << umag);
+            __qdump("u_F    = (" << elem(u_F, widx) << ", " << elem(v_F, widx) << ", " << elem(w_F, widx) << ")");
+            __qdump("x      = (" << elem(x, widx) << ", " << elem(y, widx) << ", " << elem(z, widx) << ")");
+            __qdump("error  = " << localError);
+            __qdump("numIts = " << numIts);
+            __qdump("T_F    = " << elem(T_F, widx));
+            __qdump("mu_t_F = " << elem(mu_t_F, widx));
+            __qdump("rho_F  = " << elem(rho_F, widx));
+            __qdump("tau    = " << elem(tau, widx));
+            __qdump("mu1    = " << mu1);
+            __qdump("u1     = " << u1);
+            __qdump("q      = " << elem(heatflux, widx));
+            __qdump("dx0    = " << settings.wallSpacing);
+            __erkill("stopping");
         }
-        __erkill("stopping");
     }
 
     __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)

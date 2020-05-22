@@ -9,6 +9,7 @@ namespace HyWall
 {
     double* coords[4];
     double* avgVars[MAX_AVERAGING_VALS];
+    std::string avgVarNames[MAX_AVERAGING_VALS];
     int numAvgVars;
     int numPoints;
     double runningTime;
@@ -39,6 +40,10 @@ namespace HyWall
         avgVars[3*numAvgVars] = (double*)memory.GetVariable(variableName);
         memory.AddStaticVariable<double>(variableName+"_avg1", avgVars+3*numAvgVars+1, NULL, 1, 1, bflag::auxilary | bflag::allocateNow);
         memory.AddStaticVariable<double>(variableName+"_avg2", avgVars+3*numAvgVars+2, NULL, 1, 1, bflag::auxilary | bflag::allocateNow);
+
+        avgVarNames[3*numAvgVars]   = variableName;
+        avgVarNames[3*numAvgVars+1] = variableName+"_avg1";
+        avgVarNames[3*numAvgVars+2] = variableName+"_avg2";
         numAvgVars++;
     }
 
@@ -68,11 +73,17 @@ namespace HyWall
             {
                 for (int i = 0; i < numPoints; i++)
                 {
-                    phiAvg[i] =   alpha*phiAvg[i]   + beta*phi[i];
+                    phiAvg[i]   = alpha*phiAvg[i]   + beta*phi[i];
                     phiSqAvg[i] = alpha*phiSqAvg[i] + beta*phi[i]*phi[i];
                 }
             }
         }
         firstCall = false;
+    }
+
+    void SaveAveragesToFile(int solveNumber)
+    {
+        WriteLine(1, "Outputting Averages");
+        
     }
 }

@@ -17,6 +17,8 @@ namespace HyWall
         double GlobalMaxAbs(double* ar, int num);
         double GlobalMax(double* ar, int num);
         double GlobalMin(double* ar, int num);
+        double GlobalSum(double* ar, int num);
+        void GlobalBoundsProduct(double* ar1, double* ar2, int num, double* minVal, double* maxVal);
         void MarkActiveRanks(bool isActive_in);
     }
 }

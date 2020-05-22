@@ -10,6 +10,7 @@ namespace HyCore
     __common double* u_SA;
     __common double* dpdx;
     __common double* momBalancedRHS;
+    __common double* failurelevel;
     __common double* x;
     __common double* y;
     __common double* z;

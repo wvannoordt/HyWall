@@ -12,6 +12,7 @@ namespace HyCore
     __common extern double* u_SA;
     __common extern double* dpdx;
     __common extern double* momBalancedRHS;
+    __common extern double* failurelevel;
     __common extern double* x;
     __common extern double* y;
     __common extern double* z;

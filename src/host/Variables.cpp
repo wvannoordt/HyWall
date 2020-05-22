@@ -84,11 +84,12 @@ namespace HyWall
 
     void DefineOutputVariables(void)
     {
-        memory.AddStaticVariable<double>("out:vorticity",  &(HyCoreCPU::vorticity),  NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:tau",        &(HyCoreCPU::tau),        NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:heatflux",   &(HyCoreCPU::heatflux),   NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:error"   ,   &(HyCoreCPU::error),      NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:iterations", &(HyCoreCPU::iterations), NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:vorticity",   &(HyCoreCPU::vorticity),    NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:tau",         &(HyCoreCPU::tau),          NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:heatflux",    &(HyCoreCPU::heatflux),     NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:error"   ,    &(HyCoreCPU::error),        NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:iterations",  &(HyCoreCPU::iterations),   NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:failurelevel",&(HyCoreCPU::failurelevel), NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
     }
 
     bool HasFlag(int a, int flag)
