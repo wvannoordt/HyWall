@@ -6,6 +6,7 @@
 #include "AllocationModes.h"
 #include "GlobalMemoryHandler.h"
 #include "Variables.h"
+#include "ViscousLaws.h"
 #include "mpi.h"
 
 namespace HyWall
@@ -26,5 +27,6 @@ namespace HyWall
         void Await(void);
         void SetTimeStep(double timeStep_in);
         void Finalize(void);
+        void WhenSettingsAreConstant(void);
     }
 }

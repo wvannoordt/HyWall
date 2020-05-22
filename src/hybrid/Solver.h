@@ -14,7 +14,7 @@ namespace HyCore
     __common void SetTurbulenceEquationType(HyWall::UserSettings* inputSettings);
     __common void UpdateBoundaryConditions(const int widx);
     __common void BuildGrid(const int widx);
-    __common void EquationsOfState(const int widx);
+    __common void OnFailedSolve(int widx, double localError, int numIts);
 }
 
 #endif

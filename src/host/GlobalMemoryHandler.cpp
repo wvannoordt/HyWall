@@ -80,6 +80,14 @@ namespace HyWall
         WriteLine(3, "dimension:  " + std::to_string(dimension));
         WriteLine(3, "size:       " + std::to_string(newVariableSize));
 
+        if (HasFlag(manageMode, bflag::allocateNow))
+        {
+            if (!HasFlag(manageMode, bflag::auxilary)) __erkill("A non-auxilary buffer has been marked for in-place allocation: \"" << name << "\"");
+            WriteLine(3, "ALLOCATING IN-PLACE");
+            hostBuffers[numGlobalVariables] = malloc(bufferSizes[numGlobalVariables]);
+            isAllocated[numGlobalVariables] = true;
+        }
+
         numGlobalVariables++;
     }
 
@@ -105,6 +113,7 @@ namespace HyWall
                 WriteLine(2, "Allocating host-side buffer for \"" + variableNames[i] + "\", size " + std::to_string(bufferSizes[i]) + ".");
                 WriteLine(4, "(" + std::to_string(bufferSizes[i]) + " = " + ((localCpuPoints>0)?std::to_string(bufferSizes[i]/localCpuPoints):"( ???? )") + "x" + std::to_string(localCpuPoints) + ")");
                 hostBuffers[i] = malloc(bufferSizes[i]);
+                if ((Parallel::pId == 0) && (settings.verboseLevel>3)) std::cout << "(ADDR) " << hostBuffers[i] << std::endl;
             }
 
             if (doHostSymbolTransfer[i])

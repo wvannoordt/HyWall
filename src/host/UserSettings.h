@@ -1,5 +1,6 @@
 #ifndef USER_SETTINGS_H
 #define USER_SETTINGS_H
+#include <string>
 #pragma HWPP include
 
 namespace HyWall
@@ -48,6 +49,9 @@ namespace HyWall
         #pragma HWPP SerialIoMember fluidPrandtl 0.72
     	double fluidPrandtl;
 
+        #pragma HWPP SerialIoMember gasConstant 287.0
+    	double gasConstant;
+
         #pragma HWPP SerialIoMember globalTotalNumWallPoints -999
     	int globalTotalNumWallPoints;
 
@@ -89,6 +93,36 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember alwaysReinitialize false
         bool alwaysReinitialize;
+
+        #pragma HWPP SerialIoMember laminarSafetyVelocity -1.0
+        double laminarSafetyVelocity;
+
+        #pragma HWPP SerialIoMember IOEnable false
+        bool IOEnable;
+
+        #pragma HWPP SerialIoMember workingDirectory "hywall"
+        std::string workingDirectory;
+
+        #pragma HWPP SerialIoMember averageSolution false
+        bool averageSolution;
+
+        #pragma HWPP SerialIoMember averageOutputInterval 100
+        int averageOutputInterval;
+
+        #pragma HWPP SerialIoMember wallDataOutputInterval 100
+        int wallDataOutputInterval;
+
+        #pragma HWPP SerialIoMember isCompressible true
+        bool isCompressible;
+
+        #pragma HWPP SerialIoMember suthViscRef 1.45151376745308e-06
+        double suthViscRef;
+
+        #pragma HWPP SerialIoMember suthTRef 110.4
+        double suthTRef;
+
+        #pragma HWPP SerialIoMember viscousLaw HyCore::visclaw::constant
+        int viscousLaw;
     };
     #pragma HWPP SerialIoStructEnd
 

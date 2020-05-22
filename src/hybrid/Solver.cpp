@@ -7,6 +7,7 @@
 #include "CoreData.h"
 #include "AllEquations.h"
 #include "CoreUtils.h"
+#include "Thermodynamics.h"
 #if(__cpu)
 #include <cmath>
 using std::sqrt;
@@ -52,11 +53,6 @@ namespace HyCore
         elem(mu,   widx, N-1) = elem(mu_F,   widx);
     }
 
-    __common void EquationsOfState(const int widx)
-    {
-        if (settings.turbulenceEquationType == turbulence::ODE) for (int i = 0; i < N; i++) elem(mu_t, widx, i) = MutSA(elem(turb, widx, i), elem(rho, widx, i), elem(mu, widx, i));
-    }
-
     __common void MainSolver(const int widx)
     {
         bool done = false;
@@ -83,7 +79,6 @@ namespace HyCore
             ComputeAllmarasMomentumToTargetBuffer(widx, &dummy2, &dummy1, u_SA);
         }
 
-
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
             ComputeLinearSystems(widx, relaxationFactor);
@@ -108,21 +103,46 @@ namespace HyCore
 
         if (d_abs(localError) > settings.errorTolerance || totalError != totalError || localError != localError)
         {
-            double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
-            __qdump("Wall model solve failed. Data:");
-            __qdump("widx   = " << widx);
-            __qdump("|u_F|  = " << umag);
-            __qdump("error  = " << localError);
-            __qdump("numIts = " << numIts);
-            __qdump("T_F    = " << elem(T_F, widx));
-            __qdump("mu_t_F = " << elem(mu_t_F, widx));
-            __qdump("rho_F  = " << elem(rho_F, widx));
-            __qdump("tau    = " << elem(tau, widx));
-            __qdump("mu1    = " << mu1);
-            __qdump("u1     = " << u1);
-            __qdump("dx0    = " << settings.wallSpacing);
-            __erkill("stopping");
+            OnFailedSolve(widx, localError, numIts);
         }
+    }
+
+    __common void OnFailedSolve(int widx, double localError, int numIts)
+    {
+        double u1  = elem(u, widx, 1);
+        double mu1 = elem(mu, widx, 1);
+        double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
+        if (umag < settings.laminarSafetyVelocity)
+        {
+            LinearUInit(widx);
+            LinearTInit(widx);
+            u1  = elem(u, widx, 1);
+            elem(error, widx) = 0;
+            elem(iterations, widx) = 0;
+            elem(tau, widx) = elem(mu_F, widx)*umag/elem(distance, widx);
+            elem(vorticity, widx) = u1/settings.wallSpacing;
+            elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+        }
+        __qdump("Wall model solve failed. Data:");
+        __qdump("widx   = " << widx);
+        __qdump("|u_F|  = " << umag);
+        __qdump("u_F    = (" << elem(u_F, widx) << ", " << elem(v_F, widx) << ", " << elem(w_F, widx) << ")");
+        __qdump("x      = (" << elem(x, widx) << ", " << elem(y, widx) << ", " << elem(z, widx) << ")");
+        __qdump("error  = " << localError);
+        __qdump("numIts = " << numIts);
+        __qdump("T_F    = " << elem(T_F, widx));
+        __qdump("mu_t_F = " << elem(mu_t_F, widx));
+        __qdump("rho_F  = " << elem(rho_F, widx));
+        __qdump("tau    = " << elem(tau, widx));
+        __qdump("mu1    = " << mu1);
+        __qdump("u1     = " << u1);
+        __qdump("q      = " << elem(heatflux, widx));
+        __qdump("dx0    = " << settings.wallSpacing);
+        if (umag < settings.laminarSafetyVelocity)
+        {
+            return;
+        }
+        __erkill("stopping");
     }
 
     __common void SetMomentumEquationType(HyWall::UserSettings* inputSettings)

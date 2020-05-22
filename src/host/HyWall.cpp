@@ -14,6 +14,9 @@
 #include "Solver.h"
 #include "Typedef.h"
 #include "HostUtils.h"
+#include "SolutionOutput.h"
+#include "ViscousLaws.h"
+#include "Averaging.h"
 namespace HyWall
 {
     UserSettings settings;
@@ -31,6 +34,12 @@ namespace HyWall
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
         isFirstSolve = true;
+        //settings are still volatile here.
+    }
+
+    void WhenSettingsAreConstant(void)
+    {
+        if (settings.IOEnable) InitializeSolutionOutput();
     }
 
     void DefineVariables(void)
@@ -45,8 +54,10 @@ namespace HyWall
 
     void Allocate(void)
     {
+        if (settings.averageSolution) InitializeAveraging();
         memory.ApplyInitializationPolicies();
         CopySymbols();
+        WhenSettingsAreConstant();
     }
 
     void SetDomainSize(int numWallPoints_in)
@@ -117,6 +128,7 @@ namespace HyWall
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
             WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
             isFirstSolve = false;
+            if (settings.averageSolution) ComputeAverages();
         }
     }
 
