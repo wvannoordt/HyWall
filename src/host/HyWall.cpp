@@ -97,8 +97,8 @@ namespace HyWall
         HyCoreCPU::MetaDataSet(&settings);
         residualOutput   = (double*)memory.GetVariable("out:error");
         iterationsOutput = (double*)memory.GetVariable("out:iterations");
-        failuresOutput   = (double*)memory.GetVariable("in:x");
-        xInput           = (double*)memory.GetVariable("out:failurelevel");
+        xInput           = (double*)memory.GetVariable("in:x");
+        failuresOutput   = (double*)memory.GetVariable("out:failurelevel");
         if (memory.localGpuPoints>0)
         {
             __withCuda(WriteLine(2, "Copy CUDA symbols start"));

@@ -41,6 +41,7 @@ namespace HyCore
         InitializeEnergy(widx);
         InitializeTurbulence(widx);
         InitializeMomentum(widx);
+        EquationsOfState(widx);
     }
 
     __common void UpdateBoundaryConditions(const int widx)
@@ -66,6 +67,7 @@ namespace HyCore
         UpdateBoundaryConditions(widx);
         EquationsOfState(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
+
         totalError += localError;
         totalIts += localIts;
         localError = 100000;

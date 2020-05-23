@@ -75,7 +75,7 @@ namespace HyCore
         TDMASolve(momSystem, N-2);
         for (int i = 0; i < N-2; i++)
         {
-            loc_sq_error = momSystem[TD_RHS][i] / elem(u_F, widx);
+            loc_sq_error = momSystem[TD_RHS][i] / (elem(u_F, widx)+1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
             elem(u, widx, i+1) -= settings.momentumUnderRelaxationODE*momSystem[TD_RHS][i];
         }

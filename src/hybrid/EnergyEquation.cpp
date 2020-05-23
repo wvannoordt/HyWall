@@ -85,6 +85,7 @@ namespace HyCore
 
             engySystem[TD_RHS][i-1]  = dy2inv*(df_engy*(TLoc[2]-TLoc[1])*dyinvf - db_engy*(TLoc[1]-TLoc[0])*dyinvb) + dy2inv*(df_mom*(uLoc[2]-uLoc[1])*dyinvf - db_mom*(uLoc[1]-uLoc[0])*dyinvb);
             engySystem[TD_DIA][i-1] = -dy2inv*(df_engy*dyinvf + db_engy*dyinvb);
+
             if (i>1)   engySystem[TD_SUB][i-2] = dy2inv*db_engy*dyinvb;
             if (i<N-2) engySystem[TD_SUP][i-1] = dy2inv*df_engy*dyinvf;
         }
@@ -97,7 +98,7 @@ namespace HyCore
         TDMASolve(engySystem, N-2);
         for (int i = 0; i < N-2; i++)
         {
-            loc_sq_error = engySystem[TD_RHS][i] / (elem(turb, widx, N-1) + 1e-9);
+            loc_sq_error = engySystem[TD_RHS][i]/(elem(T_F, widx)+1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
             elem(T, widx, i+1) -= settings.energyUnderRelaxationODE*engySystem[TD_RHS][i];
         }

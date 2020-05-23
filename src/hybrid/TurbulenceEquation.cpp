@@ -46,6 +46,11 @@ namespace HyCore
                 //This is where the initial condition correction will go.
                 break;
             }
+            case turbulence::vanDriest:
+            {
+                LinearTurbInit(widx);
+                break;
+            }
         }
     }
 
@@ -161,7 +166,7 @@ namespace HyCore
         TDMASolve(turbSystem, N-2);
         for (int i = 0; i < N-2; i++)
         {
-            loc_sq_error = turbSystem[TD_RHS][i] / (elem(turb, widx, N-1) + 1e-9);
+            loc_sq_error = turbSystem[TD_RHS][i]/(elem(mu_t_F, widx)+1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
             elem(turb, widx, i+1) -= settings.turbulenceUnderRelaxationODE*turbSystem[TD_RHS][i];
         }
