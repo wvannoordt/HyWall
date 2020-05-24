@@ -50,6 +50,19 @@ namespace HyWall
         __erkill("Could not get appropriate global variable for \"" + name + "\"");
     }
 
+    void* GlobalMemoryHandler::GetVariable(std::string name, const int assertFlag)
+    {
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == name)
+            {
+                if (!HasFlag(manageModes[i], assertFlag)) __erkill("Variable \"" + name + "\" but does not have appropriate flag " + std::to_string(assertFlag));
+                return hostBuffers[i];
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + name + "\"");
+    }
+
     template void GlobalMemoryHandler::AddStaticVariable<double>(std::string, double**, double**, int, int, const int);
     template void GlobalMemoryHandler::AddStaticVariable<float> (std::string, float**,  float**,  int, int, const int);
     template void GlobalMemoryHandler::AddStaticVariable<int>   (std::string, int**,    int**,    int, int, const int);

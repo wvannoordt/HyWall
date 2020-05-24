@@ -29,6 +29,25 @@ namespace HyWall
         SetTimeStep(*timeStep);
     }
 
+    void hywall_getraydim_f(int* output)
+    {
+        *output = settings.rayDim;
+    }
+
+    void hywall_define_probe_index_f(char* name, int* namelen, int* idxOut)
+    {
+        char namebuf[120] = {0};
+        int len = *namelen;
+        memcpy(namebuf, name, len*sizeof(char));
+        std::string strname(namebuf);
+        DefineProbeIndex(strname, idxOut);
+    }
+
+    void hywall_probe_solution_f(int* probeIndex, int* solutionIndex, double* buffer)
+    {
+        ProbeSolution(*probeIndex, *solutionIndex, buffer);
+    }
+
     void hywall_solve_f(void)
     {
         Solve();

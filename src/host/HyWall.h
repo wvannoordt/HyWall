@@ -7,6 +7,7 @@
 #include "GlobalMemoryHandler.h"
 #include "Variables.h"
 #include "ViscousLaws.h"
+#include "SolutionProbing.h"
 #include "mpi.h"
 
 namespace HyWall

@@ -95,7 +95,7 @@ namespace HyWall
     {
         for (int i = 0; i < pointNum; i++)
         {
-            double T =  1.41421356237 / (strain_rate[i]+1e-30);
+            double T =  1.41421356237 / (strain_rate[i]+1e-8);
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*(phi[i]-phibar[i]);
         }
@@ -104,7 +104,7 @@ namespace HyWall
     {
         for (int i = 0; i < pointNum; i++)
         {
-            double T = 1.41421356237 / (strain_rate[i]+1e-30);
+            double T = 1.41421356237 / (strain_rate[i]+1e-8);
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*((phi[i]*phi[i])-phibar[i]);
         }
@@ -134,12 +134,20 @@ namespace HyWall
             k[i] -= v_avg[i]*v_avg[i];
             k[i] -= w_avg[i]*w_avg[i];
         }
-
+        /*for (int i = 0; i < pointNum; i++)
+        {
+            if (Parallel::pId == 0) __dump(k_avg[i] << ", " << k[i] << ", " << u_sq_avg[i] << ", " << u_avg[i] << ", " << strain_rate[i] << ", " << timeStep);
+        }*/
         mettu18_ComputeAverage(k_avg, k);
+        /*for (int i = 0; i < pointNum; i++)
+        {
+            if (Parallel::pId == 0) __dump(k_avg[i] << ", " << k[i]);
+        }*/
 
         for (int i = 0; i < pointNum; i++)
         {
             sensor_val[i] = (0.15 * rho_avg[i]*k_avg[i] / (mu_avg[i] * strain_rate_avg[i]))/settings.sensorThreshold;
+
         }
         double smin = Parallel::GlobalMin(sensor_val, pointNum);
         double smax = Parallel::GlobalMax(sensor_val, pointNum);

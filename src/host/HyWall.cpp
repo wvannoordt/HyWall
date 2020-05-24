@@ -17,6 +17,7 @@
 #include "SolutionOutput.h"
 #include "ViscousLaws.h"
 #include "Averaging.h"
+#include "SolutionProbing.h"
 namespace HyWall
 {
     UserSettings settings;
@@ -36,6 +37,7 @@ namespace HyWall
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
         isFirstSolve = true;
+        InitProbeIndex();
         //settings are still volatile here.
     }
 

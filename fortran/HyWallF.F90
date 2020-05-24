@@ -4,6 +4,9 @@ module HyWallF
 
 	implicit none
 
+    real (c_double), dimension (:), allocatable, target :: swapBuffer
+    integer                                             :: hRayDimGlob
+
     contains
 
     subroutine HyWallSetDomainSize(numPoints)
@@ -20,6 +23,50 @@ module HyWallF
         call hywall_setdomainsize_f(numPoints)
 
     end subroutine HyWallSetDomainSize
+
+
+
+    subroutine HyWallDefineProbeIndex(arrayName, idx)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)    :: arrayName
+        integer (c_int), intent(out)   :: idx
+        interface
+            subroutine hywall_define_probe_index_f(nameF, lenF, idxF) bind (c)
+                use iso_c_binding
+                character (c_char), intent(in)  :: nameF
+                integer   (c_int),  intent(in)  :: lenF
+                integer   (c_int),  intent(out) :: idxF
+            end subroutine hywall_define_probe_index_f
+        end interface
+        call hywall_define_probe_index_f(arrayName, len(trim(arrayName)), idx)
+
+    end subroutine HyWallDefineProbeIndex
+
+
+    subroutine HywallProbeSolution(probeIndex, solutionIndex, array)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        integer (c_int), intent(in)     :: probeIndex
+        integer (c_int), intent(in)     :: solutionIndex
+        real*8,          intent(inout)  :: array(1:hRayDimGlob)
+        integer                         :: idx
+        interface
+            subroutine hywall_probe_solution_f(probeIndexF, solutionIndexF, arF) bind (c)
+                use iso_c_binding
+                integer   (c_int), intent(in)    :: probeIndexF
+                integer   (c_int), intent(in)    :: solutionIndexF
+                type (c_ptr), intent(in), value  :: arF
+            end subroutine hywall_probe_solution_f
+        end interface
+        call hywall_probe_solution_f(probeIndex, solutionIndex, c_loc(swapBuffer))
+        do idx = 1,hRayDimGlob
+            array(idx) = swapBuffer(idx)
+        end do
+
+    end subroutine HywallProbeSolution
 
 
 
@@ -42,12 +89,22 @@ module HyWallF
 
         use, intrinsic :: iso_c_binding
         implicit none
+        integer :: hRayDim
         interface
             subroutine hywall_allocate_f() bind (c)
                 use iso_c_binding
             end subroutine hywall_allocate_f
         end interface
+        interface
+            subroutine hywall_getraydim_f(hRayDimF) bind (c)
+                use iso_c_binding
+                integer(c_int), intent(out) :: hRayDimF
+            end subroutine hywall_getraydim_f
+        end interface
         call hywall_allocate_f()
+        call hywall_getraydim_f(hRayDim)
+        hRayDimGlob = hRayDim
+        allocate(swapBuffer(hRayDim))
 
     end subroutine HyWallAllocate
 
