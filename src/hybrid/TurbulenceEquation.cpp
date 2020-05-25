@@ -28,7 +28,11 @@ namespace HyCore
 
     __common void ZeroTurbInit(const int widx)
     {
-        for (int i = 0; i < N; i++) elem(turb, widx, i) = 0.0;
+        for (int i = 0; i < N; i++)
+        {
+            elem(turb, widx, i) = 0.0;
+            elem(mu_t, widx, i) = 0.0;
+        }
     }
 
     __common void InitializeTurbulence(const int widx)
@@ -56,11 +60,7 @@ namespace HyCore
 
     __common void ComputeExplicitTurbulenceEquation(const int widx, const int turbEq, double* errorOut, double* itsOut)
     {
-        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0)
-        {
-            ZeroTurbInit(widx);
-            return;
-        }
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         switch (turbEq)
         {
             case turbulence::linear:
@@ -72,6 +72,7 @@ namespace HyCore
 
     __common void ComputeVanDriestTurbulence(const int widx)
     {
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         double tau = elem(mu, widx, 0)*elem(u, widx, 1)/settings.wallSpacing;
         for (int i = 0; i < N; i++)
         {
@@ -83,6 +84,7 @@ namespace HyCore
 
     __common void ComputeAlgebraicTurbulence(const int widx, const int turbEq)
     {
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         switch (turbEq)
         {
             case turbulence::vanDriest:
@@ -95,11 +97,7 @@ namespace HyCore
 
     __common void ComputeLhsRhsTurbulence(const int widx, const double relaxationFactor)
     {
-        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0)
-        {
-            ZeroTurbInit(widx);
-            return;
-        }
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         switch(settings.turbulenceEquationType)
         {
             case turbulence::ODE:
@@ -111,6 +109,7 @@ namespace HyCore
 
     __common void ComputeLhsRhsTurbulenceODE(const int widx, const double relaxationFactor)
     {
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         for (int i = 1; i < N-1; i++)
         {
             localtriple(uLoc, u, widx, i);
@@ -161,7 +160,7 @@ namespace HyCore
     __common void SolveUpdateSystemTurbulence(const int widx, double* errorOut)
     {
         *errorOut = 0.0;
-        if (settings.enableTransitionSensor && elem(sensorValue, widx)<1.0) return;
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         double loc_sq_error = 0.0;
         TDMASolve(turbSystem, N-2);
         for (int i = 0; i < N-2; i++)

@@ -1,6 +1,7 @@
 #include "HybridComputing.h"
 #include "AllEquations.h"
 #include "CoreData.h"
+#include "Indexing.h"
 #include "DebugTools.h"
 namespace HyCore
 {

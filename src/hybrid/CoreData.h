@@ -48,7 +48,7 @@ namespace HyCore
     __common extern double* heatflux;
     __common extern double* error;
     __common extern double* iterations;
-    __common extern double* sensorValue;
+    __common extern double* sensorMult;
     __common extern int majorAccessPitch;
     __common extern int momentumEquationClassification;
     __common extern int turbulenceEquationClassification;
@@ -57,6 +57,7 @@ namespace HyCore
     __common extern tdsys momSystem;
     __common extern tdsys turbSystem;
     __common extern tdsys engySystem;
+    __common extern int solveCount;
 }
 
 #endif

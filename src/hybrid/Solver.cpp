@@ -34,9 +34,23 @@ namespace HyCore
         }
     }
 
+    __common void InitializeBuffers(const int widx)
+    {
+        LinearTInit(widx);
+        LinearUInit(widx);
+        LinearTurbInit(widx);
+        for (int i = 0; i < N; i++)
+        {
+            elem(rho, widx, i) = elem(rho_F, widx);
+            elem(mu, widx, i) = elem(mu_F, widx);
+            elem(mu_t, widx, i) = elem(mu_t_F, widx);
+        }
+    }
+
     __common void Initialize(const int widx)
     {
         BuildGrid(widx);
+        InitializeBuffers(widx);
         UpdateBoundaryConditions(widx);
         InitializeEnergy(widx);
         InitializeTurbulence(widx);
@@ -67,21 +81,18 @@ namespace HyCore
         UpdateBoundaryConditions(widx);
         EquationsOfState(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
-
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) ZeroTurbInit(widx);
         totalError += localError;
         totalIts += localIts;
         localError = 100000;
         localIts = 0.0;
         elem(failurelevel, widx) = 0.0;
-
-
         if (settings.includeMomentumRhs)
         {
             double dummy1 = 0;
             double dummy2 = 0;
             ComputeAllmarasMomentumToTargetBuffer(widx, &dummy2, &dummy1, u_SA);
         }
-
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
             ComputeLinearSystems(widx, relaxationFactor);
@@ -144,6 +155,11 @@ namespace HyCore
             __qdump("u1     = " << u1);
             __qdump("q      = " << elem(heatflux, widx));
             __qdump("dx0    = " << settings.wallSpacing);
+            if (settings.includeMomentumRhs)
+            {
+                __qdump("MomRHS = " << elem(momBalancedRHS, widx));
+                __qdump("dpdx   = " << elem(dpdx, widx));
+            }
             __erkill("stopping");
         }
     }

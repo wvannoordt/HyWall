@@ -118,6 +118,7 @@ namespace HyWall
     {
         if (solveCount++ % settings.solveSkip == 0)
         {
+            HyCoreCPU::solveCount = solveCount;
             if (isFirstSolve || settings.alwaysReinitialize)
             {
                 if (settings.enableTransitionSensor&&isFirstSolve) tSensor.OnFirstSolve();

@@ -36,6 +36,7 @@ namespace HyWall
             double* w_avg;
             double* w_sq_avg;
             double* sensor_val;
+            double* sensorMult;
 
             double* u;
             double* v;

@@ -83,6 +83,8 @@ namespace HyCore
 
     __common void ComputeLhsRhsMomentumODE(const int widx)
     {
+        double iTurb = 1.0;
+        if (settings.enableTransitionSensor) iTurb = elem(sensorMult, widx);
         for (int i = 1; i < N-1; i++)
         {
             localtriple(uLoc, u, widx, i);
@@ -94,9 +96,9 @@ namespace HyCore
             double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
             double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);
 
-            //Should we divide by rho???????
-            double df = 0.5*(muLoc[1]+muLoc[2]+mutLoc[1]+mutLoc[2]);
-            double db = 0.5*(muLoc[1]+muLoc[0]+mutLoc[1]+mutLoc[0]);
+
+            double df = 0.5*(muLoc[1]+muLoc[2]+iTurb*mutLoc[1]+iTurb*mutLoc[2]);
+            double db = 0.5*(muLoc[1]+muLoc[0]+iTurb*mutLoc[1]+iTurb*mutLoc[0]);
             momSystem[TD_RHS][i-1]  = dy2inv*(df*(uLoc[2]-uLoc[1])*dyinvf - db*(uLoc[1]-uLoc[0])*dyinvb);
             if (settings.includeMomentumRhs) momSystem[TD_RHS][i-1] -= (elem(dpdx, widx) + elem(momBalancedRHS, widx)*elem(u_SA, widx, i)/elem(u_F, widx));
             momSystem[TD_DIA][i-1] = -dy2inv*(df*dyinvf + db*dyinvb);
