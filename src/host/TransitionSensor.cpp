@@ -30,7 +30,7 @@ namespace HyWall
                 memory.AddStaticVariable<double>("aux:v_sq_avg",        &v_sq_avg,                   NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:w_avg",           &w_avg,                      NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:w_sq_avg",        &w_sq_avg,                   NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput);
+                memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide);
                 memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary);
                 break;
             }
