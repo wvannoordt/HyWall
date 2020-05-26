@@ -67,6 +67,9 @@ namespace HyWall
         #pragma HWPP SerialIoMember sensorThreshold 0.25
     	double sensorThreshold;
 
+        #pragma HWPP SerialIoMember sensorTimescale 6.0e-5
+    	double sensorTimescale;
+
         #pragma HWPP SerialIoMember momentumEquationType HyCore::momentum::allmaras
     	int momentumEquationType;
 
