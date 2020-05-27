@@ -9,7 +9,8 @@ namespace HyWall
     {
         enum sensorenum
         {
-            mettu18         = 734927
+            mettu18         = 734927,
+            fixedXLocation  = 98394
         };
     }
 }

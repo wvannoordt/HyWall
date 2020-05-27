@@ -14,11 +14,13 @@ namespace HyWall
 
     void TransitionSensor::DefineSensorVariables(void)
     {
+        memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide);
+        memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary);
+        memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide);
         switch(sensorType)
         {
             case sensor::mettu18:
             {
-                memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide);
                 memory.AddStaticVariable<double>("aux:strain_rate_avg", &strain_rate_avg,            NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:k",               &k,                          NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:k_avg",           &k_avg,                      NULL, 1, 1, bflag::auxilary | bflag::vtkOutput);
@@ -30,8 +32,10 @@ namespace HyWall
                 memory.AddStaticVariable<double>("aux:v_sq_avg",        &v_sq_avg,                   NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:w_avg",           &w_avg,                      NULL, 1, 1, bflag::auxilary);
                 memory.AddStaticVariable<double>("aux:w_sq_avg",        &w_sq_avg,                   NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide);
-                memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary);
+                break;
+            }
+            case sensor::fixedXLocation:
+            {
                 break;
             }
             default:
@@ -43,6 +47,7 @@ namespace HyWall
 
     void TransitionSensor::CopySymbols(void)
     {
+        sensorMult = (double*)memory.GetVariable("aux:sensorMult");
         switch(sensorType)
         {
             case sensor::mettu18:
@@ -52,7 +57,13 @@ namespace HyWall
                 w   = (double*)memory.GetVariable("in:w");
                 rho = (double*)memory.GetVariable("in:rho");
                 mu  = (double*)memory.GetVariable("in:mu_lam");
-                sensorMult = (double*)memory.GetVariable("aux:sensorMult");
+                break;
+            }
+            case sensor::fixedXLocation:
+            {
+                x = (double*)memory.GetVariable("in:x");
+                y = (double*)memory.GetVariable("in:y");
+                z = (double*)memory.GetVariable("in:z");
                 break;
             }
             default:
@@ -72,10 +83,24 @@ namespace HyWall
                 mettu18_Init();
                 break;
             }
+            case sensor::fixedXLocation:
+            {
+                fixedX_init();
+                break;
+            }
             default:
             {
                 __erkill("Unknown sensorType with id " << sensorType);
             }
+        }
+    }
+
+    void TransitionSensor::fixedX_init(void)
+    {
+        for (int i = 0; i < pointNum; i++)
+        {
+            sensor_val[i] = (x[i] >= settings.sensorThreshold)?1.0:0.0;
+            sensorMult[i] = (x[i] >= settings.sensorThreshold)?1.0:0.0;
         }
     }
 
@@ -157,6 +182,10 @@ namespace HyWall
             case sensor::mettu18:
             {
                 mettu18_ComputeSensorValues();
+                break;
+            }
+            case sensor::fixedXLocation:
+            {
                 break;
             }
             default:

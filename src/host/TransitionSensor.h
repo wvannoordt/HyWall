@@ -20,6 +20,7 @@ namespace HyWall
             void mettu18_ComputeAverage(double* phibar, double* phi);
             void mettu18_ComputeAverageSquare(double* phibar, double* phi);
             void mettu18_Init(void);
+            void fixedX_init(void);
             int sensorType;
             int pointNum;
             double timeStep;
@@ -43,6 +44,9 @@ namespace HyWall
             double* w;
             double* rho;
             double* mu;
+            double* x;
+            double* y;
+            double* z;
     };
 }
 

@@ -126,6 +126,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember viscousLaw HyCore::visclaw::constant
         int viscousLaw;
+
+        #pragma HWPP SerialIoMember transitionLocation 0.0
+        double transitionLocation;
     };
     #pragma HWPP SerialIoStructEnd
 
