@@ -10,7 +10,9 @@ namespace HyWall
         public:
             GlobalMemoryHandler(void);
             void SetSize(int numPoints_in, int rayDim_in);
+            template <typename vartype> void FillVariable(std::string name, vartype bValue);
             template <typename vartype> void AddStaticVariable(std::string name, vartype** hostSymbol, vartype** deviceSymbol,  int numPerRay, int dimension, const int manageMode);
+            template <typename vartype> void FillByFlag(const int flag, vartype bValue);
             void SetUserAssociatedVariable(std::string name, double* ptr);
             void* GetVariable(std::string name);
             void* GetVariable(std::string name, const int assertFlag);
@@ -37,6 +39,7 @@ namespace HyWall
             bool userHasProvided[MAX_BUFFERS];
             size_t bufferSizes[MAX_BUFFERS];
             int accessBounds[MAX_BUFFERS];
+            int elementCount[MAX_BUFFERS];
             int numGlobalVariables;
             bool initializePoliciesWereApplied;
 

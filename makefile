@@ -97,9 +97,11 @@ COMPILE_TIME_OPT += -DPARALLEL=${PARALLEL}
 COMPILE_TIME_OPT += -DMAX_BUFFERS=1024
 
 
-DEVICE_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
+DEVICE_FLAGS := -O${OPTLEVEL} -x cu -rdc=true -Xcompiler -fPIC ${COMPILE_TIME_OPT} -dc
 DEVICE_DLINK_FLAGS := -Xcompiler -fPIC -rdc=true -dlink
 HOST_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -fPIC -fpermissive -std=c++11 -c ${LCUDA}
+
+export CUDA_ENABLE
 
 LZLIB :=
 ifeq (${ALLOW_DEBUG_EXT}, 1)
@@ -119,6 +121,7 @@ ifneq (,$(wildcard ${CU_O_TARGET_NAME}))
 DO_CLEAN := clean
 endif
 endif
+
 
 OBJ_FILES_HYBRID_HOST   := $(patsubst ${WM_SRC_DIR}/hybrid/%.cpp,$(WM_OBJ_DIR)/%.o,$(SRC_FILES_HYBRID))
 OBJ_FILES_HYBRID_DEVICE := $(patsubst ${WM_SRC_DIR}/hybrid/%.cpp,$(WM_OBJ_DIR)/K_%.o,$(SRC_FILES_HYBRID))

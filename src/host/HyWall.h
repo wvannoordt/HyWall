@@ -8,7 +8,10 @@
 #include "Variables.h"
 #include "ViscousLaws.h"
 #include "SolutionProbing.h"
+#include "Testing.h"
 #include "mpi.h"
+#include "HostUtils.h"
+#include "ScreenOutput.h"
 
 namespace HyWall
 {
@@ -18,6 +21,7 @@ namespace HyWall
     extern "C"
     {
         void Initialize(MPI_Comm host_comm_in, int verboseLevel_in);
+        void InitializeInternalMPI(int verboseLevel_in);
         void SetDomainSize(int numWallPoints_in);
         void PassVariable(std::string strname, double* ptr);
         void Allocate(void);

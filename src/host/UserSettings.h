@@ -103,9 +103,6 @@ namespace HyWall
         #pragma HWPP SerialIoMember IOEnable false
         bool IOEnable;
 
-        #pragma HWPP SerialIoMember workingDirectory "hywall"
-        std::string workingDirectory;
-
         #pragma HWPP SerialIoMember averageSolution false
         bool averageSolution;
 

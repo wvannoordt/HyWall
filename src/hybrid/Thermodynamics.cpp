@@ -13,13 +13,13 @@ using std::pow;
 
 namespace HyCore
 {
-    double SutherlandViscosityRelation(double T)
+    __common double SutherlandViscosityRelation(double T)
     {
         double mu = settings.suthViscRef*pow(T,1.5)/(T+settings.suthTRef);
         return mu;
     }
 
-    double DensityRelation(double P, double T)
+    __common double DensityRelation(double P, double T)
     {
         double rho = P/(settings.gasConstant*T);
         return rho;

@@ -10,6 +10,7 @@ namespace HyWall
         extern int pNum, pId, nameLength;
         extern char nodeName[MPI_MAX_PROCESSOR_NAME];
         extern MPI_Comm globalComm;
+        extern bool internalMPIHandling;
         void Initialize(MPI_Comm globalComm_in);
         void Finalize(void);
         double GlobalTotalAbs(double* ar, int num);

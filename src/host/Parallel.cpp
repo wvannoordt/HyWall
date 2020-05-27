@@ -15,6 +15,7 @@ namespace HyWall
         bool isActive;
         int activeNumLocal;
         int activeNumGlobal;
+        bool internalMPIHandling;
 
         void Initialize(MPI_Comm globalComm_in)
         {
@@ -22,6 +23,7 @@ namespace HyWall
             MPI_Comm_size(globalComm, &pNum);
             MPI_Comm_rank(globalComm, &pId);
             MPI_Get_processor_name(nodeName, &nameLength);
+            internalMPIHandling = false;
         }
 
         double GlobalAverageAbs(double* ar, int num)

@@ -31,6 +31,7 @@ namespace HyWall
                 isAllocated[i] = true;
                 userHasProvided[i] = true;
                 hostBuffers[i] = ptr;
+                elementCount[i] = -999;
                 WriteLine(3, "Found \"" + name + "\"");
                 return;
             }
@@ -48,6 +49,53 @@ namespace HyWall
             }
         }
         __erkill("Could not get appropriate global variable for \"" + name + "\"");
+    }
+
+    template void GlobalMemoryHandler::FillVariable<double>(std::string, double);
+    template void GlobalMemoryHandler::FillVariable<float> (std::string, float);
+    template void GlobalMemoryHandler::FillVariable<int>   (std::string, int);
+    template void GlobalMemoryHandler::FillVariable<bool>  (std::string, bool);
+    template void GlobalMemoryHandler::FillVariable<char>  (std::string, char);
+    template <typename vartype> void GlobalMemoryHandler::FillVariable(std::string name, vartype bValue)
+    {
+        vartype* x;
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == name)
+            {
+                x = (vartype*)hostBuffers[i];
+                if (elementCount[i] < 0) __erkill("Cannot detect size out \"" + name + "\" for buffer filling.");
+                for (int idx = 0; idx < elementCount[i]; idx++)
+                {
+                    x[idx] = bValue;
+                }
+                return;
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + name + "\"");
+    }
+
+    template void GlobalMemoryHandler::FillByFlag<double>(const int, double);
+    template void GlobalMemoryHandler::FillByFlag<float> (const int, float);
+    template void GlobalMemoryHandler::FillByFlag<int>   (const int, int);
+    template void GlobalMemoryHandler::FillByFlag<bool>  (const int, bool);
+    template void GlobalMemoryHandler::FillByFlag<char>  (const int, char);
+    template <typename vartype> void GlobalMemoryHandler::FillByFlag(const int flag, vartype bValue)
+    {
+        vartype* x;
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (HasFlag(manageModes[i], flag))
+            {
+                WriteLine(2, "Fill \"" +  variableNames[i] + "\" with " + std::to_string(elementCount[i]) + " elements, value " + std::to_string(bValue));
+                x = (vartype*)hostBuffers[i];
+                if (elementCount[i] < 0) WriteLine(1, "CANNOT FILL BUFFER WITH UNKOWN SIZE");
+                for (int idx = 0; idx < elementCount[i]; idx++)
+                {
+                    x[idx] = bValue;
+                }
+            }
+        }
     }
 
     void* GlobalMemoryHandler::GetVariable(std::string name, const int assertFlag)
@@ -75,6 +123,7 @@ namespace HyWall
         if (HasFlag(manageMode, bflag::serialHostUsage)) newVariableSize = numPerRay * dimension * sizeof(vartype);
         int newUpperAccessBound = newVariableSize / sizeof(vartype);
 
+        elementCount[numGlobalVariables]           = dimension*numPerRay*localTotalPoints;
         userHasProvided[numGlobalVariables]        = false;
         isAllocated[numGlobalVariables]            = false;
         variableNames[numGlobalVariables]          = name;
@@ -111,7 +160,7 @@ namespace HyWall
         {
             int manageMode = manageModes[i];
 
-            if (HasFlag(manageMode, bflag::userMustProvide) && !userHasProvided[i]) __erkill("Failed to find required user-provided variable \"" + variableNames[i] + "\"");
+            if (HasFlag(manageMode, bflag::userMustProvide) && !userHasProvided[i] && !Testing::testingMode) __erkill("Failed to find required user-provided variable \"" + variableNames[i] + "\"");
 
             bool allocateHostMirror = true;
             if (userHasProvided[i]) allocateHostMirror = false;

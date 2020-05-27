@@ -6,6 +6,7 @@
 namespace HyWall
 {
     std::string to_estring(double num);
+    void BufferFill(double* array, int num, double bValue);
 }
 
 #endif

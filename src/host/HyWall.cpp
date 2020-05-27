@@ -18,6 +18,7 @@
 #include "ViscousLaws.h"
 #include "Averaging.h"
 #include "SolutionProbing.h"
+#include "Testing.h"
 namespace HyWall
 {
     UserSettings settings;
@@ -37,8 +38,16 @@ namespace HyWall
         memory = GlobalMemoryHandler();
         Parallel::Initialize(host_comm_in);
         isFirstSolve = true;
+        Testing::testingMode = false;
         InitProbeIndex();
         //settings are still volatile here.
+    }
+    void InitializeInternalMPI(int verboseLevel_in)
+    {
+        MPI_Init(NULL, NULL);
+        Parallel::Initialize(MPI_COMM_WORLD);
+        Initialize(MPI_COMM_WORLD, verboseLevel_in);
+        Parallel::internalMPIHandling = true;
     }
 
     void WhenSettingsAreConstant(void)
@@ -151,6 +160,7 @@ namespace HyWall
         WriteLine(1, "Closing");
         memory.ApplyFinalizationPolicies();
         Parallel::Finalize();
+        if (Parallel::internalMPIHandling) MPI_Finalize();
         WriteLine(1, "Closed");
     }
 }

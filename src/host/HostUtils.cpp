@@ -11,4 +11,9 @@ namespace HyWall
         std::string strObj4(buffer);
         return strObj4;
     }
+
+    void BufferFill(double* array, int num, double bValue)
+    {
+        for (int i = 0;  i < num; i++) array[i] = bValue;
+    }
 }

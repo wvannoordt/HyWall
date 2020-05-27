@@ -5,7 +5,7 @@ namespace HyWall
 {
     void InitializeSolutionOutput(void)
     {
-        IO::CreateDirectory(settings.workingDirectory);
+        //IO::CreateDirectory(settings.workingDirectory);
     }
 
 }
