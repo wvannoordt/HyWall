@@ -40,6 +40,7 @@ namespace HyWall
         isFirstSolve = true;
         Testing::testingMode = false;
         InitProbeIndex();
+        if (settings.averageSolution) InitializeAveraging();
         //settings are still volatile here.
     }
     void InitializeInternalMPI(int verboseLevel_in)
@@ -151,7 +152,12 @@ namespace HyWall
             }
             WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
             isFirstSolve = false;
-            if (settings.averageSolution) ComputeAverages();
+            if (settings.averageSolution)
+            {
+                ComputeAverages();
+                if (solveCount%settings.averageOutputInterval==0) SaveAveragesToFile(solveCount);
+            }
+
         }
     }
 
@@ -161,6 +167,7 @@ namespace HyWall
         memory.ApplyFinalizationPolicies();
         Parallel::Finalize();
         if (Parallel::internalMPIHandling) MPI_Finalize();
+        if (settings.averageSolution) FinalizeAveraging();
         WriteLine(1, "Closed");
     }
 }

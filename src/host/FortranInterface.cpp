@@ -2,6 +2,7 @@
 #include "FortranInterface.h"
 #include <string>
 #include <cstring>
+#include "DebugTools.h"
 namespace HyWall
 {
     void hywall_setdomainsize_f(int* numWallPoints_in)
@@ -41,6 +42,15 @@ namespace HyWall
         memcpy(namebuf, name, len*sizeof(char));
         std::string strname(namebuf);
         DefineProbeIndex(strname, idxOut);
+    }
+
+    void hywall_copy_singular_buffer_f(char* name, int* namelen, double* buf)
+    {
+        char namebuf[120] = {0};
+        int len = *namelen;
+        memcpy(namebuf, name, len*sizeof(char));
+        std::string strname(namebuf);
+        memory.CopySingularBuffer<double>(strname, buf);
     }
 
     void hywall_probe_solution_f(int* probeIndex, int* solutionIndex, double* buffer)

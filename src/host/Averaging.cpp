@@ -3,22 +3,25 @@
 #include <string>
 #include "ScreenOutput.h"
 #include "DebugTools.h"
-
+#define NAME_BUF_LENGTH 32
 #define MAX_AVERAGING_VALS 1024
 namespace HyWall
 {
     double* coords[4];
     double* avgVars[MAX_AVERAGING_VALS];
+    int* pointNums;
     std::string avgVarNames[MAX_AVERAGING_VALS];
     int numAvgVars;
     int numPoints;
     double runningTime;
     bool firstCall;
+    int globalOffset;
     void InitializeAveraging(void)
     {
         WriteLine(1, "Initialize averaging");
         numAvgVars = 0;
         runningTime = 0;
+        globalOffset = 0;
         firstCall = true;
         numPoints = memory.localTotalPoints;
         coords[0] = (double*)memory.GetVariable("in:x");
@@ -32,6 +35,11 @@ namespace HyWall
         ApplyAveragingTo("in:mu_t");
         ApplyAveragingTo("in:rho");
         ApplyAveragingTo("in:mu_lam");
+        ApplyAveragingTo("out:tau");
+        ApplyAveragingTo("out:heatflux");
+        pointNums = new int[Parallel::pNum];
+        Parallel::Allgather(&(memory.localTotalPoints), 1, pointNums, 1, HY_INT);
+        for (int i = 0; i < Parallel::pId; i++) globalOffset += pointNums[i];
     }
 
     void ApplyAveragingTo(std::string variableName)
@@ -83,7 +91,42 @@ namespace HyWall
 
     void SaveAveragesToFile(int solveNumber)
     {
+        //crunch time. Wrap in parallel::() later.
+        double* f = (double*)memory.GetVariable("in:p");
+        char nameBuffer[NAME_BUF_LENGTH];
         WriteLine(1, "Outputting Averages");
-        
+        MPI_File fh;
+        MPI_Status st;
+        MPI_File_open(MPI_COMM_WORLD, "hywallAveraging.dat", MPI_MODE_RDWR | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+        int headerSize = 3*NAME_BUF_LENGTH*numAvgVars+sizeof(int);
+        int writefactor = (Parallel::isRoot)?1:0;
+        MPI_File_set_view(fh, 0, MPI_INT, MPI_INT, "native", MPI_INFO_NULL);
+        MPI_File_write_at(fh, 0, &(memory.globalTotalPoints), writefactor*1, MPI_INT, &st);
+        MPI_File_set_view(fh, sizeof(int), MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL);
+        int blockOffset = NAME_BUF_LENGTH+memory.globalTotalPoints*sizeof(double);
+        for (int i = 0; i < numAvgVars; i++)
+        {
+            memset(nameBuffer, 0, NAME_BUF_LENGTH*sizeof(char));
+            avgVarNames[3*i+0].copy(nameBuffer, avgVarNames[3*i+0].length(), 0);
+            MPI_File_write_at(fh, (3*i+0)*blockOffset, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
+            MPI_File_write_at(fh, (3*i+0)*blockOffset+NAME_BUF_LENGTH+globalOffset*sizeof(double), (char*)avgVars[3*i+0], sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+
+            memset(nameBuffer, 0, NAME_BUF_LENGTH*sizeof(char));
+            avgVarNames[3*i+1].copy(nameBuffer, avgVarNames[3*i+1].length(), 0);
+            MPI_File_write_at(fh, (3*i+1)*blockOffset, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
+            MPI_File_write_at(fh, (3*i+1)*blockOffset+NAME_BUF_LENGTH+globalOffset*sizeof(double), (char*)avgVars[3*i+1], sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+
+            memset(nameBuffer, 0, NAME_BUF_LENGTH*sizeof(char));
+            avgVarNames[3*i+2].copy(nameBuffer, avgVarNames[3*i+2].length(), 0);
+            MPI_File_write_at(fh, (3*i+2)*blockOffset, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
+            MPI_File_write_at(fh, (3*i+2)*blockOffset+NAME_BUF_LENGTH+globalOffset*sizeof(double), (char*)avgVars[3*i+2], sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+        }
+        MPI_File_close(&fh);
+
+    }
+
+    void FinalizeAveraging(void)
+    {
+        delete [] pointNums;
     }
 }

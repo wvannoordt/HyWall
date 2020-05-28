@@ -18,6 +18,9 @@ namespace HyWall
         globalTotalPoints = 0;
         numGlobalVariables = 0;
         initializePoliciesWereApplied = false;
+        Parallel::Allreduce(&localTotalPoints, &globalTotalPoints, 1, HY_INT, HY_SUM);
+        Parallel::Allreduce(&localGpuPoints,   &globalGpuPoints,   1, HY_INT, HY_SUM);
+        Parallel::Allreduce(&globalCpuPoints,  &globalCpuPoints,   1, HY_INT, HY_SUM);
     }
 
     void GlobalMemoryHandler::SetUserAssociatedVariable(std::string name, double* ptr)
@@ -68,6 +71,30 @@ namespace HyWall
                 for (int idx = 0; idx < elementCount[i]; idx++)
                 {
                     x[idx] = bValue;
+                }
+                return;
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + name + "\"");
+    }
+
+    template void GlobalMemoryHandler::CopySingularBuffer<double>(std::string, double*);
+    template void GlobalMemoryHandler::CopySingularBuffer<float> (std::string, float*);
+    template void GlobalMemoryHandler::CopySingularBuffer<int>   (std::string, int*);
+    template void GlobalMemoryHandler::CopySingularBuffer<bool>  (std::string, bool*);
+    template void GlobalMemoryHandler::CopySingularBuffer<char>  (std::string, char*);
+    template <typename vartype> void GlobalMemoryHandler::CopySingularBuffer(std::string name, vartype* buf)
+    {
+        vartype* x;
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == name)
+            {
+                x = (vartype*)hostBuffers[i];
+                if (elementCount[i] < 0) WriteLine(1, "CANNOT COPY BUFFER WITH UNKOWN SIZE");
+                for (int idx = 0; idx < elementCount[i]; idx++)
+                {
+                    buf[idx]=x[idx];
                 }
                 return;
             }

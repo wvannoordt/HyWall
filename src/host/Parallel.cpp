@@ -16,7 +16,7 @@ namespace HyWall
         int activeNumLocal;
         int activeNumGlobal;
         bool internalMPIHandling;
-
+        bool isRoot;
         void Initialize(MPI_Comm globalComm_in)
         {
             MPI_Comm_dup(globalComm_in, &globalComm);
@@ -24,6 +24,7 @@ namespace HyWall
             MPI_Comm_rank(globalComm, &pId);
             MPI_Get_processor_name(nodeName, &nameLength);
             internalMPIHandling = false;
+            isRoot = (pId == 0); //May not always be true
         }
 
         double GlobalAverageAbs(double* ar, int num)
@@ -110,6 +111,16 @@ namespace HyWall
             }
             MPI_Allreduce(&loc_max, &glob_max, 1, MPI_DOUBLE, MPI_MAX, globalComm);
             return glob_max;
+        }
+
+        void Allgather(const void* sendbuf, int sendcount, void* recvbuf, int recvcount, HY_DATATYPE DTYPE)
+        {
+            MPI_Allgather(sendbuf, sendcount, DTYPE, recvbuf, recvcount, DTYPE, globalComm);
+        }
+
+        void Allreduce(const void *sendbuf, void *recvbuf, int count, HY_DATATYPE datatype, HY_OPERATION op)
+        {
+            MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, globalComm);
         }
 
         double GlobalMaxAbs(double* ar, int num)

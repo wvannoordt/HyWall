@@ -4,8 +4,8 @@ module HyWallF
 
 	implicit none
 
-    real (c_double), dimension (:), allocatable, target :: swapBuffer
-    integer                                             :: hRayDimGlob
+    real (c_double), dimension (:), allocatable, target :: swapBuffer, swapBufferSingular
+    integer                                             :: hRayDimGlob, numPointsGlob
 
     contains
 
@@ -21,6 +21,8 @@ module HyWallF
 			end subroutine hywall_setdomainsize_f
 		end interface
         call hywall_setdomainsize_f(numPoints)
+        allocate(swapBufferSingular(numPoints))
+        numPointsGlob = numPoints
 
     end subroutine HyWallSetDomainSize
 
@@ -43,6 +45,29 @@ module HyWallF
         call hywall_define_probe_index_f(arrayName, len(trim(arrayName)), idx)
 
     end subroutine HyWallDefineProbeIndex
+
+
+    subroutine HyWallCopySingularBuffer(arrayName, array)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)     :: arrayName
+        real*8,          intent(inout)  :: array(:)
+        integer                         :: idx
+        interface
+            subroutine hywall_copy_singular_buffer_f(nameF, lenF, arF) bind (c)
+                use iso_c_binding
+                character (c_char), intent(in)  :: nameF
+                integer   (c_int),  intent(in)  :: lenF
+                type (c_ptr), intent(in), value  :: arF
+            end subroutine hywall_copy_singular_buffer_f
+        end interface
+        call hywall_copy_singular_buffer_f(arrayName, len(trim(arrayName)), c_loc(swapBufferSingular))
+        do idx = 1,numPointsGlob
+            array(idx) = swapBufferSingular(idx)
+        end do
+
+    end subroutine HyWallCopySingularBuffer
 
 
     subroutine HywallProbeSolution(probeIndex, solutionIndex, array)
