@@ -1,4 +1,4 @@
-[ ] automatic symbol copying with void double pointers and copying stage
+[x] automatic symbol copying with void double pointers and copying stage
 [ ] VTK output / multiformat output for time history (parallel)
 [ ] GPU kernel
 [x] VD damping
@@ -8,3 +8,4 @@
 [ ] Momentum rhs
 [ ] Test cases
 [ ] rewrite the HWPP
+[ ] File IO consistent with memory architechture

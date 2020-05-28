@@ -3,6 +3,7 @@
 #include <string>
 #include "ScreenOutput.h"
 #include "DebugTools.h"
+#include <cstring>
 #define NAME_BUF_LENGTH 32
 #define MAX_AVERAGING_VALS 1024
 namespace HyWall
