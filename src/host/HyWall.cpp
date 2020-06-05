@@ -25,6 +25,7 @@ namespace HyWall
     GlobalMemoryHandler memory;
     TransitionSensor tSensor;
     bool isFirstSolve;
+    bool hasInitialized;
     double* residualOutput;
     double* iterationsOutput;
     double* failuresOutput;
@@ -42,6 +43,7 @@ namespace HyWall
         InitProbeIndex();
         if (settings.averageSolution) InitializeAveraging();
         //settings are still volatile here.
+        hasInitialized = true;
     }
     void InitializeInternalMPI(int verboseLevel_in)
     {

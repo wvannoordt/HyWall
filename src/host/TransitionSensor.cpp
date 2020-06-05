@@ -15,7 +15,7 @@ namespace HyWall
     void TransitionSensor::DefineSensorVariables(void)
     {
         memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide);
-        memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary);
+        memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary | bflag::userCanProvide);
         memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide);
         switch(sensorType)
         {
@@ -124,7 +124,8 @@ namespace HyWall
     {
         for (int i = 0; i < pointNum; i++)
         {
-            double T = settings.sensorTimescale;
+            //double T = settings.sensorTimescale;
+            double T = 1.414528*strain_rate[i];
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*(phi[i]-phibar[i]);
         }
@@ -133,7 +134,8 @@ namespace HyWall
     {
         for (int i = 0; i < pointNum; i++)
         {
-            double T = settings.sensorTimescale;
+            //double T = settings.sensorTimescale;
+            double T = 1.414528*strain_rate[i];
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*((phi[i]*phi[i])-phibar[i]);
         }

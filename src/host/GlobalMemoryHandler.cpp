@@ -5,7 +5,7 @@
 #include <string>
 namespace HyWall
 {
-    GlobalMemoryHandler::GlobalMemoryHandler(void){}
+    GlobalMemoryHandler::GlobalMemoryHandler(void){initializePoliciesWereApplied=false;}
 
     void GlobalMemoryHandler::SetSize(int numPoints_in, int rayDim_in)
     {
