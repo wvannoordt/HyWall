@@ -7,9 +7,22 @@
 #include "ElementClasses.h"
 namespace PropTreeLib
 {
-    PropertySection::PropertySection(std::string contents, PropStringHandler* stringHandler, int depthIn)
+    PropertySection::PropertySection(PropStringHandler* stringHandler_in, int depthIn, PropertySection* host_in)
     {
         depth = depthIn;
+        stringHandler = stringHandler_in;
+        wasCreatedFromTemplateDeclaration = false;
+        isDummySection = false;
+        host = host_in;
+    }
+
+    void PropertySection::DeclareIsFromTemplateDeclaration(void)
+    {
+        wasCreatedFromTemplateDeclaration = true;
+    }
+
+    void PropertySection::PopulateInstanceFromString(std::string contents)
+    {
         std::vector<std::string> topLevelElements = stringHandler->IdentifyTopLevels(contents);
         for (int i = 0; i < topLevelElements.size(); i++)
         {
@@ -27,7 +40,8 @@ namespace PropTreeLib
                 {
                     std::string name, val;
                     stringHandler->ParseElementAsSubSection(topLevelElements[i], &name, &val);
-                    sectionSubSections.insert({name, new PropertySection(val, stringHandler, depthIn+1)});
+                    sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    sectionSubSections[name]->PopulateInstanceFromString(val);
                     break;
                 }
             }
@@ -44,6 +58,7 @@ namespace PropTreeLib
         }
         for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
         {
+            std::cout << style << " " << it->first << ":" << std::endl;
             it->second->DebugPrint();
         }
 
@@ -56,5 +71,13 @@ namespace PropTreeLib
             it->second->Destroy();
             delete it->second;
         }
+    }
+
+    PropertySection& PropertySection::operator [](std::string argument)
+    {
+        if (sectionSubSections.find(argument)==sectionSubSections.end()) sectionSubSections.insert({argument, new PropertySection(stringHandler, depth+1, this)});
+        PropertySection* temp = sectionSubSections[argument];
+        temp->DeclareIsFromTemplateDeclaration();
+        return *temp;
     }
 }

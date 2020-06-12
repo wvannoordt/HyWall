@@ -18,5 +18,10 @@ mastersection
 		helloWorld = suchacliche,
 		inlinesection{fprop=0.1,zpoedsd=11e-9},
 		vectorelement = [1.2, 0.5, 3.1415], zzz=swd
+	},
+	sparshssection
+	{
+		value1=0,
+		anotherprop=234827
 	}
 }

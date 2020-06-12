@@ -6,27 +6,29 @@ namespace PropTreeLib
 {
     PropertyTree::PropertyTree(void)
     {
-        isInitialized = false;
         stringHandler = PropStringHandler();
-    }
-    PropertyTree::~PropertyTree(void)
-    {
-        if (isInitialized)
-        {
-            principalSection->Destroy();
-            delete principalSection;
-        }
+        principalSection = new PropertySection(&stringHandler, 0, NULL);
     }
 
-    void PropertyTree::BuildFromFile(std::string filename)
+    PropertyTree::~PropertyTree(void)
+    {
+        principalSection->Destroy();
+        delete principalSection;
+    }
+
+    void PropertyTree::ReadInputFileToTreeData(std::string filename)
     {
         std::string fileRawContents = stringHandler.Sanitize(stringHandler.ReadFileToString(filename));
-        principalSection = new PropertySection(fileRawContents, &stringHandler, 0);
-        isInitialized = true;
+        principalSection->PopulateInstanceFromString(fileRawContents);
     }
 
     void PropertyTree::DebugPrint(void)
     {
         principalSection->DebugPrint();
+    }
+
+    PropertySection& PropertyTree::operator [](std::string argument)
+    {
+        return (*principalSection)[argument];
     }
 }

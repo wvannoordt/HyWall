@@ -4,7 +4,7 @@
 
 namespace PropTreeLib
 {
-    void ReadInputFileToPropertyTree(std::string filename, PropertyTree* outputPropertyTree);
+    void DummyFunction(void);
 }
 
 #endif

@@ -2,8 +2,8 @@
 #include "PropTreeLib.h"
 namespace PropTreeLib
 {
-    void ReadInputFileToPropertyTree(std::string filename, PropertyTree* outputPropertyTree)
+    void DummyFunction(void)
     {
-        outputPropertyTree->BuildFromFile(filename);
+        std::cout << "Nothing here yet" << std::endl;
     }
 }

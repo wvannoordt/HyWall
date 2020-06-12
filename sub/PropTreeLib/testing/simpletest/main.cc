@@ -3,8 +3,16 @@
 int main(void)
 {
 	std::string filename = "testfile.in";
-	PropTreeLib::PropertyTree inputParams;
-	PropTreeLib::ReadInputFileToPropertyTree(filename, &inputParams);
-	inputParams.DebugPrint();
+	PropTreeLib::PropertyTree input;
+
+	input["test1"]["test2"]["test3"];
+
+	input.ReadInputFileToTreeData(filename);
+
+	input.DebugPrint();
+	/*proto["NavierStokes"]["WallModel"]["rayDim"] = inputVariableTypes.Integer("Number of ray points for wall model mesh");
+	proto["NavierStokes"]["WallModel"]["useWallModel"] = inputVariableTypes.Boolean("Flag to turn on wall model");
+	proto["NavierStokes"]["WallModel"]["GpuSettings"]["allocationRatio"]  = inputVariableTypes.DoubleBetween(0.0, 1.0, "Allocation ration for gpu settings", default = 0.1);
+	proto["NavierStokes"]["WallModel"]["GpuSettings"]["convectiveScheme"] = inputVariableTypes.AnyOf("weno5fvs, description=WENO scheme, 5th order", "centralEEC", "Convective scheme for interior domain");*/
 	return 0;
 }
