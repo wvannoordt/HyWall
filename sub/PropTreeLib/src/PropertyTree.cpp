@@ -20,6 +20,8 @@ namespace PropTreeLib
     {
         std::string fileRawContents = stringHandler.Sanitize(stringHandler.ReadFileToString(filename));
         principalSection->PopulateInstanceFromString(fileRawContents);
+        principalSection->SetName("[ROOT]");
+        principalSection->SetValue(fileRawContents);
     }
 
     void PropertyTree::DebugPrint(void)

@@ -78,6 +78,7 @@ namespace HyCore
         int numIts = 0;
         double relaxationFactor = 0.2;
         double growth = 1.1;
+        
         UpdateBoundaryConditions(widx);
         EquationsOfState(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
@@ -93,8 +94,10 @@ namespace HyCore
             double dummy2 = 0;
             ComputeAllmarasMomentumToTargetBuffer(widx, &dummy2, &dummy1, u_SA);
         }
+
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
+
             ComputeLinearSystems(widx, relaxationFactor);
             SolveUpdateLinearSystems(widx, &localError);
             EquationsOfState(widx);
@@ -159,6 +162,11 @@ namespace HyCore
             {
                 __qdump("MomRHS = " << elem(momBalancedRHS, widx));
                 __qdump("dpdx   = " << elem(dpdx, widx));
+            }
+            __qdump("Wall Model Solution Buffer [y, u, mu_t, T]:");
+            for (int i = 0; i < N; i++)
+            {
+                __qdump(elem(d, widx, i) << ", " << elem(u, widx, i) << ", " << elem(mu_t, widx, i) << ", " << elem(T, widx, i));
             }
             __erkill("stopping");
         }

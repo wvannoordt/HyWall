@@ -12,13 +12,18 @@ namespace PropTreeLib
         depth = depthIn;
         stringHandler = stringHandler_in;
         wasCreatedFromTemplateDeclaration = false;
-        isDummySection = false;
+        isTerminalNode = false;
         host = host_in;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
     {
         wasCreatedFromTemplateDeclaration = true;
+    }
+
+    void PropertySection::DeclareIsTerminal(void)
+    {
+        isTerminalNode = true;
     }
 
     void PropertySection::PopulateInstanceFromString(std::string contents)
@@ -33,7 +38,10 @@ namespace PropTreeLib
                 {
                     std::string name, val;
                     stringHandler->ParseElementAsVariable(topLevelElements[i], &name, &val);
-                    sectionValues.insert({name, val});
+                    sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    sectionSubSections[name]->DeclareIsTerminal();
+                    sectionSubSections[name]->SetName(name);
+                    sectionSubSections[name]->SetValue(val);
                     break;
                 }
                 case EC_SUBSECTION:
@@ -42,23 +50,38 @@ namespace PropTreeLib
                     stringHandler->ParseElementAsSubSection(topLevelElements[i], &name, &val);
                     sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
                     sectionSubSections[name]->PopulateInstanceFromString(val);
+                    sectionSubSections[name]->SetName(name);
+                    sectionSubSections[name]->SetValue(val);
                     break;
                 }
             }
         }
     }
 
+    void PropertySection::SetName(std::string name)
+    {
+        sectionName = name;
+    }
+
+    void PropertySection::SetValue(std::string val)
+    {
+        sectionValue = val;
+    }
+
     void PropertySection::DebugPrint(void)
     {
         std::string style = "|";
         for (int i = 0; i < depth; i++) style = style + "--";
-        for (std::map<std::string, std::string>::iterator it = sectionValues.begin(); it!=sectionValues.end(); it++)
+        if (isTerminalNode)
         {
-            std::cout << style << " " << it->first << " = " << it->second << std::endl;
+            std::cout << style << " " << sectionName << " = " << sectionValue << std::endl;
+        }
+        else
+        {
+            std::cout << style << " " << sectionName << ":" << std::endl;
         }
         for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
         {
-            std::cout << style << " " << it->first << ":" << std::endl;
             it->second->DebugPrint();
         }
 
@@ -75,9 +98,25 @@ namespace PropTreeLib
 
     PropertySection& PropertySection::operator [](std::string argument)
     {
-        if (sectionSubSections.find(argument)==sectionSubSections.end()) sectionSubSections.insert({argument, new PropertySection(stringHandler, depth+1, this)});
+        bool isNewSection = false;
+        if (sectionSubSections.find(argument)==sectionSubSections.end())
+        {
+            isNewSection = true;
+            sectionSubSections.insert({argument, new PropertySection(stringHandler, depth+1, this)});
+        }
         PropertySection* temp = sectionSubSections[argument];
+        if (isNewSection)
+        {
+            temp->SetName(argument);
+            temp->SetValue("[DEFAULT]");
+        }
         temp->DeclareIsFromTemplateDeclaration();
         return *temp;
+    }
+
+    PropertySection& PropertySection::operator= (std::string argument)
+    {
+        this->SetValue(argument);
+        this->DeclareIsTerminal();
     }
 }

@@ -5,7 +5,8 @@ int main(void)
 	std::string filename = "testfile.in";
 	PropTreeLib::PropertyTree input;
 
-	input["test1"]["test2"]["test3"];
+	input["userDefinedSection"]["haha"]["test1"] = "l";
+	input["userDefinedSection"]["haha"]["test2"] = "HI";
 
 	input.ReadInputFileToTreeData(filename);
 

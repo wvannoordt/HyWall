@@ -174,7 +174,8 @@ namespace HyWall
         }
         double smin = Parallel::GlobalMin(sensor_val, pointNum);
         double smax = Parallel::GlobalMax(sensor_val, pointNum);
-        WriteLine(1, "sensor min/max: " + std::to_string(smin) + ", " + std::to_string(smax));
+        double savg = Parallel::GlobalAverageAbs(sensor_val, pointNum);
+        WriteLine(1, "sensor min/avg/max: " + std::to_string(smin) + ", " + std::to_string(savg) + ", " + std::to_string(smax));
     }
 
     void TransitionSensor::OnEverySolve(void)
