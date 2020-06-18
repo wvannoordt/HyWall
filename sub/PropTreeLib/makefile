@@ -25,7 +25,7 @@ ifndef CC_HOST
 CC_HOST := $(shell which g++)
 endif
 
-HOST_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -fPIC -fpermissive -std=c++11
+HOST_FLAGS := -O${OPTLEVEL} -Wno-unknown-pragmas -g -fPIC -fpermissive -std=c++11
 
 export CC_HOST
 export ICONFIG=-I${HDR_DIR}

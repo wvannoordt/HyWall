@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "Error.h"
 #include "PropertyTree.h"
 #include "PropStringHandler.h"
 namespace PropTreeLib
@@ -27,6 +28,14 @@ namespace PropTreeLib
     void PropertyTree::DebugPrint(void)
     {
         principalSection->DebugPrint();
+    }
+
+    void PropertyTree::StrictParse(void)
+    {
+        if (!principalSection->StrictTraverseParse(""))
+        {
+            ErrorKill("Found at least 1 invalid argument. Stopping.");
+        }
     }
 
     PropertySection& PropertyTree::operator [](std::string argument)

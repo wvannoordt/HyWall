@@ -5,12 +5,17 @@ int main(void)
 	std::string filename = "testfile.in";
 	PropTreeLib::PropertyTree input;
 
-	input["userDefinedSection"]["haha"]["test1"] = "l";
-	input["userDefinedSection"]["haha"]["test2"] = "HI";
+	int testInteger1, testInteger2;
+	input["userDefinedSection"]["test1"].MapTo(&testInteger1) = new PropTreeLib::Variables::Integer(199, "A test integer");
+	input["userDefinedSection"]["test2"].MapTo(&testInteger2) = new PropTreeLib::Variables::Integer(100, "A test integer2");
 
 	input.ReadInputFileToTreeData(filename);
+	//input.DebugPrint();
+	//input.StrictParse();
 
-	input.DebugPrint();
+	//std::cout << testInteger1 << ", " << testInteger2 << std::endl;
+
+	//input.DebugPrint();
 	/*proto["NavierStokes"]["WallModel"]["rayDim"] = inputVariableTypes.Integer("Number of ray points for wall model mesh");
 	proto["NavierStokes"]["WallModel"]["useWallModel"] = inputVariableTypes.Boolean("Flag to turn on wall model");
 	proto["NavierStokes"]["WallModel"]["GpuSettings"]["allocationRatio"]  = inputVariableTypes.DoubleBetween(0.0, 1.0, "Allocation ration for gpu settings", default = 0.1);

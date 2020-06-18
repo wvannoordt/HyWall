@@ -1,27 +1,5 @@
-myglobalproperty="popo",
-
-asmallsection{p=1},
-
-anicevector=[1, 2, 4],
-
-mastersection
+userDefinedSection
 {
-	myprop1 = myvalue1,
-	someotherprop = anothervalue,
-	anothersection
-	{
-		a = 4,
-		r = 15
-	},
-	yetanothersection
-	{
-		helloWorld = suchacliche,
-		inlinesection{fprop=0.1,zpoedsd=11e-9},
-		vectorelement = [1.2, 0.5, 3.1415], zzz=swd
-	},
-	sparshssection
-	{
-		value1=0,
-		anotherprop=234827
-	}
+    test2=89898,
+    test1=90
 }

@@ -18,6 +18,7 @@ namespace PropTreeLib
             void ReadInputFileToTreeData(std::string filename);
             void DebugPrint(void);
             PropertySection& operator [](std::string argument);
+            void StrictParse(void);
         private:
             PropertySection* principalSection;
             PropStringHandler stringHandler;

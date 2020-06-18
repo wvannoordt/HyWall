@@ -5,6 +5,7 @@
 #include "PropertySection.h"
 #include "PropStringHandler.h"
 #include "ElementClasses.h"
+#include "Error.h"
 namespace PropTreeLib
 {
     PropertySection::PropertySection(PropStringHandler* stringHandler_in, int depthIn, PropertySection* host_in)
@@ -14,6 +15,9 @@ namespace PropTreeLib
         wasCreatedFromTemplateDeclaration = false;
         isTerminalNode = false;
         host = host_in;
+        templateVariable = NULL;
+        terminalEndpointTarget = NULL;
+        hasValue = false;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
@@ -38,7 +42,10 @@ namespace PropTreeLib
                 {
                     std::string name, val;
                     stringHandler->ParseElementAsVariable(topLevelElements[i], &name, &val);
-                    sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    if (sectionSubSections.find(name)==sectionSubSections.end())
+                    {
+                        sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    }
                     sectionSubSections[name]->DeclareIsTerminal();
                     sectionSubSections[name]->SetName(name);
                     sectionSubSections[name]->SetValue(val);
@@ -48,7 +55,10 @@ namespace PropTreeLib
                 {
                     std::string name, val;
                     stringHandler->ParseElementAsSubSection(topLevelElements[i], &name, &val);
-                    sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    if (sectionSubSections.find(name)==sectionSubSections.end())
+                    {
+                        sectionSubSections.insert({name, new PropertySection(stringHandler, depth+1, this)});
+                    }
                     sectionSubSections[name]->PopulateInstanceFromString(val);
                     sectionSubSections[name]->SetName(name);
                     sectionSubSections[name]->SetValue(val);
@@ -66,6 +76,13 @@ namespace PropTreeLib
     void PropertySection::SetValue(std::string val)
     {
         sectionValue = val;
+        hasValue = true;
+    }
+
+    void PropertySection::SetNoValue(void)
+    {
+        sectionValue = "[DEFAULT]";
+        hasValue = false;
     }
 
     void PropertySection::DebugPrint(void)
@@ -89,11 +106,59 @@ namespace PropTreeLib
 
     void PropertySection::Destroy(void)
     {
+        if (templateVariable != NULL)
+        {
+            templateVariable->Destroy();
+            delete templateVariable;
+        }
         for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
         {
             it->second->Destroy();
-            delete it->second;
+            PropertySection* temp = it->second;
+            delete temp;
         }
+        sectionSubSections.clear();
+    }
+
+    bool PropertySection::StrictTraverseParse(std::string depthString)
+    {
+        std::string newDepthString;
+        if (depth == 1) newDepthString = sectionName;
+        else if (depth>1) newDepthString = depthString + "::" + sectionName;
+        else newDepthString = "";
+        if (!isTerminalNode)
+        {
+            if (templateVariable != NULL) ErrorKill("A variable template has been assined to a non-terminal section called \"" + newDepthString + "\"");
+            bool anyBranchFailed = false;
+            for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
+            {
+                if(!it->second->StrictTraverseParse(newDepthString)) anyBranchFailed = true;
+            }
+            return !anyBranchFailed;
+        }
+        else
+        {
+            if (templateVariable==NULL)
+            {
+                std::cout << "Unrecognized variable:" << std::endl;
+                std::cout << "  >>  " << newDepthString << "  =  " << sectionValue << std::endl;
+                return false;
+            }
+            else if(!hasValue)
+            {
+                templateVariable->SetDefaultValue(terminalEndpointTarget);
+                return true;
+            }
+            else if(!templateVariable->ParseFromString(sectionValue, terminalEndpointTarget))
+            {
+                std::cout << "Could not parse the following variable:" << std::endl;
+                std::cout << "  >>  " << newDepthString << "  =  " << sectionValue << std::endl;
+                return false;
+            }
+            return true;
+        }
+
+
     }
 
     PropertySection& PropertySection::operator [](std::string argument)
@@ -108,7 +173,7 @@ namespace PropTreeLib
         if (isNewSection)
         {
             temp->SetName(argument);
-            temp->SetValue("[DEFAULT]");
+            temp->SetNoValue();
         }
         temp->DeclareIsFromTemplateDeclaration();
         return *temp;
@@ -118,5 +183,12 @@ namespace PropTreeLib
     {
         this->SetValue(argument);
         this->DeclareIsTerminal();
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(int* ptr)
+    {
+        isTerminalNode = true;
+        terminalEndpointTarget = ptr;
+        return templateVariable;
     }
 }
