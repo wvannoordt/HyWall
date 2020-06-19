@@ -15,6 +15,7 @@ namespace PropTreeLib
                 virtual std::string GetDescription(void) {return variableDescription;}
                 virtual void SetDescription(std::string val) {variableDescription = val;}
                 virtual void SetDefaultValue(void* ptr)=0;
+                virtual std::string GetDefaultValueString(void)=0;
                 virtual void SetName(std::string name) {variableName = name;}
             private:
                 std::string variableDescription;

@@ -3,7 +3,8 @@
 #include "PropertyTree.h"
 #include "InputVariable.h"
 #include "Integer.h"
-
+#include "Boolean.h"
+#include "Double.h"
 namespace PropTreeLib
 {
     void DummyFunction(void);

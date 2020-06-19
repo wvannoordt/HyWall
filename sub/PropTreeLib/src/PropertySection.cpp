@@ -191,4 +191,18 @@ namespace PropTreeLib
         terminalEndpointTarget = ptr;
         return templateVariable;
     }
+
+    Variables::InputVariable* & PropertySection::MapTo(double* ptr)
+    {
+        isTerminalNode = true;
+        terminalEndpointTarget = ptr;
+        return templateVariable;
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(bool* ptr)
+    {
+        isTerminalNode = true;
+        terminalEndpointTarget = ptr;
+        return templateVariable;
+    }
 }

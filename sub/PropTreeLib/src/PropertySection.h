@@ -22,7 +22,9 @@ namespace PropTreeLib
             void Destroy(void);
             PropertySection& operator [](std::string argument);
             PropertySection& operator =(std::string argument);
-            Variables::InputVariable* & MapTo(int* ptr);
+            Variables::InputVariable* & MapTo(int*    ptr);
+            Variables::InputVariable* & MapTo(double* ptr);
+            Variables::InputVariable* & MapTo(bool*   ptr);
             bool StrictTraverseParse(std::string depthString);
         private:
             std::map<std::string,PropertySection*> sectionSubSections;

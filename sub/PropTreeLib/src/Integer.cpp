@@ -35,6 +35,10 @@ namespace PropTreeLib
             }
             return false;
         }
+        std::string Integer::GetDefaultValueString(void)
+        {
+            return std::to_string(defaultValue);
+        }
         void Integer::SetDefaultValue(void* ptr)
         {
             *((int*)ptr) = defaultValue;
