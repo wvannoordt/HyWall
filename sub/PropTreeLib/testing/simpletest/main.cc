@@ -11,5 +11,6 @@ int main(void)
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();
 	std::cout << "Test read the following: " << testInteger1 << ", " << testInteger2 << std::endl;
+	std::cout << "(SUCCESS)" << std::endl;
 	return 0;
 }

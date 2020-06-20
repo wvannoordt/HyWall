@@ -142,7 +142,7 @@ export HWPP_OUT=${WM_HDR_DIR}/HWPP.hpp
 postprocess: final
 	${PY_EXE} ${POSTPROCESSOR}
 
-final: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
+final: ${DO_CLEAN} setup subs.build preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
 	${CC_HOST} -fPIC -shared ${LIB_OBJECTS} ${WM_IFLAGS} ${COMPILE_TIME_OPT} ${LZLIB} ${LCUDA} -o ${TARGET}
 
 preprocess:
@@ -175,12 +175,12 @@ setup:
 		ln -s $${hdr} -t ${WM_HDR_DIR};\
 	done
 
-test: final
+test: subs.test final
 	@for fldr in testing/* ; do \
                 ${MAKE} -C $${fldr} -f makefile -s test || exit 1; \
         done
 
-clean:
+clean: subs.clean
 	for fldr in testing/* ; do \
 	            ${MAKE} -C $${fldr} -f makefile clean ; \
 	    done
@@ -188,9 +188,17 @@ clean:
 	-rm -r ${WM_OBJ_DIR}
 	-rm -r ${WM_HDR_DIR}
 
-install: clean
-	cp -r ${WM_SRC_DIR} ${BITCART_SOURCE_PATH}/HyWall
-	cp -r ${WM_PRP_DIR} ${BITCART_SOURCE_PATH}/HyWall
-	cp -r ${WM_DOC_DIR} ${BITCART_SOURCE_PATH}/HyWall
-	cp -r ${WM_FRT_DIR} ${BITCART_SOURCE_PATH}/HyWall
-	cp -r ${WM_TST_DIR} ${BITCART_SOURCE_PATH}/HyWall
+subs.build:
+	@for fldr in sub/* ; do \
+                ${MAKE} -C $${fldr} -f makefile || exit 1; \
+        done
+        
+subs.clean:
+	@for fldr in sub/* ; do \
+                ${MAKE} -C $${fldr} -f makefile clean || exit 1; \
+        done
+
+subs.test:
+	@for fldr in sub/* ; do \
+                ${MAKE} -C $${fldr} -f makefile test || exit 1; \
+        done

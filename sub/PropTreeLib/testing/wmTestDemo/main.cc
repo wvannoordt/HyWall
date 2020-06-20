@@ -29,5 +29,7 @@ int main(void)
 
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();
+	input.DebugPrint();
+	std::cout << "(SUCCESS)" << std::endl;
 	return 0;
 }
