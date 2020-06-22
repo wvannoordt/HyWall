@@ -7,6 +7,10 @@ NavierStokes
         wallModelOutputDataInterval = 13,
         forcingOffset               = 4,
         errorTolerance              = 3.4e-5,
-        rayDim                      = 30
+        rayDim                      = 30,
+        Momentum
+        {
+            equation = ODE
+        }
     }
 }

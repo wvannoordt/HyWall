@@ -2,9 +2,10 @@
 #define PROPTREELIB_H
 #include "PropertyTree.h"
 #include "InputVariable.h"
-#include "Integer.h"
-#include "Boolean.h"
-#include "Double.h"
+#include "PTLInteger.h"
+#include "PTLBoolean.h"
+#include "PTLDouble.h"
+#include "PTLString.h"
 namespace PropTreeLib
 {
     void DummyFunction(void);

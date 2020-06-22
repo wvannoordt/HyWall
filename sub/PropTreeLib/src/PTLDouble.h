@@ -1,5 +1,5 @@
-#ifndef DOUBLE_H
-#define DOUBLE_H
+#ifndef PTLDouble_H
+#define PTLDouble_H
 
 #include <string>
 #include "InputVariable.h"
@@ -8,10 +8,10 @@ namespace PropTreeLib
 {
     namespace Variables
     {
-        class Double : public InputVariable
+        class PTLDouble : public InputVariable
         {
             public:
-                Double(double defaultValue, std::string description);
+                PTLDouble(double defaultValue, std::string description);
                 bool ParseFromString(std::string parseVal, void* ptr);
                 void Destroy(void);
                 void SetDefaultValue(void* ptr);

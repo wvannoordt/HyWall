@@ -1,5 +1,5 @@
-#ifndef BOOLEAN_H
-#define BOOLEAN_H
+#ifndef PTLBoolean_H
+#define PTLBoolean_H
 
 #include <string>
 #include "InputVariable.h"
@@ -8,10 +8,10 @@ namespace PropTreeLib
 {
     namespace Variables
     {
-        class Boolean : public InputVariable
+        class PTLBoolean : public InputVariable
         {
             public:
-                Boolean(bool defaultValue, std::string description);
+                PTLBoolean(bool defaultValue, std::string description);
                 bool ParseFromString(std::string parseVal, void* ptr);
                 void Destroy(void);
                 void SetDefaultValue(void* ptr);

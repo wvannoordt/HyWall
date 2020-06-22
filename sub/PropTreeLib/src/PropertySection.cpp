@@ -188,21 +188,28 @@ namespace PropTreeLib
     Variables::InputVariable* & PropertySection::MapTo(int* ptr)
     {
         isTerminalNode = true;
-        terminalEndpointTarget = ptr;
+        terminalEndpointTarget = (void*)ptr;
         return templateVariable;
     }
 
     Variables::InputVariable* & PropertySection::MapTo(double* ptr)
     {
         isTerminalNode = true;
-        terminalEndpointTarget = ptr;
+        terminalEndpointTarget = (void*)ptr;
         return templateVariable;
     }
 
     Variables::InputVariable* & PropertySection::MapTo(bool* ptr)
     {
         isTerminalNode = true;
-        terminalEndpointTarget = ptr;
+        terminalEndpointTarget = (void*)ptr;
+        return templateVariable;
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(std::string* ptr)
+    {
+        isTerminalNode = true;
+        terminalEndpointTarget = (void*)ptr;
         return templateVariable;
     }
 }

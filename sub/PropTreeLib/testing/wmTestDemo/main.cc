@@ -8,24 +8,34 @@ int main(void)
 	bool useWallModel, outputWallModelData;
 	int wallModelOutputDataInterval, forcingOffset, rayDim;
 	double errorTolerance;
+	std::string wallModelOutputDir;
+
+	//temporary: replace with PTLEnum
+	std::string momEquation;
 
 	input["NavierStokes"]["WallModel"]["useWallModel"].MapTo(&useWallModel)
-	= new PropTreeLib::Variables::Boolean(false, "Flag to enable to wall model");
+	= new PropTreeLib::Variables::PTLBoolean(false, "Flag to enable to wall model");
 
 	input["NavierStokes"]["WallModel"]["outputWallModelData"].MapTo(&outputWallModelData)
-	= new PropTreeLib::Variables::Boolean(false, "Flag to enable wall model output");
+	= new PropTreeLib::Variables::PTLBoolean(false, "Flag to enable wall model output");
 
 	input["NavierStokes"]["WallModel"]["wallModelOutputDataInterval"].MapTo(&wallModelOutputDataInterval)
-	= new PropTreeLib::Variables::Integer(100, "Controls the interval at which wall model data is written");
+	= new PropTreeLib::Variables::PTLInteger(100, "Controls the interval at which wall model data is written");
 
 	input["NavierStokes"]["WallModel"]["forcingOffset"].MapTo(&forcingOffset)
-	= new PropTreeLib::Variables::Integer(4, "Wall model sampling location (number of cells)");
+	= new PropTreeLib::Variables::PTLInteger(4, "Wall model sampling location (number of cells)");
 
 	input["NavierStokes"]["WallModel"]["rayDim"].MapTo(&rayDim)
-	= new PropTreeLib::Variables::Integer(30, "Number of mesh points in wall-normal direction in the wall model");
+	= new PropTreeLib::Variables::PTLInteger(30, "Number of mesh points in wall-normal direction in the wall model");
 
 	input["NavierStokes"]["WallModel"]["errorTolerance"].MapTo(&errorTolerance)
-	= new PropTreeLib::Variables::Double(1e-6, "Generic error tolerance for iterative procedures in the wall model numerics");
+	= new PropTreeLib::Variables::PTLDouble(1e-6, "Generic error tolerance for iterative procedures in the wall model numerics");
+
+	input["NavierStokes"]["WallModel"]["outputDir"].MapTo(&wallModelOutputDir)
+	= new PropTreeLib::Variables::PTLString(".", "Location for wall model output data");
+
+	input["NavierStokes"]["WallModel"]["Momentum"]["equation"].MapTo(&momEquation)
+	= new PropTreeLib::Variables::PTLString("ODE", "Specifies what kind of equation to solve for wall model momentum equation");
 
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();

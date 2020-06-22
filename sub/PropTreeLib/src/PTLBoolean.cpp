@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
-#include "Boolean.h"
+#include "PTLBoolean.h"
 namespace PropTreeLib
 {
     namespace Variables
     {
-        Boolean::Boolean(bool defaultValueIn, std::string descriptionIn)
+        PTLBoolean::PTLBoolean(bool defaultValueIn, std::string descriptionIn)
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
         }
-        bool Boolean::ParseFromString(std::string parseVal, void* ptr)
+        bool PTLBoolean::ParseFromString(std::string parseVal, void* ptr)
         {
             if ((parseVal=="True")||(parseVal=="true")||(parseVal=="T")||(parseVal=="t"))
             {
@@ -25,14 +25,14 @@ namespace PropTreeLib
             this->SetDefaultValue(ptr);
             return false;
         }
-        std::string Boolean::GetDefaultValueString(void)
+        std::string PTLBoolean::GetDefaultValueString(void)
         {
             return std::to_string(defaultValue);
         }
-        void Boolean::SetDefaultValue(void* ptr)
+        void PTLBoolean::SetDefaultValue(void* ptr)
         {
             *((bool*)ptr) = defaultValue;
         }
-        void Boolean::Destroy(void){}
+        void PTLBoolean::Destroy(void){}
     }
 }

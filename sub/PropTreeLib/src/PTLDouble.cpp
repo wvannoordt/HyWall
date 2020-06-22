@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
-#include "Double.h"
+#include "PTLDouble.h"
 namespace PropTreeLib
 {
     namespace Variables
     {
-        Double::Double(double defaultValueIn, std::string descriptionIn)
+        PTLDouble::PTLDouble(double defaultValueIn, std::string descriptionIn)
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
         }
-        bool Double::ParseFromString(std::string parseVal, void* ptr)
+        bool PTLDouble::ParseFromString(std::string parseVal, void* ptr)
         {
             double i;
             try
@@ -26,14 +26,14 @@ namespace PropTreeLib
             }
             return false;
         }
-        std::string Double::GetDefaultValueString(void)
+        std::string PTLDouble::GetDefaultValueString(void)
         {
             return std::to_string(defaultValue);
         }
-        void Double::SetDefaultValue(void* ptr)
+        void PTLDouble::SetDefaultValue(void* ptr)
         {
             *((double*)ptr) = defaultValue;
         }
-        void Double::Destroy(void){}
+        void PTLDouble::Destroy(void){}
     }
 }

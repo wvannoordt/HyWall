@@ -1,16 +1,16 @@
 #include <iostream>
 #include <string>
-#include "Integer.h"
+#include "PTLInteger.h"
 namespace PropTreeLib
 {
     namespace Variables
     {
-        Integer::Integer(int defaultValueIn, std::string descriptionIn)
+        PTLInteger::PTLInteger(int defaultValueIn, std::string descriptionIn)
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
         }
-        bool Integer::ParseFromString(std::string parseVal, void* ptr)
+        bool PTLInteger::ParseFromString(std::string parseVal, void* ptr)
         {
             std::string nums = "0123456789";
             int i;
@@ -35,14 +35,14 @@ namespace PropTreeLib
             }
             return false;
         }
-        std::string Integer::GetDefaultValueString(void)
+        std::string PTLInteger::GetDefaultValueString(void)
         {
             return std::to_string(defaultValue);
         }
-        void Integer::SetDefaultValue(void* ptr)
+        void PTLInteger::SetDefaultValue(void* ptr)
         {
             *((int*)ptr) = defaultValue;
         }
-        void Integer::Destroy(void){}
+        void PTLInteger::Destroy(void){}
     }
 }
