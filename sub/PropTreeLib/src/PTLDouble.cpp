@@ -9,6 +9,7 @@ namespace PropTreeLib
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
+            basePointerType = BasePointer::DoublePointer;
         }
         bool PTLDouble::ParseFromString(std::string parseVal, void* ptr)
         {

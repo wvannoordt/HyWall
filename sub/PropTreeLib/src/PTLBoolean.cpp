@@ -9,6 +9,7 @@ namespace PropTreeLib
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
+            basePointerType = BasePointer::BoolPointer;
         }
         bool PTLBoolean::ParseFromString(std::string parseVal, void* ptr)
         {

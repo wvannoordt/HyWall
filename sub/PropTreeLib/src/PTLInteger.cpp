@@ -9,6 +9,7 @@ namespace PropTreeLib
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
+            basePointerType = BasePointer::IntPointer;
         }
         bool PTLInteger::ParseFromString(std::string parseVal, void* ptr)
         {

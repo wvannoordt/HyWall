@@ -2,6 +2,8 @@
 #define INPUT_VAR_H
 
 #include <string>
+#include "BasePointerTypes.h"
+#include "Error.h"
 
 namespace PropTreeLib
 {
@@ -17,9 +19,20 @@ namespace PropTreeLib
                 virtual void SetDefaultValue(void* ptr)=0;
                 virtual std::string GetDefaultValueString(void)=0;
                 virtual void SetName(std::string name) {variableName = name;}
-            private:
+                virtual bool ValidateBasePointer(BasePointer assignedPointer, std::string* message)
+                {
+                    if (basePointerType != assignedPointer)
+                    {
+                        *message = "Base pointer error: expecting " + BasePointerToString(basePointerType) + ", but found " + BasePointerToString(assignedPointer) + ".";
+                        return false;
+                    }
+                    *message = "none";
+                    return true;
+                }
+            protected:
                 std::string variableDescription;
                 std::string variableName;
+                BasePointer basePointerType;
         };
     }
 }

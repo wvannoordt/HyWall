@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "PTLString.h"
+
 namespace PropTreeLib
 {
     namespace Variables
@@ -9,6 +10,7 @@ namespace PropTreeLib
         {
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
+            basePointerType = BasePointer::StringPointer;
         }
         bool PTLString::ParseFromString(std::string parseVal, void* ptr)
         {

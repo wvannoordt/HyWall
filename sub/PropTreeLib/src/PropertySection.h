@@ -6,6 +6,7 @@
 #include <vector>
 #include "PropStringHandler.h"
 #include "InputVariable.h"
+#include "BasePointerTypes.h"
 namespace PropTreeLib
 {
     class PropertySection
@@ -28,6 +29,7 @@ namespace PropTreeLib
             Variables::InputVariable* & MapTo(std::string* ptr);
             bool StrictTraverseParse(std::string depthString);
         private:
+            void AssertPointerConsistency(std::string variableLocation);
             std::map<std::string,PropertySection*> sectionSubSections;
             PropStringHandler* stringHandler;
             int depth;
@@ -36,6 +38,7 @@ namespace PropTreeLib
             std::string sectionName, sectionValue;
             Variables::InputVariable* templateVariable;
             void* terminalEndpointTarget;
+            Variables::BasePointer basePointerType;
     };
 }
 #endif

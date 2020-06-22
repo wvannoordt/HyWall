@@ -6,6 +6,7 @@
 #include "PropStringHandler.h"
 #include "ElementClasses.h"
 #include "Error.h"
+#include "BasePointerTypes.h"
 namespace PropTreeLib
 {
     PropertySection::PropertySection(PropStringHandler* stringHandler_in, int depthIn, PropertySection* host_in)
@@ -18,6 +19,7 @@ namespace PropTreeLib
         templateVariable = NULL;
         terminalEndpointTarget = NULL;
         hasValue = false;
+        basePointerType = Variables::BasePointer::IntPointer;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
@@ -138,6 +140,7 @@ namespace PropTreeLib
         }
         else
         {
+            if (templateVariable!=NULL) AssertPointerConsistency(newDepthString);
             if (templateVariable==NULL)
             {
                 std::cout << "Unrecognized variable:" << std::endl;
@@ -157,8 +160,17 @@ namespace PropTreeLib
             }
             return true;
         }
+    }
 
-
+    void PropertySection::AssertPointerConsistency(std::string variableLocation)
+    {
+        std::string message;
+        if (!templateVariable->ValidateBasePointer(basePointerType, &message))
+        {
+            std::cout << "Error in definition of " + variableLocation + ":" << std::endl;
+            std::cout << message << std::endl;
+            ErrorKill("Stopping");
+        }
     }
 
     PropertySection& PropertySection::operator [](std::string argument)
@@ -189,6 +201,7 @@ namespace PropTreeLib
     {
         isTerminalNode = true;
         terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::IntPointer;
         return templateVariable;
     }
 
@@ -196,6 +209,7 @@ namespace PropTreeLib
     {
         isTerminalNode = true;
         terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::DoublePointer;
         return templateVariable;
     }
 
@@ -203,6 +217,7 @@ namespace PropTreeLib
     {
         isTerminalNode = true;
         terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::BoolPointer;
         return templateVariable;
     }
 
@@ -210,6 +225,7 @@ namespace PropTreeLib
     {
         isTerminalNode = true;
         terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::StringPointer;
         return templateVariable;
     }
 }
