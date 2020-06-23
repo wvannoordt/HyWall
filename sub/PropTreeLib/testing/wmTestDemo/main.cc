@@ -10,7 +10,8 @@ int main(void)
 	double errorTolerance;
 	std::string wallModelOutputDir;
 	int momEquation;
-	
+	double* sampleXLocations;
+	int numSampleXLocations;
 
 	input["NavierStokes"]["WallModel"]["useWallModel"].MapTo(&useWallModel)
 	= new PropTreeLib::Variables::PTLBoolean(false, "Flag to enable to wall model");
@@ -35,6 +36,9 @@ int main(void)
 
 	input["NavierStokes"]["WallModel"]["Momentum"]["equation"].MapTo(&momEquation)
 	= new PropTreeLib::Variables::PTLEnum("ODE", "ODE:allmaras:linear", "Specifies what kind of equation to solve for wall model momentum equation");
+
+	input["NavierStokes"]["WallModel"]["SampleXLocations"].MapTo(&sampleXLocations, &numSampleXLocations)
+	= new PropTreeLib::Variables::PTLDynamicDoubleArray("X-locations for inner-solution sampling with precision 1e-5");
 
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();

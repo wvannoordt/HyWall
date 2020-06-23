@@ -7,6 +7,7 @@ namespace PropTreeLib
     {
         enum BasePointer
         {
+            None,
             IntPointer,
             DoublePointer,
             BoolPointer,
@@ -20,6 +21,7 @@ namespace PropTreeLib
         {
             switch (p)
             {
+                case BasePointer::None:                return "BasePointer::None";
                 case BasePointer::IntPointer:          return "BasePointer::IntPointer";
                 case BasePointer::DoublePointer:       return "BasePointer::DoublePointer";
                 case BasePointer::BoolPointer:         return "BasePointer::BoolPointer";

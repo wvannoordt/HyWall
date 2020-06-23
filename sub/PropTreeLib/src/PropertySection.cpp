@@ -18,9 +18,11 @@ namespace PropTreeLib
         host = host_in;
         templateVariable = NULL;
         terminalEndpointTarget = NULL;
+        terminalEndpointTargetSecondaryData = NULL;
         hasValue = false;
         basePointerType = Variables::BasePointer::IntPointer;
         isPrincipal = false;
+        secondaryBasePointerType = Variables::BasePointer::None;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
@@ -146,7 +148,8 @@ namespace PropTreeLib
         }
         else
         {
-            if (templateVariable!=NULL) AssertPointerConsistency(newDepthString);
+            if (templateVariable!=NULL) AssertPointerConsistency(newDepthString, false);
+            if (terminalEndpointTargetSecondaryData!=NULL) AssertPointerConsistency(newDepthString, true);
             if (templateVariable==NULL)
             {
                 std::cout << "Unrecognized variable:" << std::endl;
@@ -164,18 +167,35 @@ namespace PropTreeLib
                 std::cout << "  >>  " << newDepthString << "  =  " << sectionValue << std::endl;
                 return false;
             }
+            if (terminalEndpointTargetSecondaryData!=NULL)
+            {
+                templateVariable->SetSecondaryVariable(terminalEndpointTargetSecondaryData);
+            }
+
             return true;
         }
     }
 
-    void PropertySection::AssertPointerConsistency(std::string variableLocation)
+    void PropertySection::AssertPointerConsistency(std::string variableLocation, bool isSecondary)
     {
         std::string message;
-        if (!templateVariable->ValidateBasePointer(basePointerType, &message))
+        if (isSecondary)
         {
-            std::cout << "Error in definition of " + variableLocation + ":" << std::endl;
-            std::cout << message << std::endl;
-            ErrorKill("Stopping");
+            if (!templateVariable->ValidateBasePointer(basePointerType, &message))
+            {
+                std::cout << "Error in definition of " + variableLocation + ":" << std::endl;
+                std::cout << message << std::endl;
+                ErrorKill("Stopping");
+            }
+        }
+        else
+        {
+            if (!templateVariable->ValidateSecondaryBasePointer(secondaryBasePointerType, &message))
+            {
+                std::cout << "Error in definition of " + variableLocation + ":" << std::endl;
+                std::cout << message << std::endl;
+                ErrorKill("Stopping");
+            }
         }
     }
 
@@ -255,6 +275,17 @@ namespace PropTreeLib
         BreakIfAlreadyMapped();
         terminalEndpointTarget = (void*)ptr;
         basePointerType = Variables::BasePointer::StringPointer;
+        return templateVariable;
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(double** ptr, int* nPtr)
+    {
+        isTerminalNode = true;
+        BreakIfAlreadyMapped();
+        terminalEndpointTarget = (void*)ptr;
+        terminalEndpointTargetSecondaryData = (void*)nPtr;
+        basePointerType = Variables::BasePointer::DoubleArrayPointer;
+        secondaryBasePointerType = Variables::BasePointer::IntPointer;
         return templateVariable;
     }
 }

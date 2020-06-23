@@ -27,12 +27,13 @@ namespace PropTreeLib
             Variables::InputVariable* & MapTo(double*      ptr);
             Variables::InputVariable* & MapTo(bool*        ptr);
             Variables::InputVariable* & MapTo(std::string* ptr);
+            Variables::InputVariable* & MapTo(double** ptr, int* nPtr);
             bool StrictTraverseParse(std::string depthString);
             void BreakIfAlreadyMapped(void);
             void DeclareIsPrincipal(void);
             std::string GetTotalName(void);
         private:
-            void AssertPointerConsistency(std::string variableLocation);
+            void AssertPointerConsistency(std::string variableLocation, bool isSecondary);
             std::map<std::string,PropertySection*> sectionSubSections;
             PropStringHandler* stringHandler;
             int depth;
@@ -41,7 +42,9 @@ namespace PropTreeLib
             std::string sectionName, sectionValue;
             Variables::InputVariable* templateVariable;
             void* terminalEndpointTarget;
+            void* terminalEndpointTargetSecondaryData;
             Variables::BasePointer basePointerType;
+            Variables::BasePointer secondaryBasePointerType;
     };
 }
 #endif

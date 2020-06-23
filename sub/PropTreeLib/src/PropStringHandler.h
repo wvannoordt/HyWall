@@ -20,6 +20,10 @@ namespace PropTreeLib
             void ParseElementAsSubSection(std::string line, std::string* sectionName, std::string* sectionContents);
             int GetElementClass(std::string element);
             void SetDelimiter(char dlm);
+            void SetSectionStyle(char open, char close);
+            void SetVectorStyle(char open, char close);
+            void GetSectionStyle(char* open, char* close);
+            void GetVectorStyle(char* open, char* close);
         private:
             std::string commentString;
             std::string whiteSpace;

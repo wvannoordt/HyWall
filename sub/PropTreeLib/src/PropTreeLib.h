@@ -7,6 +7,7 @@
 #include "PTLDouble.h"
 #include "PTLString.h"
 #include "PTLEnum.h"
+#include "PTLDynamicDoubleArray.h"
 namespace PropTreeLib
 {
     void DummyFunction(void);

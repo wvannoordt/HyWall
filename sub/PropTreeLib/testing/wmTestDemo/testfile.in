@@ -8,6 +8,7 @@ NavierStokes
         forcingOffset               = 4,
         errorTolerance              = 3.4e-5,
         rayDim                      = 30,
+        SampleXLocations            = [1.2, 234,42,0.19, 12.3, 2.4],
         Momentum
         {
             equation = ODE

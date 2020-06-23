@@ -27,6 +27,26 @@ namespace PropTreeLib
     {
         delimiter = dlm;
     }
+    void PropStringHandler::SetSectionStyle(char open, char close)
+    {
+        closeSection = close;
+        openSection = open;
+    }
+    void PropStringHandler::SetVectorStyle(char open, char close)
+    {
+        closeVector = close;
+        openVector = open;
+    }
+    void PropStringHandler::GetSectionStyle(char* open, char* close)
+    {
+        *close = closeSection;
+        *open =  openSection;
+    }
+    void PropStringHandler::GetVectorStyle(char* open, char* close)
+    {
+        *close = closeVector;
+        *open =  openVector;
+    }
     bool PropStringHandler::fileExists(std::string filename)
     {
         std::ifstream infile(filename.c_str());
