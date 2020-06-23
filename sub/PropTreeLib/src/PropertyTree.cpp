@@ -9,9 +9,15 @@ namespace PropTreeLib
     {
         stringHandler = PropStringHandler();
         principalSection = new PropertySection(&stringHandler, 0, NULL);
+        principalSection->DeclareIsPrincipal();
     }
 
     PropertyTree::~PropertyTree(void)
+    {
+        this->Destroy();
+    }
+
+    void PropertyTree::Destroy(void)
     {
         principalSection->Destroy();
         delete principalSection;

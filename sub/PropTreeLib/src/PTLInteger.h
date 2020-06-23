@@ -11,7 +11,7 @@ namespace PropTreeLib
         class PTLInteger : public InputVariable
         {
             public:
-                PTLInteger(int defaultValue, std::string description);
+                PTLInteger(int defaultValueIn, std::string description);
                 bool ParseFromString(std::string parseVal, void* ptr);
                 void Destroy(void);
                 void SetDefaultValue(void* ptr);

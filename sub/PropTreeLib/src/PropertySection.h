@@ -28,12 +28,15 @@ namespace PropTreeLib
             Variables::InputVariable* & MapTo(bool*        ptr);
             Variables::InputVariable* & MapTo(std::string* ptr);
             bool StrictTraverseParse(std::string depthString);
+            void BreakIfAlreadyMapped(void);
+            void DeclareIsPrincipal(void);
+            std::string GetTotalName(void);
         private:
             void AssertPointerConsistency(std::string variableLocation);
             std::map<std::string,PropertySection*> sectionSubSections;
             PropStringHandler* stringHandler;
             int depth;
-            bool wasCreatedFromTemplateDeclaration, isTerminalNode, hasValue;
+            bool wasCreatedFromTemplateDeclaration, isTerminalNode, hasValue, isPrincipal;
             PropertySection* host;
             std::string sectionName, sectionValue;
             Variables::InputVariable* templateVariable;

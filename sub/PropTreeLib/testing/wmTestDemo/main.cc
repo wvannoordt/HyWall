@@ -9,9 +9,8 @@ int main(void)
 	int wallModelOutputDataInterval, forcingOffset, rayDim;
 	double errorTolerance;
 	std::string wallModelOutputDir;
-
-	//temporary: replace with PTLEnum
-	std::string momEquation;
+	int momEquation;
+	
 
 	input["NavierStokes"]["WallModel"]["useWallModel"].MapTo(&useWallModel)
 	= new PropTreeLib::Variables::PTLBoolean(false, "Flag to enable to wall model");
@@ -35,7 +34,7 @@ int main(void)
 	= new PropTreeLib::Variables::PTLString(".", "Location for wall model output data");
 
 	input["NavierStokes"]["WallModel"]["Momentum"]["equation"].MapTo(&momEquation)
-	= new PropTreeLib::Variables::PTLString("ODE", "Specifies what kind of equation to solve for wall model momentum equation");
+	= new PropTreeLib::Variables::PTLEnum("ODE", "ODE:allmaras:linear", "Specifies what kind of equation to solve for wall model momentum equation");
 
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();

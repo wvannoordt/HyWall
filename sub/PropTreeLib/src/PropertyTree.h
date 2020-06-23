@@ -19,6 +19,7 @@ namespace PropTreeLib
             void DebugPrint(void);
             PropertySection& operator [](std::string argument);
             void StrictParse(void);
+            void Destroy(void);
         private:
             PropertySection* principalSection;
             PropStringHandler stringHandler;

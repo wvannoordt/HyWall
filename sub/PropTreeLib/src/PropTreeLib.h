@@ -6,6 +6,7 @@
 #include "PTLBoolean.h"
 #include "PTLDouble.h"
 #include "PTLString.h"
+#include "PTLEnum.h"
 namespace PropTreeLib
 {
     void DummyFunction(void);

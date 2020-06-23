@@ -20,11 +20,17 @@ namespace PropTreeLib
         terminalEndpointTarget = NULL;
         hasValue = false;
         basePointerType = Variables::BasePointer::IntPointer;
+        isPrincipal = false;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
     {
         wasCreatedFromTemplateDeclaration = true;
+    }
+
+    void PropertySection::DeclareIsPrincipal(void)
+    {
+        isPrincipal = true;
     }
 
     void PropertySection::DeclareIsTerminal(void)
@@ -197,9 +203,29 @@ namespace PropTreeLib
         this->DeclareIsTerminal();
     }
 
+    std::string PropertySection::GetTotalName(void)
+    {
+        if (host->isPrincipal) return sectionName;
+        else
+        {
+            return host->GetTotalName() + "::" + sectionName;
+        }
+    }
+
+    void PropertySection::BreakIfAlreadyMapped(void)
+    {
+        if (terminalEndpointTarget!=NULL)
+        {
+            std::cout << "Detected double-mapping of a variable:" << std::endl;
+            std::cout << GetTotalName() << std::endl;
+            ErrorKill("Stopping");
+        }
+    }
+
     Variables::InputVariable* & PropertySection::MapTo(int* ptr)
     {
         isTerminalNode = true;
+        BreakIfAlreadyMapped();
         terminalEndpointTarget = (void*)ptr;
         basePointerType = Variables::BasePointer::IntPointer;
         return templateVariable;
@@ -208,6 +234,7 @@ namespace PropTreeLib
     Variables::InputVariable* & PropertySection::MapTo(double* ptr)
     {
         isTerminalNode = true;
+        BreakIfAlreadyMapped();
         terminalEndpointTarget = (void*)ptr;
         basePointerType = Variables::BasePointer::DoublePointer;
         return templateVariable;
@@ -216,6 +243,7 @@ namespace PropTreeLib
     Variables::InputVariable* & PropertySection::MapTo(bool* ptr)
     {
         isTerminalNode = true;
+        BreakIfAlreadyMapped();
         terminalEndpointTarget = (void*)ptr;
         basePointerType = Variables::BasePointer::BoolPointer;
         return templateVariable;
@@ -224,6 +252,7 @@ namespace PropTreeLib
     Variables::InputVariable* & PropertySection::MapTo(std::string* ptr)
     {
         isTerminalNode = true;
+        BreakIfAlreadyMapped();
         terminalEndpointTarget = (void*)ptr;
         basePointerType = Variables::BasePointer::StringPointer;
         return templateVariable;

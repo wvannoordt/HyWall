@@ -19,6 +19,7 @@ namespace PropTreeLib
             void ParseElementAsVariable(std::string line, std::string* variableName, std::string* variableValue);
             void ParseElementAsSubSection(std::string line, std::string* sectionName, std::string* sectionContents);
             int GetElementClass(std::string element);
+            void SetDelimiter(char dlm);
         private:
             std::string commentString;
             std::string whiteSpace;

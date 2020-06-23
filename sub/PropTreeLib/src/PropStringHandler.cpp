@@ -23,6 +23,10 @@ namespace PropTreeLib
         delimiter = ',';
         forbiddenNameChars = "!@#$%^&*(){}[]\\|~\'`?/<>,";
     }
+    void PropStringHandler::SetDelimiter(char dlm)
+    {
+        delimiter = dlm;
+    }
     bool PropStringHandler::fileExists(std::string filename)
     {
         std::ifstream infile(filename.c_str());
