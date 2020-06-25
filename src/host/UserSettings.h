@@ -49,6 +49,9 @@ namespace HyWall
         #pragma HWPP SerialIoMember fluidPrandtl 0.72
     	double fluidPrandtl;
 
+        #pragma HWPP SerialIoMember vanDriestAPlus 17.0
+    	double vanDriestAPlus;
+
         #pragma HWPP SerialIoMember gasConstant 287.0
     	double gasConstant;
 

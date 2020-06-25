@@ -149,7 +149,7 @@ namespace HyWall
         for (int i = 0; i < pointNum; i++)
         {
             //double T = settings.sensorTimescale;
-            double T = 1.414528/strain_rate[i];
+            double T = 1.41421356237/strain_rate[i];
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*(phi[i]-phibar[i]);
         }
@@ -159,7 +159,7 @@ namespace HyWall
         for (int i = 0; i < pointNum; i++)
         {
             //double T = settings.sensorTimescale;
-            double T = 1.414528/strain_rate[i];
+            double T = 1.41421356237/strain_rate[i];
             double dt_T = timeStep/T;
             phibar[i] = phibar[i]+dt_T*((phi[i]*phi[i])-phibar[i]);
         }
