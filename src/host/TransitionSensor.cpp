@@ -3,6 +3,7 @@
 #include "HyWall.h"
 #include "ScreenOutput.h"
 #include "CoreData.h"
+#include "IO.h"
 namespace HyWall
 {
     TransitionSensor::TransitionSensor(void) {}
@@ -10,6 +11,28 @@ namespace HyWall
     {
         sensorType = sensorType_in;
         pointNum = pointNum_in;
+        isRestart = false;
+    }
+
+    void TransitionSensor::WriteRestartFile(int timeStepNum, std::string prefix)
+    {
+        WriteLine(1, "Transition sensor restart write");
+        char buf[100] = {0};
+        std::snprintf(buf, sizeof(buf), "%08d", timeStepNum);
+        std::string iname = buf;
+        std::string filename = prefix + "/tSensor_nt_" + iname + ".rst";
+        IO::WriteStateByFlags(filename, bflag::auxilary);
+    }
+
+    void TransitionSensor::ReadRestartFile(int timeStepNum, std::string prefix)
+    {
+        isRestart = true;
+        WriteLine(1, "Transition sensor restart read");
+        char buf[100] = {0};
+        std::snprintf(buf, sizeof(buf), "%08d", timeStepNum);
+        std::string iname = buf;
+        std::string filename = prefix + "/tSensor_nt_" + iname + ".rst";
+        IO::ReadState(filename);
     }
 
     void TransitionSensor::DefineSensorVariables(void)
@@ -76,6 +99,7 @@ namespace HyWall
     void TransitionSensor::OnFirstSolve(void)
     {
         WriteLine(1, "Initialize Sensor (ID " + std::to_string(sensorType) + ")");
+        if (isRestart) return;
         switch (sensorType)
         {
             case sensor::mettu18:

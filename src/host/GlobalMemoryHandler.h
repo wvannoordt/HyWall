@@ -1,6 +1,7 @@
 #include "BufferFlags.h"
 #include "Parallel.h"
 #include <string>
+#include <vector>
 #ifndef GLOBAL_MEM_HAN_H
 #define GLOBAL_MEM_HAN_H
 namespace HyWall
@@ -20,6 +21,8 @@ namespace HyWall
             void ApplyInitializationPolicies(void);
             void ApplyRuntimePolicies(void);
             void ApplyFinalizationPolicies(void);
+            std::vector<std::string> GetVariablesByFlag(int flag);
+            size_t GetVariableSize(std::string varname);
             int localCpuPoints;
             int localGpuPoints;
             int localTotalPoints;

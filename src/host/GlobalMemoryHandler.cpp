@@ -3,6 +3,7 @@
 #include "ScreenOutput.h"
 #include "DebugTools.h"
 #include <string>
+#include <vector>
 namespace HyWall
 {
     GlobalMemoryHandler::GlobalMemoryHandler(void){initializePoliciesWereApplied=false;}
@@ -219,6 +220,31 @@ namespace HyWall
         {
 
         }
+    }
+
+    std::vector<std::string> GlobalMemoryHandler::GetVariablesByFlag(int flag)
+    {
+        std::vector<std::string> output;
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (HasFlag(manageModes[i], flag))
+            {
+                output.push_back(variableNames[i]);
+            }
+        }
+        return output;
+    }
+
+    size_t GlobalMemoryHandler::GetVariableSize(std::string varname)
+    {
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == varname)
+            {
+                return bufferSizes[i];
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + varname + "\"");
     }
 
     void GlobalMemoryHandler::ApplyFinalizationPolicies(void)

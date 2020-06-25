@@ -163,6 +163,22 @@ namespace HyWall
         }
     }
 
+    void ReadRestart(int timeStep)
+    {
+        if (settings.enableTransitionSensor)
+        {
+            tSensor.ReadRestartFile(timeStep, "restart");
+        }
+    }
+
+    void WriteRestart(int timeStep)
+    {
+        if (settings.enableTransitionSensor)
+        {
+            tSensor.WriteRestartFile(timeStep, "restart");
+        }
+    }
+
     void Finalize(void)
     {
         WriteLine(1, "Closing");

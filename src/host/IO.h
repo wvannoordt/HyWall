@@ -7,7 +7,9 @@ namespace HyWall
 {
     namespace IO
     {
-        void CreateDirectory(std::string dirname);
+        void CreateDirectory(std::string filename);
+        void WriteStateByFlags(std::string filename, int flags);
+        void ReadState(std::string filename);
     }
 }
 

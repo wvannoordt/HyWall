@@ -76,4 +76,14 @@ namespace HyWall
         std::string strname(namebuf);
         PassVariable(strname, ptr);
     }
+
+    void hywall_write_restart_file_f(int* nt_timestep)
+    {
+        WriteRestart(*nt_timestep);
+    }
+
+    void hywall_read_restart_file_f(int* nt_timestep)
+    {
+        ReadRestart(*nt_timestep);
+    }
 }

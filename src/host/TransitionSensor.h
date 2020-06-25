@@ -1,6 +1,6 @@
 #ifndef TRANSIT_SENS_H
 #define TRANSIT_SENS_H
-
+#include <string>
 namespace HyWall
 {
     class TransitionSensor
@@ -12,6 +12,8 @@ namespace HyWall
             void CopySymbols(void);
             void OnFirstSolve(void);
             void OnEverySolve(void);
+            void WriteRestartFile(int timeStepNum, std::string prefix);
+            void ReadRestartFile(int timeStepNum, std::string prefix);
         private:
             void ZeroInit(double* a);
             void CopyAvg(double* b, double* a);
@@ -23,6 +25,7 @@ namespace HyWall
             void fixedX_init(void);
             int sensorType;
             int pointNum;
+            bool isRestart;
             double timeStep;
             double* strain_rate;
             double* strain_rate_avg;

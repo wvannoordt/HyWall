@@ -17,6 +17,8 @@ namespace HyWall
         void hywall_getraydim_f(int* output);
         void hywall_probe_solution_f(int* probeIndex, int* solutionIndex, double* buffer);
         void hywall_copy_singular_buffer_f(char* name, int* namelen, double* buf);
+        void hywall_write_restart_file_f(int* nt_timestep);
+        void hywall_read_restart_file_f(int* nt_timestep);
     }
 }
 

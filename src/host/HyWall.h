@@ -33,5 +33,7 @@ namespace HyWall
         void SetTimeStep(double timeStep_in);
         void Finalize(void);
         void WhenSettingsAreConstant(void);
+        void ReadRestart(int timeStep);
+        void WriteRestart(int timeStep);
     }
 }

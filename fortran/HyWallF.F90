@@ -28,6 +28,37 @@ module HyWallF
     end subroutine HyWallSetDomainSize
 
 
+    subroutine HyWallWriteRestart(nt_timestep)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        integer, intent(in) :: nt_timestep
+        interface
+			subroutine hywall_write_restart_file_f(nt_timestepF) bind (c)
+				use iso_c_binding
+                integer (c_int), intent(in) :: nt_timestepF
+			end subroutine hywall_write_restart_file_f
+		end interface
+        call hywall_write_restart_file_f(nt_timestep)
+
+    end subroutine HyWallWriteRestart
+
+    subroutine HyWallReadRestart(nt_timestep)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        integer, intent(in) :: nt_timestep
+        interface
+			subroutine hywall_read_restart_file_f(nt_timestepF) bind (c)
+				use iso_c_binding
+                integer (c_int), intent(in) :: nt_timestepF
+			end subroutine hywall_read_restart_file_f
+		end interface
+        call hywall_read_restart_file_f(nt_timestep)
+
+    end subroutine HyWallReadRestart
+
+
 
     subroutine HyWallDefineProbeIndex(arrayName, idx)
 
