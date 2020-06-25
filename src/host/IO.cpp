@@ -5,6 +5,7 @@
 #include "HyWall.h"
 #include "Parallel.h"
 #include <vector>
+#include <cstring>
 #define IONAMELEN 100
 namespace HyWall
 {
