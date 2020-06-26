@@ -1,6 +1,6 @@
 #include "Parallel.h"
 #include "mpi.h"
-#include "DebugTools.h"
+#include "DebugTools.hx"
 #define d_abs(myvalue) ((myvalue>0)?(myvalue):-(myvalue))
 namespace HyWall
 {
@@ -9,7 +9,6 @@ namespace HyWall
         int pNum, pId, nameLength;
         char nodeName[MPI_MAX_PROCESSOR_NAME];
         MPI_Comm globalComm;
-        MPI_Comm wallpointComm;
         bool isActive;
         int activeNumLocal;
         int activeNumGlobal;

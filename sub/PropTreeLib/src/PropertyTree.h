@@ -16,6 +16,7 @@ namespace PropTreeLib
             PropertyTree(void);
             ~PropertyTree(void);
             void ReadInputFileToTreeData(std::string filename);
+            void SetCloseMessage(std::string message);
             void DebugPrint(void);
             PropertySection& operator [](std::string argument);
             void StrictParse(void);
@@ -24,6 +25,7 @@ namespace PropTreeLib
             PropertySection* principalSection;
             PropStringHandler stringHandler;
             int treeSpecification;
+            std::string closeMessage;
     };
 }
 #endif

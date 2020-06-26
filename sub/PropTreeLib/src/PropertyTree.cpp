@@ -10,6 +10,7 @@ namespace PropTreeLib
         stringHandler = PropStringHandler();
         principalSection = new PropertySection(&stringHandler, 0, NULL);
         principalSection->DeclareIsPrincipal();
+        closeMessage = "none";
     }
 
     PropertyTree::~PropertyTree(void)
@@ -19,8 +20,14 @@ namespace PropTreeLib
 
     void PropertyTree::Destroy(void)
     {
+    	if (closeMessage != "none") std::cout << closeMessage << std::endl;
         principalSection->Destroy();
         delete principalSection;
+    }
+
+    void PropertyTree::SetCloseMessage(std::string message)
+    {
+    	closeMessage = message;
     }
 
     void PropertyTree::ReadInputFileToTreeData(std::string filename)

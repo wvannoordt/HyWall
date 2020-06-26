@@ -3,21 +3,23 @@
 #include "Parallel.h"
 #include <string>
 #include <iostream>
+#include "Config.hx"
 
 namespace HyWall
 {
-    void WriteLine(int messageVerboseLevel, std::string message)
+    void internal_output(int messageVerboseLevel, std::string message, const char* file, const int line)
     {
-        WriteLine(messageVerboseLevel, message, "[I] HyWall ::");
+        internal_output(messageVerboseLevel, message, "[I] HyWall ::", file, line);
     }
 
-    void WriteLine(int messageVerboseLevel, std::string message, std::string styleString)
+    void internal_output(int messageVerboseLevel, std::string message, std::string styleString, const char* file, const int line)
     {
         if (Parallel::pId == 0)
         {
             //if (messageVerboseLevel <= settings.verboseLevel)
             if (true)
             {
+                WRITE_FILE_LINE;
                 std::cout << "TODO: settings/verboselevel" << std::endl;
                 if (messageVerboseLevel==1)
                 {
