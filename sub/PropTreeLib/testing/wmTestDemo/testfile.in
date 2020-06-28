@@ -2,16 +2,26 @@ NavierStokes
 {
     WallModel
     {
-        useWallModel                = true,
-        outputWallModelData         = true,
-        wallModelOutputDataInterval = 13,
-        forcingOffset               = 4,
-        errorTolerance              = 3.4e-5,
-        rayDim                      = 30,
-        SampleXLocations            = [1.2, 234,42,0.19, 12.3, 2.4],
+        useWallModel                = true
+        outputWallModelData         = true
+        wallModelOutputDataInterval = 13
+        forcingOffset               = 4
+        errorTolerance              = 3.4e-4
+        rayDim                      = 30
+        SampleXLocations            = [1.2, 234,42,0.19, 12.3, 2.4]
         Momentum
         {
             equation = ODE
+            underRelaxation = 0.3
+        }
+        Turbulence
+        {
+            equation = ODE
+        }
+        Energy
+        {
+            equation = ODE
+            underRelaxation = 0.3
         }
     }
 }

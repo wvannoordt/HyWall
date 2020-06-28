@@ -74,8 +74,14 @@ namespace PropTreeLib
             begin = end+1;
             end = contents.find("\n", begin);
         }
-        AssertGroupingConsistency(output);
-        return output;
+        std::string outputWithDelimitedSections = "";
+        for (size_t i = 0; i < output.length(); i++)
+        {
+            if (output[i]==closeSection) {outputWithDelimitedSections = outputWithDelimitedSections + output[i] + delimiter;}
+            else {outputWithDelimitedSections = outputWithDelimitedSections + output[i];}
+        }
+        AssertGroupingConsistency(outputWithDelimitedSections);
+        return outputWithDelimitedSections;
     }
 
     std::vector<std::string> PropStringHandler::IdentifyTopLevels(std::string line)
@@ -99,9 +105,17 @@ namespace PropTreeLib
             size_t start = positions[i];
             if (i >0) start++;
             size_t end = positions[i+1];
-            output.push_back(line.substr(start, end-start));
+            std::string elem = RemoveTrailingDelimiters(line.substr(start, end-start));
+            if (elem.length()>0) output.push_back(elem);
         }
         return output;
+    }
+
+    std::string PropStringHandler::RemoveTrailingDelimiters(std::string str)
+    {
+        size_t i;
+        for (i = 0; str[str.length()-i-1]==delimiter;i++){}
+        return str.substr(0, str.length()-i);
     }
 
     void PropStringHandler::AssertGroupingConsistency(std::string str)
@@ -158,11 +172,13 @@ namespace PropTreeLib
         size_t commentPosition = line.find(commentString);
         if (commentPosition != std::string::npos) inter = line.substr(0, commentPosition);
         std::string output = "";
+        bool lineContainsAssignment = false;
         for (size_t i = 0; i < inter.length(); i++)
         {
             if (whiteSpace.find(inter[i]) == std::string::npos) output = output + inter[i];
+            lineContainsAssignment = lineContainsAssignment || (inter[i] == assignChar);
         }
-        return output;
+        return lineContainsAssignment?output+",":output;
     }
 
     size_t PropStringHandler::GetOriginalLine(size_t compactPosition)

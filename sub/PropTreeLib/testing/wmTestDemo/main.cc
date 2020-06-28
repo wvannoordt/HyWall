@@ -10,6 +10,11 @@ int main(void)
 	double errorTolerance;
 	std::string wallModelOutputDir;
 	int momEquation;
+	double momEqUnderRelax;
+	int turbEquation;
+	double turbEqUnderRelax;
+	int engyEquation;
+	double engyEqUnderRelax;
 	double* sampleXLocations;
 	int numSampleXLocations;
 
@@ -34,11 +39,26 @@ int main(void)
 	input["NavierStokes"]["WallModel"]["outputDir"].MapTo(&wallModelOutputDir)
 	= new PropTreeLib::Variables::PTLString(".", "Location for wall model output data");
 
+	input["NavierStokes"]["WallModel"]["SampleXLocations"].MapTo(&sampleXLocations, &numSampleXLocations)
+	= new PropTreeLib::Variables::PTLDynamicDoubleArray("X-locations for inner-solution sampling with precision 1e-5");
+
 	input["NavierStokes"]["WallModel"]["Momentum"]["equation"].MapTo(&momEquation)
 	= new PropTreeLib::Variables::PTLEnum("ODE", "ODE:allmaras:linear", "Specifies what kind of equation to solve for wall model momentum equation");
 
-	input["NavierStokes"]["WallModel"]["SampleXLocations"].MapTo(&sampleXLocations, &numSampleXLocations)
-	= new PropTreeLib::Variables::PTLDynamicDoubleArray("X-locations for inner-solution sampling with precision 1e-5");
+	input["NavierStokes"]["WallModel"]["Momentum"]["underRelaxation"].MapTo(&momEqUnderRelax)
+	= new PropTreeLib::Variables::PTLDouble(0.4, "Under-relaxation factor for momentum equation Newton solve");
+
+	input["NavierStokes"]["WallModel"]["Turbulence"]["equation"].MapTo(&turbEquation)
+	= new PropTreeLib::Variables::PTLEnum("vanDriest", "ODE:vanDriest:linear", "Specifies what kind of equation to solve for wall model turbulence equation");
+
+	input["NavierStokes"]["WallModel"]["Turbulence"]["underRelaxation"].MapTo(&turbEqUnderRelax)
+	= new PropTreeLib::Variables::PTLDouble(0.4, "Under-relaxation factor for turbulence equation Newton solve");
+
+	input["NavierStokes"]["WallModel"]["Energy"]["equation"].MapTo(&engyEquation)
+	= new PropTreeLib::Variables::PTLEnum("ODE", "ODE:coroccoBuseman:linear", "Specifies what kind of equation to solve for wall model energy equation");
+
+	input["NavierStokes"]["WallModel"]["Energy"]["underRelaxation"].MapTo(&engyEqUnderRelax)
+	= new PropTreeLib::Variables::PTLDouble(0.4, "Under-relaxation factor for energy equation Newton solve");
 
 	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();

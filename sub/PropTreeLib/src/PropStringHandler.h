@@ -18,6 +18,7 @@ namespace PropTreeLib
             std::vector<std::string> IdentifyTopLevels(std::string line);
             void ParseElementAsVariable(std::string line, std::string* variableName, std::string* variableValue);
             void ParseElementAsSubSection(std::string line, std::string* sectionName, std::string* sectionContents);
+            std::string RemoveTrailingDelimiters(std::string str);
             int GetElementClass(std::string element);
             void SetDelimiter(char dlm);
             void SetSectionStyle(char open, char close);

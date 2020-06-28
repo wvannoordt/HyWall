@@ -55,7 +55,11 @@ namespace HyWall
             MPI_File_open(MPI_COMM_WORLD, filename.c_str(), MPI_MODE_RDWR | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
             MPI_File_set_view(fh, 0, MPI_INT, MPI_INT, "native", MPI_INFO_NULL);
             MPI_File_read_at(fh, 0, &(dummy), 1, MPI_INT, &st);
-            if (dummy != memory.globalTotalPoints) __erkill("Restart file defined on different discretization.");
+            if (dummy != memory.globalTotalPoints)
+            {
+                WriteLine(1, "WARNING: restart file defined on discretization. Ignoring restart data.");
+                return;
+            }
             MPI_File_read_at(fh, 1, &nvar, 1, MPI_INT, &st);
             MPI_File_set_view(fh, 2*sizeof(int), MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL);
             int blockOffset = IONAMELEN+memory.globalTotalPoints*sizeof(double);
