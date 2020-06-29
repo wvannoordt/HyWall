@@ -47,8 +47,8 @@ namespace HyWall
     {
         WriteLine(2, "Applying averaging to " + variableName);
         avgVars[3*numAvgVars] = (double*)memory.GetVariable(variableName);
-        memory.AddStaticVariable<double>(variableName+"_avg1", avgVars+3*numAvgVars+1, NULL, 1, 1, bflag::auxilary | bflag::allocateNow);
-        memory.AddStaticVariable<double>(variableName+"_avg2", avgVars+3*numAvgVars+2, NULL, 1, 1, bflag::auxilary | bflag::allocateNow);
+        memory.AddStaticVariable<double>(variableName+"_avg1", avgVars+3*numAvgVars+1, NULL, 1, 1, bflag::auxilary | bflag::allocateNow | bflag::restorable);
+        memory.AddStaticVariable<double>(variableName+"_avg2", avgVars+3*numAvgVars+2, NULL, 1, 1, bflag::auxilary | bflag::allocateNow | bflag::restorable);
 
         avgVarNames[3*numAvgVars]   = variableName;
         avgVarNames[3*numAvgVars+1] = variableName+"_avg1";

@@ -6,6 +6,9 @@
 #include "Parallel.h"
 #include <vector>
 #include <cstring>
+#include <unistd.h>
+#include <string>
+#include <fstream>
 #define IONAMELEN 100
 namespace HyWall
 {
@@ -14,6 +17,12 @@ namespace HyWall
         void CreateDirectory(std::string dirname)
         {
             int st = mkdir(dirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        }
+
+        bool FileExists(const std::string& name)
+        {
+            std::ifstream f(name.c_str());
+            return f.good();
         }
 
         void WriteStateByFlags(std::string filename, int flags)
@@ -48,6 +57,7 @@ namespace HyWall
 
         void ReadState(std::string filename)
         {
+            if (!FileExists(filename)) __erkill("Cannot fild file " + filename);
             char nameBuffer[IONAMELEN];
             int nvar, dummy;
             MPI_File fh;

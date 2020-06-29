@@ -12,8 +12,6 @@ namespace HyWall
             void CopySymbols(void);
             void OnFirstSolve(void);
             void OnEverySolve(void);
-            void WriteRestartFile(int timeStepNum, std::string prefix);
-            void ReadRestartFile(int timeStepNum, std::string prefix);
         private:
             void ZeroInit(double* a);
             void CopyAvg(double* b, double* a);

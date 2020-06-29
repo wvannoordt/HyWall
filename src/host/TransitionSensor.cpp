@@ -11,50 +11,28 @@ namespace HyWall
     {
         sensorType = sensorType_in;
         pointNum = pointNum_in;
-        isRestart = false;
-    }
-
-    void TransitionSensor::WriteRestartFile(int timeStepNum, std::string prefix)
-    {
-        WriteLine(1, "Transition sensor restart write");
-        char buf[100] = {0};
-        std::snprintf(buf, sizeof(buf), "%08d", timeStepNum);
-        std::string iname = buf;
-        std::string filename = prefix + "/tSensor_nt_" + iname + ".rst";
-        IO::WriteStateByFlags(filename, bflag::auxilary);
-    }
-
-    void TransitionSensor::ReadRestartFile(int timeStepNum, std::string prefix)
-    {
-        isRestart = true;
-        WriteLine(1, "Transition sensor restart read");
-        char buf[100] = {0};
-        std::snprintf(buf, sizeof(buf), "%08d", timeStepNum);
-        std::string iname = buf;
-        std::string filename = prefix + "/tSensor_nt_" + iname + ".rst";
-        IO::ReadState(filename);
     }
 
     void TransitionSensor::DefineSensorVariables(void)
     {
-        memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide);
-        memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary | bflag::userCanProvide);
-        memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide | bflag::restorable);
+        memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary | bflag::userCanProvide | bflag::restorable);
+        memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide | bflag::restorable);
         switch(sensorType)
         {
             case sensor::mettu18:
             {
-                memory.AddStaticVariable<double>("aux:strain_rate_avg", &strain_rate_avg,            NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:k",               &k,                          NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:k_avg",           &k_avg,                      NULL, 1, 1, bflag::auxilary | bflag::vtkOutput);
-                memory.AddStaticVariable<double>("aux:rho_avg",         &rho_avg,                    NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:mu_avg",          &mu_avg,                     NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:u_avg",           &u_avg,                      NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:u_sq_avg",        &u_sq_avg,                   NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:v_avg",           &v_avg,                      NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:v_sq_avg",        &v_sq_avg,                   NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:w_avg",           &w_avg,                      NULL, 1, 1, bflag::auxilary);
-                memory.AddStaticVariable<double>("aux:w_sq_avg",        &w_sq_avg,                   NULL, 1, 1, bflag::auxilary);
+                memory.AddStaticVariable<double>("aux:strain_rate_avg", &strain_rate_avg,            NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:k",               &k,                          NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:k_avg",           &k_avg,                      NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:rho_avg",         &rho_avg,                    NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:mu_avg",          &mu_avg,                     NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:u_avg",           &u_avg,                      NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:u_sq_avg",        &u_sq_avg,                   NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:v_avg",           &v_avg,                      NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:v_sq_avg",        &v_sq_avg,                   NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:w_avg",           &w_avg,                      NULL, 1, 1, bflag::auxilary | bflag::restorable);
+                memory.AddStaticVariable<double>("aux:w_sq_avg",        &w_sq_avg,                   NULL, 1, 1, bflag::auxilary | bflag::restorable);
                 break;
             }
             case sensor::fixedXLocation:
@@ -99,7 +77,11 @@ namespace HyWall
     void TransitionSensor::OnFirstSolve(void)
     {
         WriteLine(1, "Initialize Sensor (ID " + std::to_string(sensorType) + ")");
-        if (isRestart) return;
+        if (settings.readRestart)
+        {
+
+            return;
+        }
         switch (sensorType)
         {
             case sensor::mettu18:

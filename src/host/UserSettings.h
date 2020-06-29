@@ -9,6 +9,8 @@ namespace HyWall
     #pragma HWPP SerialIoStructStart UserSettings
     struct UserSettings
     {
+        #pragma HWPP SerialIoMember readRestart false
+        bool readRestart;
 
         #pragma HWPP SerialIoMember allocMode amode::allCpu
         int allocMode;

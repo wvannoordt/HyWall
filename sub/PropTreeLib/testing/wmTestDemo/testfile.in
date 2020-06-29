@@ -1,5 +1,6 @@
 #define base_dir .
 #define num 0.8
+#define erTol 1e-7
 NavierStokes
 {
     WallModel
@@ -9,7 +10,7 @@ NavierStokes
         outputWallModelData         = true
         wallModelOutputDataInterval = 13
         forcingOffset               = 4
-        errorTolerance              = 3.4e-4
+        errorTolerance              = $(erTol)
         rayDim                      = 30
         SampleXLocations            = [1.2, 234,42,0.19, 12.3, 2.4]
         outputDir                   = $(base_dir)/$(wm_dir)

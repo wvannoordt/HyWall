@@ -19,6 +19,7 @@
 #include "Averaging.h"
 #include "SolutionProbing.h"
 #include "Testing.h"
+#include "IO.h"
 namespace HyWall
 {
     UserSettings settings;
@@ -165,18 +166,25 @@ namespace HyWall
 
     void ReadRestart(int timeStep)
     {
-        if (settings.enableTransitionSensor)
-        {
-            tSensor.ReadRestartFile(timeStep, "restart");
-        }
+        if (!settings.readRestart) return;
+        std::string prefix = "restart";
+        char buf[100] = {0};
+        std::snprintf(buf, sizeof(buf), "%08d", timeStep);
+        std::string iname = buf;
+        std::string filename = prefix + "/HyWallRestart_nt_" + iname + ".rst";
+        WriteLine(1, "wall model restart read: " + filename);
+        IO::ReadState(filename);
     }
 
     void WriteRestart(int timeStep)
     {
-        if (settings.enableTransitionSensor)
-        {
-            tSensor.WriteRestartFile(timeStep, "restart");
-        }
+        std::string prefix = "restart";
+        char buf[100] = {0};
+        std::snprintf(buf, sizeof(buf), "%08d", timeStep);
+        std::string iname = buf;
+        std::string filename = prefix + "/HyWallRestart_nt_" + iname + ".rst";
+        WriteLine(1, "wall model restart write: " + filename);
+        IO::WriteStateByFlags(filename, bflag::restorable);
     }
 
     void Finalize(void)
