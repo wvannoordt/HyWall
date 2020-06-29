@@ -32,7 +32,7 @@ namespace PropTreeLib
 
     void PropertyTree::ReadInputFileToTreeData(std::string filename)
     {
-        std::string fileRawContents = stringHandler.Sanitize(stringHandler.ReadFileToString(filename));
+        std::string fileRawContents = stringHandler.Sanitize(stringHandler.ReadFileToString(filename), principalSection->GetContext());
         principalSection->PopulateInstanceFromString(fileRawContents);
         principalSection->SetName("[ROOT]");
         principalSection->SetValue(fileRawContents);

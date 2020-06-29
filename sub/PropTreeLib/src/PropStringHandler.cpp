@@ -9,16 +9,18 @@
 #include <iomanip>
 #include <sstream>
 #include <stack>
+#include "PreProcessContext.h"
 namespace PropTreeLib
 {
     PropStringHandler::PropStringHandler(void)
     {
-        commentString = "#";
+        commentString = "//";
         whiteSpace = " \t\f\v\r";
         openSection = '{';
         closeSection = '}';
         openVector = '[';
         closeVector = ']';
+        variableSpecification = '$';
         assignChar = '=';
         delimiter = ',';
         forbiddenNameChars = "!@#$%^&*(){}[]\\|~\'`?/<>,";
@@ -60,7 +62,7 @@ namespace PropTreeLib
         buffer << f.rdbuf();
         return buffer.str();
     }
-    std::string PropStringHandler::Sanitize(std::string contents)
+    std::string PropStringHandler::Sanitize(std::string contents, PreProcessContext* context)
     {
         std::string output = "";
         bool done = false;
@@ -68,7 +70,7 @@ namespace PropTreeLib
         size_t end = contents.find("\n", begin);
         while (end!=std::string::npos)
         {
-            std::string line = ProcessLine(contents.substr(begin, end-begin));
+            std::string line = ProcessLine(contents.substr(begin, end-begin), context);
             output = output + line;
             lineBreaks.push_back(line.length());
             begin = end+1;
@@ -166,19 +168,36 @@ namespace PropTreeLib
         }
     }
 
-    std::string PropStringHandler::ProcessLine(std::string line)
+    std::string PropStringHandler::ProcessLine(std::string line, PreProcessContext* context)
     {
-        std::string inter = line;
+        std::string inter = Trim(line);
         size_t commentPosition = line.find(commentString);
         if (commentPosition != std::string::npos) inter = line.substr(0, commentPosition);
         std::string output = "";
         bool lineContainsAssignment = false;
-        for (size_t i = 0; i < inter.length(); i++)
+        if (context->ValidateDefinition(inter))
         {
-            if (whiteSpace.find(inter[i]) == std::string::npos) output = output + inter[i];
-            lineContainsAssignment = lineContainsAssignment || (inter[i] == assignChar);
+            lineContainsAssignment = true;
+            output = output+inter;
+        }
+        else
+        {
+            for (size_t i = 0; i < inter.length(); i++)
+            {
+                if (whiteSpace.find(inter[i]) == std::string::npos) output = output + inter[i];
+                lineContainsAssignment = lineContainsAssignment || (inter[i] == assignChar);
+            }
         }
         return lineContainsAssignment?output+",":output;
+    }
+
+    std::string PropStringHandler::Trim(std::string str)
+    {
+        size_t start, end;
+        for (start = 0; start<str.length(); start++) {if (whiteSpace.find(str[start]) == std::string::npos) {break;}}
+        for (end = str.length(); end >= 0; end--) {if (whiteSpace.find(str[end]) == std::string::npos) {break;}}
+        std::string output = str.substr(start, end-start);
+        return output;
     }
 
     size_t PropStringHandler::GetOriginalLine(size_t compactPosition)
@@ -193,9 +212,10 @@ namespace PropTreeLib
         return 0;
     }
 
-    int PropStringHandler::GetElementClass(std::string element)
+    int PropStringHandler::GetElementClass(std::string element, PreProcessContext* context)
     {
         if (element.find(charString(openSection)) != std::string::npos) return EC_SUBSECTION;
+        else if (context->ValidateDefinition(element)) return EC_PREPROCESS;
         return EC_VARASSIGN;
     }
 

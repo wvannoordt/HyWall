@@ -7,6 +7,7 @@
 #include "PropStringHandler.h"
 #include "InputVariable.h"
 #include "BasePointerTypes.h"
+#include "PreProcessContext.h"
 namespace PropTreeLib
 {
     class PropertySection
@@ -21,6 +22,7 @@ namespace PropTreeLib
             void DeclareIsFromTemplateDeclaration(void);
             void DeclareIsTerminal(void);
             void Destroy(void);
+            PreProcessContext* GetContext(void);
             PropertySection& operator [](std::string argument);
             PropertySection& operator =(std::string argument);
             Variables::InputVariable* & MapTo(int*         ptr);
@@ -45,6 +47,7 @@ namespace PropTreeLib
             void* terminalEndpointTargetSecondaryData;
             Variables::BasePointer basePointerType;
             Variables::BasePointer secondaryBasePointerType;
+            PreProcessContext context;
     };
 }
 #endif

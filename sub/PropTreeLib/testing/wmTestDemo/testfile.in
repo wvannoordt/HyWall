@@ -1,7 +1,10 @@
+#define base_dir .
+#define num 0.8
 NavierStokes
 {
     WallModel
     {
+        #define wm_dir WallModelOutput
         useWallModel                = true
         outputWallModelData         = true
         wallModelOutputDataInterval = 13
@@ -9,19 +12,21 @@ NavierStokes
         errorTolerance              = 3.4e-4
         rayDim                      = 30
         SampleXLocations            = [1.2, 234,42,0.19, 12.3, 2.4]
+        outputDir                   = $(base_dir)/$(wm_dir)
         Momentum
         {
             equation = ODE
-            underRelaxation = 0.3
+            underRelaxation = $(num)
         }
         Turbulence
         {
             equation = ODE
+            underRelaxation = $(num)
         }
         Energy
         {
             equation = ODE
-            underRelaxation = 0.3
+            underRelaxation = $(num)
         }
     }
 }

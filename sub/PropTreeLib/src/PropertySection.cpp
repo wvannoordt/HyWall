@@ -23,6 +23,15 @@ namespace PropTreeLib
         basePointerType = Variables::BasePointer::IntPointer;
         isPrincipal = false;
         secondaryBasePointerType = Variables::BasePointer::None;
+        if (host_in != NULL)
+        {
+            context.SetHostContext(host->GetContext());
+        }
+    }
+
+    PreProcessContext* PropertySection::GetContext(void)
+    {
+        return &context;
     }
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
@@ -45,7 +54,7 @@ namespace PropTreeLib
         std::vector<std::string> topLevelElements = stringHandler->IdentifyTopLevels(contents);
         for (int i = 0; i < topLevelElements.size(); i++)
         {
-            int elementClass = stringHandler->GetElementClass(topLevelElements[i]);
+            int elementClass = stringHandler->GetElementClass(topLevelElements[i], &context);
             switch (elementClass)
             {
                 case EC_VARASSIGN:
@@ -72,6 +81,11 @@ namespace PropTreeLib
                     sectionSubSections[name]->PopulateInstanceFromString(val);
                     sectionSubSections[name]->SetName(name);
                     sectionSubSections[name]->SetValue(val);
+                    break;
+                }
+                case EC_PREPROCESS:
+                {
+                    context.ParseDefinition(topLevelElements[i]);
                     break;
                 }
             }
@@ -105,7 +119,7 @@ namespace PropTreeLib
         }
         else
         {
-            std::cout << style << " " << sectionName << ":" << std::endl;
+            std::cout << style << " " << sectionName << ": " << context.DebugPrint() << std::endl;
         }
         for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
         {
@@ -161,6 +175,21 @@ namespace PropTreeLib
                 templateVariable->SetDefaultValue(terminalEndpointTarget);
                 return true;
             }
+            else if (context.ValidateInvocation(sectionValue))
+            {
+                std::string resolvedValue;
+                if (context.ParseInvocationExpression(sectionValue, &resolvedValue))
+                {
+                    sectionValue = resolvedValue;
+                    if(!templateVariable->ParseFromString(resolvedValue, terminalEndpointTarget))
+                    {
+                        std::cout << "Could not parse the following variable (after preprocessor expansion):" << std::endl;
+                        std::cout << "  >>  " << newDepthString << "  =  " << sectionValue << std::endl;
+                        return false;
+                    }
+                    return true;
+                }
+            }
             else if(!templateVariable->ParseFromString(sectionValue, terminalEndpointTarget))
             {
                 std::cout << "Could not parse the following variable:" << std::endl;
@@ -171,7 +200,6 @@ namespace PropTreeLib
             {
                 templateVariable->SetSecondaryVariable(terminalEndpointTargetSecondaryData);
             }
-
             return true;
         }
     }

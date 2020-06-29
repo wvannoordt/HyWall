@@ -18,6 +18,7 @@ namespace PropTreeLib
                 std::string GetDefaultValueString(void);
             private:
                 double defaultValue;
+                std::string allowed;
         };
     }
 }

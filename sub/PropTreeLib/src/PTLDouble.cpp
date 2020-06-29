@@ -10,9 +10,18 @@ namespace PropTreeLib
             this->SetDescription(descriptionIn);
             defaultValue = defaultValueIn;
             basePointerType = BasePointer::DoublePointer;
+            allowed = "0123456789e-.";
         }
         bool PTLDouble::ParseFromString(std::string parseVal, void* ptr)
         {
+            for (size_t a = 0; a < parseVal.length(); a++)
+            {
+                if (allowed.find(parseVal[a])==std::string::npos)
+                {
+                    this->SetDefaultValue(ptr);
+                    return false;
+                }
+            }
             double i;
             try
             {
