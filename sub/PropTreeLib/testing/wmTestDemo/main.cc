@@ -2,7 +2,7 @@
 #include "PropTreeLib.h"
 int main(void)
 {
-	std::string filename = "testfile.in";
+	std::string filename = "testfile.ptl";
 	PropTreeLib::PropertyTree input;
 
 	bool useWallModel, outputWallModelData;

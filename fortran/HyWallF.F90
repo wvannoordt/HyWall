@@ -22,6 +22,7 @@ module HyWallF
 			end subroutine hywall_setdomainsize_f
 		end interface
         call hywall_setdomainsize_f(numPoints)
+        if (allocated(swapBufferSingular)) deallocate(swapBufferSingular)
         allocate(swapBufferSingular(numPoints))
         numPointsGlob = numPoints
 
