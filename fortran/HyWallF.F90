@@ -1,17 +1,17 @@
 !Sparsh was here
 module HyWallF
-
+​
     use, intrinsic :: iso_c_binding
-
+​
 	implicit none
-
+​
     real (c_double), dimension (:), allocatable, target :: swapBuffer, swapBufferSingular
     integer                                             :: hRayDimGlob, numPointsGlob
-
+​
     contains
-
+​
     subroutine HyWallSetDomainSize(numPoints)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         integer, intent(in) :: numPoints
@@ -25,12 +25,12 @@ module HyWallF
         if (allocated(swapBufferSingular)) deallocate(swapBufferSingular)
         allocate(swapBufferSingular(numPoints))
         numPointsGlob = numPoints
-
+​
     end subroutine HyWallSetDomainSize
-
-
+​
+​
     subroutine HyWallWriteRestart(nt_timestep)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         integer, intent(in) :: nt_timestep
@@ -41,11 +41,11 @@ module HyWallF
 			end subroutine hywall_write_restart_file_f
 		end interface
         call hywall_write_restart_file_f(nt_timestep)
-
+​
     end subroutine HyWallWriteRestart
-
+​
     subroutine HyWallReadRestart(nt_timestep)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         integer, intent(in) :: nt_timestep
@@ -56,13 +56,13 @@ module HyWallF
 			end subroutine hywall_read_restart_file_f
 		end interface
         call hywall_read_restart_file_f(nt_timestep)
-
+​
     end subroutine HyWallReadRestart
-
-
-
+​
+​
+​
     subroutine HyWallDefineProbeIndex(arrayName, idx)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         character*(*),   intent(in)    :: arrayName
@@ -76,12 +76,12 @@ module HyWallF
             end subroutine hywall_define_probe_index_f
         end interface
         call hywall_define_probe_index_f(arrayName, len(trim(arrayName)), idx)
-
+​
     end subroutine HyWallDefineProbeIndex
-
-
+​
+​
     subroutine HyWallCopySingularBuffer(arrayName, array)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         character*(*),   intent(in)     :: arrayName
@@ -99,12 +99,12 @@ module HyWallF
         do idx = 1,numPointsGlob
             array(idx) = swapBufferSingular(idx)
         end do
-
+​
     end subroutine HyWallCopySingularBuffer
-
-
+​
+​
     subroutine HywallProbeSolution(probeIndex, solutionIndex, array)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         integer (c_int), intent(in)     :: probeIndex
@@ -123,13 +123,13 @@ module HyWallF
         do idx = 1,hRayDimGlob
             array(idx) = swapBuffer(idx)
         end do
-
+​
     end subroutine HywallProbeSolution
-
-
-
+​
+​
+​
     subroutine HyWallAwait()
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         interface
@@ -138,13 +138,13 @@ module HyWallF
 			end subroutine hywall_await_f
 		end interface
         call hywall_await_f()
-
+​
     end subroutine HyWallAwait
-
-
-
+​
+​
+​
     subroutine HyWallAllocate
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         integer :: hRayDim
@@ -162,14 +162,15 @@ module HyWallF
         call hywall_allocate_f()
         call hywall_getraydim_f(hRayDim)
         hRayDimGlob = hRayDim
+        if (allocated(swapBuffer)) deallocate(swapBuffer)
         allocate(swapBuffer(hRayDim))
-
+​
     end subroutine HyWallAllocate
-
-
-
+​
+​
+​
     subroutine HyWallSetTimeStep(timestep)
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         real*8, intent(in) :: timestep
@@ -180,13 +181,13 @@ module HyWallF
             end subroutine hywall_settimestep_f
         end interface
         call hywall_settimestep_f(timestep)
-
+​
     end subroutine HyWallSetTimeStep
-
-
-
+​
+​
+​
     subroutine HyWallSolve
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         interface
@@ -195,13 +196,13 @@ module HyWallF
             end subroutine hywall_solve_f
         end interface
         call hywall_solve_f()
-
+​
     end subroutine HyWallSolve
-
-
-
+​
+​
+​
     subroutine HyWallPassVariable(arrayName, arrayPointer)
-
+​
         use, intrinsic :: iso_c_binding
 		implicit none
 		character*(*), intent(in)       :: arrayName
@@ -215,13 +216,13 @@ module HyWallF
 			end subroutine hywall_passvariable_f
 		end interface
 		call hywall_passvariable_f(arrayName, arrayPointer, len(trim(arrayName)))
-
+​
 	end subroutine HyWallPassVariable
-
-
-
+​
+​
+​
     subroutine HyWallDefineVariables()
-
+​
         use, intrinsic :: iso_c_binding
         implicit none
         interface
@@ -230,13 +231,13 @@ module HyWallF
             end subroutine hywall_definevariables_f
         end interface
         call hywall_definevariables_f()
-
+​
     end subroutine HyWallDefineVariables
-
-
-
+​
+​
+​
     subroutine HyWallPassFlowfieldVariables(arrayPointer, memOffset)
-
+​
         use, intrinsic :: iso_c_binding
 		implicit none
 		type (c_ptr),  intent(in)   :: arrayPointer
@@ -249,7 +250,7 @@ module HyWallF
 			end subroutine hywall_passflowfieldvariables_f
 		end interface
 		call hywall_passflowfieldvariables_f(arrayPointer, memOffset)
-
+​
 	end subroutine HyWallPassFlowfieldVariables
-
+​
 end module HyWallF
