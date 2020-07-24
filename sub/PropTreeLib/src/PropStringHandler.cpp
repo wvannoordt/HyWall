@@ -39,6 +39,10 @@ namespace PropTreeLib
         closeVector = close;
         openVector = open;
     }
+    std::string PropStringHandler::GetCommentSpecifier(void)
+    {
+        return commentString;
+    }
     void PropStringHandler::GetSectionStyle(char* open, char* close)
     {
         *close = closeSection;

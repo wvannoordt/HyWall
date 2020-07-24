@@ -8,6 +8,9 @@
 #include "InputVariable.h"
 #include "BasePointerTypes.h"
 #include "PreProcessContext.h"
+#include <fstream>
+#include <sys/stat.h>
+#include <unistd.h>
 namespace PropTreeLib
 {
     class PropertySection
@@ -30,10 +33,14 @@ namespace PropTreeLib
             Variables::InputVariable* & MapTo(bool*        ptr);
             Variables::InputVariable* & MapTo(std::string* ptr);
             Variables::InputVariable* & MapTo(double** ptr, int* nPtr);
+            Variables::InputVariable* & MapTo(double** ptr);
+            Variables::InputVariable* & MapTo(int** ptr, int* nPtr);
+            Variables::InputVariable* & MapTo(int** ptr);
             bool StrictTraverseParse(std::string depthString);
             void BreakIfAlreadyMapped(void);
             void DeclareIsPrincipal(void);
             std::string GetTotalName(void);
+            void RecursiveWriteDefaults(std::ofstream& myfile);
         private:
             void AssertPointerConsistency(std::string variableLocation, bool isSecondary);
             std::map<std::string,PropertySection*> sectionSubSections;

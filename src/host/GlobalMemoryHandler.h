@@ -23,6 +23,7 @@ namespace HyWall
             void ApplyFinalizationPolicies(void);
             std::vector<std::string> GetVariablesByFlag(int flag);
             size_t GetVariableSize(std::string varname);
+            bool VariableHasFlag(std::string name, int flag);
             int localCpuPoints;
             int localGpuPoints;
             int localTotalPoints;

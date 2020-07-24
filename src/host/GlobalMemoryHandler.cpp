@@ -181,6 +181,18 @@ namespace HyWall
         numGlobalVariables++;
     }
 
+    bool GlobalMemoryHandler::VariableHasFlag(std::string name, int flag)
+    {
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == name)
+            {
+                return HasFlag(manageModes[i], flag);
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + name + "\"");
+    }
+
     void GlobalMemoryHandler::ApplyInitializationPolicies(void)
     {
         initializePoliciesWereApplied = true;

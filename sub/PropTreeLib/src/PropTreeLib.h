@@ -8,9 +8,8 @@
 #include "PTLString.h"
 #include "PTLEnum.h"
 #include "PTLDynamicDoubleArray.h"
-namespace PropTreeLib
-{
-    void DummyFunction(void);
-}
-
+#include "PTLStaticDoubleArray.h"
+#include "PTLDynamicIntegerArray.h"
+#include "PTLStaticIntegerArray.h"
+#include "Interactive.h"
 #endif

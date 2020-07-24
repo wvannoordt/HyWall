@@ -8,7 +8,7 @@ namespace HyWall
 {
     HyWallInstanceSeries::HyWallInstanceSeries(void)
     {
-
+        
     }
 
     HyWallInstanceSeries::~HyWallInstanceSeries(void)

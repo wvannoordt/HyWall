@@ -26,6 +26,7 @@ namespace PropTreeLib
             void SetVectorStyle(char open, char close);
             void GetSectionStyle(char* open, char* close);
             void GetVectorStyle(char* open, char* close);
+            std::string GetCommentSpecifier(void);
             std::string Trim(std::string str);
         private:
             std::string commentString;

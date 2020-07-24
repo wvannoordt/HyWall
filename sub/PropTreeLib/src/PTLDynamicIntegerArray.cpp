@@ -1,22 +1,22 @@
 #include <iostream>
 #include <string>
-#include "PTLDynamicDoubleArray.h"
+#include "PTLDynamicIntegerArray.h"
 namespace PropTreeLib
 {
     namespace Variables
     {
-        PTLDynamicDoubleArray::PTLDynamicDoubleArray(std::string descriptionIn)
+        PTLDynamicIntegerArray::PTLDynamicIntegerArray(std::string descriptionIn)
         {
             strHandle = new PropStringHandler();
             this->SetDescription(descriptionIn);
             defaultValue = "[]";
-            basePointerType = BasePointer::DoubleArrayPointer;
+            basePointerType = BasePointer::IntArrayPointer;
             secondaryBasePointerType=BasePointer::IntPointer;
             requiresDelete = false;
             basePtr = NULL;
             count = 0;
         }
-        bool PTLDynamicDoubleArray::ParseFromString(std::string parseVal, void* ptr)
+        bool PTLDynamicIntegerArray::ParseFromString(std::string parseVal, void* ptr)
         {
             char open, close;
             strHandle->GetVectorStyle(&open, &close);
@@ -27,34 +27,46 @@ namespace PropTreeLib
             std::string internalValues = parseVal.substr(sPos+1,ePos-sPos-1);
             std::vector<std::string> vals = strHandle->IdentifyTopLevels(internalValues);
             count = vals.size();
-            basePtr = new double[count];
-            *((double**)ptr) = basePtr;
+            basePtr = new int[count];
+            *((int**)ptr) = basePtr;
             requiresDelete = true;
-            for (int i = 0; i < vals.size(); i++)
+            std::string nums = "0123456789";
+            std::string parseValCurrent;
+            for (int j = 0; j < vals.size(); j++)
             {
-                double z;
+                int i;
+                parseValCurrent = vals[j];
                 try
                 {
-                    z=std::stod(vals[i]);
-                    basePtr[i] = z;
+                    for (size_t y = 0; y < parseValCurrent.length(); y++)
+                    {
+                        if (nums.find(parseValCurrent[y]) == std::string::npos)
+                        {
+                            this->SetDefaultValue(ptr);
+                            return false;
+                        }
+                    }
+                    i=std::stoi(parseValCurrent);
+                    *(basePtr+j) = i;
                 }
                 catch (...)
                 {
+                    this->SetDefaultValue(ptr);
                     return false;
                 }
             }
             return true;
         }
-        void PTLDynamicDoubleArray::SetSecondaryVariable(void* ptr)
+        void PTLDynamicIntegerArray::SetSecondaryVariable(void* ptr)
         {
             *((int*)ptr) = count;
         }
-        std::string PTLDynamicDoubleArray::GetDefaultValueString(void)
+        std::string PTLDynamicIntegerArray::GetDefaultValueString(void)
         {
             return std::string(defaultValue);
         }
-        void PTLDynamicDoubleArray::SetDefaultValue(void* ptr){}
-        void PTLDynamicDoubleArray::Destroy(void)
+        void PTLDynamicIntegerArray::SetDefaultValue(void* ptr){}
+        void PTLDynamicIntegerArray::Destroy(void)
         {
             delete strHandle;
             if (requiresDelete) delete [] basePtr;

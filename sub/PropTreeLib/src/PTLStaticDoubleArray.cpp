@@ -1,22 +1,22 @@
 #include <iostream>
 #include <string>
-#include "PTLDynamicDoubleArray.h"
+#include "PTLStaticDoubleArray.h"
 namespace PropTreeLib
 {
     namespace Variables
     {
-        PTLDynamicDoubleArray::PTLDynamicDoubleArray(std::string descriptionIn)
+        PTLStaticDoubleArray::PTLStaticDoubleArray(int assertCount_in, std::string descriptionIn)
         {
             strHandle = new PropStringHandler();
             this->SetDescription(descriptionIn);
             defaultValue = "[]";
             basePointerType = BasePointer::DoubleArrayPointer;
-            secondaryBasePointerType=BasePointer::IntPointer;
             requiresDelete = false;
             basePtr = NULL;
             count = 0;
+            assertCount = assertCount_in;
         }
-        bool PTLDynamicDoubleArray::ParseFromString(std::string parseVal, void* ptr)
+        bool PTLStaticDoubleArray::ParseFromString(std::string parseVal, void* ptr)
         {
             char open, close;
             strHandle->GetVectorStyle(&open, &close);
@@ -30,6 +30,7 @@ namespace PropTreeLib
             basePtr = new double[count];
             *((double**)ptr) = basePtr;
             requiresDelete = true;
+            if (count!=assertCount) return false;
             for (int i = 0; i < vals.size(); i++)
             {
                 double z;
@@ -45,16 +46,12 @@ namespace PropTreeLib
             }
             return true;
         }
-        void PTLDynamicDoubleArray::SetSecondaryVariable(void* ptr)
-        {
-            *((int*)ptr) = count;
-        }
-        std::string PTLDynamicDoubleArray::GetDefaultValueString(void)
+        std::string PTLStaticDoubleArray::GetDefaultValueString(void)
         {
             return std::string(defaultValue);
         }
-        void PTLDynamicDoubleArray::SetDefaultValue(void* ptr){}
-        void PTLDynamicDoubleArray::Destroy(void)
+        void PTLStaticDoubleArray::SetDefaultValue(void* ptr){}
+        void PTLStaticDoubleArray::Destroy(void)
         {
             delete strHandle;
             if (requiresDelete) delete [] basePtr;

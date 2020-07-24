@@ -7,6 +7,9 @@
 #include "ElementClasses.h"
 #include "Error.h"
 #include "BasePointerTypes.h"
+#include <fstream>
+#include <sys/stat.h>
+#include <unistd.h>
 namespace PropTreeLib
 {
     PropertySection::PropertySection(PropStringHandler* stringHandler_in, int depthIn, PropertySection* host_in)
@@ -47,6 +50,41 @@ namespace PropTreeLib
     void PropertySection::DeclareIsTerminal(void)
     {
         isTerminalNode = true;
+    }
+
+    void PropertySection::RecursiveWriteDefaults(std::ofstream& myfile)
+    {
+        std::string indent = "";
+        char beginSection, endSection;
+        stringHandler->GetSectionStyle(&beginSection, &endSection);
+        for (int i = 0; i < depth-1; i++) indent = indent + "    ";
+        if (!isTerminalNode)
+        {
+            if (!isPrincipal)
+            {
+                myfile << indent << sectionName << std::endl;
+                myfile << indent << beginSection << std::endl;
+            }
+            for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
+            {
+                it->second->RecursiveWriteDefaults(myfile);
+            }
+            if (!isPrincipal)
+            {
+                myfile << indent << endSection << std::endl;
+            }
+        }
+        else
+        {
+            if (templateVariable==NULL)
+            {
+                myfile << indent << sectionName << " = "  << sectionValue << std::endl;
+            }
+            else
+            {
+                myfile << indent << sectionName << " = "  << templateVariable->GetDefaultValueString() << std::endl;
+            }
+        }
     }
 
     void PropertySection::PopulateInstanceFromString(std::string contents)
@@ -288,6 +326,24 @@ namespace PropTreeLib
         return templateVariable;
     }
 
+    Variables::InputVariable* & PropertySection::MapTo(double** ptr)
+    {
+        isTerminalNode = true;
+        BreakIfAlreadyMapped();
+        terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::DoubleArrayPointer;
+        return templateVariable;
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(int** ptr)
+    {
+        isTerminalNode = true;
+        BreakIfAlreadyMapped();
+        terminalEndpointTarget = (void*)ptr;
+        basePointerType = Variables::BasePointer::IntArrayPointer;
+        return templateVariable;
+    }
+
     Variables::InputVariable* & PropertySection::MapTo(bool* ptr)
     {
         isTerminalNode = true;
@@ -313,6 +369,17 @@ namespace PropTreeLib
         terminalEndpointTarget = (void*)ptr;
         terminalEndpointTargetSecondaryData = (void*)nPtr;
         basePointerType = Variables::BasePointer::DoubleArrayPointer;
+        secondaryBasePointerType = Variables::BasePointer::IntPointer;
+        return templateVariable;
+    }
+
+    Variables::InputVariable* & PropertySection::MapTo(int** ptr, int* nPtr)
+    {
+        isTerminalNode = true;
+        BreakIfAlreadyMapped();
+        terminalEndpointTarget = (void*)ptr;
+        terminalEndpointTargetSecondaryData = (void*)nPtr;
+        basePointerType = Variables::BasePointer::IntArrayPointer;
         secondaryBasePointerType = Variables::BasePointer::IntPointer;
         return templateVariable;
     }

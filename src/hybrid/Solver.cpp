@@ -78,7 +78,7 @@ namespace HyCore
         int numIts = 0;
         double relaxationFactor = 0.2;
         double growth = 1.1;
-        
+
         UpdateBoundaryConditions(widx);
         EquationsOfState(widx);
         ComputeExplicitExpressions(widx, &localError, &localIts);
@@ -97,7 +97,6 @@ namespace HyCore
 
         while ((d_abs(localError) > settings.errorTolerance) && (numIts < settings.maxIterations))
         {
-
             ComputeLinearSystems(widx, relaxationFactor);
             SolveUpdateLinearSystems(widx, &localError);
             EquationsOfState(widx);

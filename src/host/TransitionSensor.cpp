@@ -77,11 +77,7 @@ namespace HyWall
     void TransitionSensor::OnFirstSolve(void)
     {
         WriteLine(1, "Initialize Sensor (ID " + std::to_string(sensorType) + ")");
-        if (settings.readRestart)
-        {
-
-            return;
-        }
+        if (settings.readRestart) return;
         switch (sensorType)
         {
             case sensor::mettu18:

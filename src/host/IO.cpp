@@ -46,6 +46,7 @@ namespace HyWall
             for (int i = 0; i < nvar; i++)
             {
                 double* dataBuf = (double*)memory.GetVariable(vars[i]);
+                restartFileContainedSolutionInit = restartFileContainedSolutionInit || memory.VariableHasFlag(vars[i], bflag::solution);
                 memset(nameBuffer, 0, IONAMELEN*sizeof(char));
                 vars[i].copy(nameBuffer, vars[i].length(), 0);
                 MPI_File_write_at(fh, i*blockOffset, nameBuffer, writefactor*IONAMELEN, MPI_CHAR, &st);

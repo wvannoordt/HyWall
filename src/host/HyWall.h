@@ -18,6 +18,7 @@ namespace HyWall
     extern UserSettings settings;
     extern GlobalMemoryHandler memory;
     extern TransitionSensor tSensor;
+    extern bool restartFileContainedSolutionInit;
     extern "C"
     {
         void Initialize(MPI_Comm host_comm_in, int verboseLevel_in);

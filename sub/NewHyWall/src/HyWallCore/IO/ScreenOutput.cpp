@@ -1,6 +1,5 @@
 #include "HyWall.h"
 #include "ScreenOutput.h"
-#include "Parallel.h"
 #include <string>
 #include <iostream>
 #include "Config.hx"
@@ -14,13 +13,14 @@ namespace HyWall
 
     void internal_output(int messageVerboseLevel, std::string message, std::string styleString, const char* file, const int line)
     {
-        if (Parallel::pId == 0)
+        //if (Parallel::pId == 0)
+        if (true)
         {
             //if (messageVerboseLevel <= settings.verboseLevel)
             if (true)
             {
                 WRITE_FILE_LINE;
-                std::cout << "TODO: settings/verboselevel" << std::endl;
+                std::cout << "TODO: settings/verboselevel and also Parallel::pId" << std::endl;
                 if (messageVerboseLevel==1)
                 {
                     std::cout << styleString << " " << message << std::endl;

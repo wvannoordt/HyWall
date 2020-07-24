@@ -27,6 +27,7 @@ namespace HyWall
     TransitionSensor tSensor;
     bool isFirstSolve;
     bool hasInitialized;
+    bool restartFileContainedSolutionInit;
     double* residualOutput;
     double* iterationsOutput;
     double* failuresOutput;
@@ -45,6 +46,7 @@ namespace HyWall
         if (settings.averageSolution) InitializeAveraging();
         //settings are still volatile here.
         hasInitialized = true;
+        restartFileContainedSolutionInit = false;
     }
     void InitializeInternalMPI(int verboseLevel_in)
     {
@@ -132,7 +134,8 @@ namespace HyWall
         if (solveCount++ % settings.solveSkip == 0)
         {
             HyCoreCPU::solveCount = solveCount;
-            if (isFirstSolve || settings.alwaysReinitialize)
+            bool isReastartAndHasBeenInitialized = false;// = restartFileContainedSolutionInit&&settings.readRestart;
+            if ((isFirstSolve || settings.alwaysReinitialize) && !isReastartAndHasBeenInitialized)
             {
                 if (settings.enableTransitionSensor&&isFirstSolve) tSensor.OnFirstSolve();
                 WriteLine(2, "Initializing wall model solution");
@@ -178,13 +181,14 @@ namespace HyWall
 
     void WriteRestart(int timeStep)
     {
+        if (!hasInitialized||memory.localTotalPoints==0) return;
         std::string prefix = "restart";
         char buf[100] = {0};
         std::snprintf(buf, sizeof(buf), "%08d", timeStep);
         std::string iname = buf;
         std::string filename = prefix + "/HyWallRestart_nt_" + iname + ".rst";
         WriteLine(1, "wall model restart write: " + filename);
-        IO::WriteStateByFlags(filename, bflag::restorable);
+        IO::WriteStateByFlags(filename, bflag::restorable | bflag::solution);
     }
 
     void Finalize(void)
