@@ -52,11 +52,18 @@ test: final
 	@for fldr in testing/* ; do \
                 ${MAKE} -C $${fldr} -f makefile -s test || exit 1; \
         done
+	@for fldr in examples/* ; do \
+                ${MAKE} -C $${fldr} -f makefile || exit 1; \
+        done
+	@echo "${LIB_NAME} passed all tests."
 
 clean:
 	for fldr in testing/* ; do \
 	            ${MAKE} -C $${fldr} -f makefile clean ; \
 	    done
+	for fldr in examples/* ; do \
+                ${MAKE} -C $${fldr} -f makefile clean || exit 1; \
+        done
 	-rm -r ${LIB_DIR}
 	-rm -r ${OBJ_DIR}
 	-rm -r ${HDR_DIR}

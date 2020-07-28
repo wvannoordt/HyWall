@@ -1,0 +1,13 @@
+// This file was generated with default values
+SectionA
+{
+    StringValue = defaultVal
+    ValueA = 1
+    ValueB = 1
+}
+SectionB
+{
+    ValueA = 1
+    ValueB = 1
+    arr = []
+}

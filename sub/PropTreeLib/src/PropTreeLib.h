@@ -7,6 +7,7 @@
 #include "PTLDouble.h"
 #include "PTLString.h"
 #include "PTLEnum.h"
+#include "PTLAutoEnum.h"
 #include "PTLDynamicDoubleArray.h"
 #include "PTLStaticDoubleArray.h"
 #include "PTLDynamicIntegerArray.h"

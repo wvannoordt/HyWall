@@ -2,7 +2,7 @@
 #include "PropTreeLib.h"
 int main(void)
 {
-	std::string filename = "testfile.ptl";
+	std::string filename = "testfile.in";
 	PropTreeLib::PropertyTree input;
 
 	bool useWallModel, outputWallModelData;
@@ -17,8 +17,6 @@ int main(void)
 	double engyEqUnderRelax;
 	double* sampleXLocations;
 	int numSampleXLocations;
-	
-	input.ReadInputFileToTreeData(filename);
 
 	input["NavierStokes"]["WallModel"]["useWallModel"].MapTo(&useWallModel)
 	= new PropTreeLib::Variables::PTLBoolean(false, "Flag to enable to wall model");
@@ -62,6 +60,7 @@ int main(void)
 	input["NavierStokes"]["WallModel"]["Energy"]["underRelaxation"].MapTo(&engyEqUnderRelax)
 	= new PropTreeLib::Variables::PTLDouble(0.4, "Under-relaxation factor for energy equation Newton solve");
 
+	input.ReadInputFileToTreeData(filename);
 	input.StrictParse();
 	input.DebugPrint();
 	std::cout << "(SUCCESS)" << std::endl;

@@ -1,0 +1,10 @@
+Subtree1
+{
+	value1 = 0.9
+	othervalue = hello
+}
+Subtree2
+{
+	value2 = option1
+	anothervalue = [0.1, 3.4]
+}
