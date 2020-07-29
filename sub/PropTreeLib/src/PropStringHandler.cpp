@@ -69,6 +69,7 @@ namespace PropTreeLib
     std::string PropStringHandler::Sanitize(std::string contents, PreProcessContext* context)
     {
         std::string output = "";
+        contents = contents + "\n";
         bool done = false;
         size_t begin = 0;
         size_t end = contents.find("\n", begin);

@@ -11,8 +11,10 @@ namespace HyWall
                 int pId, pNum;
                 bool isRoot;
                 std::string nodeName;
+                ParallelHandler(MPI_Comm comm_in);
                 ParallelHandler(void);
                 ~ParallelHandler(void);
+                void CloseMPI(void);
                 template <typename parType> void AllGather(const void* sendbuf, int sendcount, void* recvbuf, int recvcount);
                 template <typename parType> void SumAllReduce(const void* sendbuf, int sendcount, void* recvbuf, int recvcount);
                 template <typename parType> void SumAbsAllReduce(const void* sendbuf, int sendcount, void* recvbuf, int recvcount);
@@ -23,7 +25,10 @@ namespace HyWall
                 template <typename parType> void MaxAllReduce(const void* sendbuf, int sendcount, void* recvbuf, int recvcount);
                 template <typename parType> void MaxAbsAllReduce(const void* sendbuf, int sendcount, void* recvbuf, int recvcount);
             private:
+                void Rank(void);
                 bool internalMPIHandling;
+                MPI_Comm comm;
+                int mpiInitFlag;
         };
     }
 }

@@ -13,8 +13,7 @@ namespace HyWall
 
     void internal_output(int messageVerboseLevel, std::string message, std::string styleString, const char* file, const int line)
     {
-        //if (Parallel::pId == 0)
-        if (true)
+        if (parallel.pId == 0)
         {
             //if (messageVerboseLevel <= settings.verboseLevel)
             if (true)

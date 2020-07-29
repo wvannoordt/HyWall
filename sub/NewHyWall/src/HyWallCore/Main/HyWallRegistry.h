@@ -5,13 +5,12 @@
 #include "HyWallInstance.h"
 namespace HyWall
 {
-    class HyWallInstanceSeries
+    class HyWallRegistry
     {
         public:
-            HyWallInstanceSeries(void);
-            ~HyWallInstanceSeries(void);
+            HyWallRegistry(void);
+            ~HyWallRegistry(void);
         private:
-            std::string instanceName;
             std::vector<HyWallInstance*> instances;
     };
 }

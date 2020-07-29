@@ -1,0 +1,11 @@
+MainSection
+{
+	#define t 9
+	PushedSection
+	{
+	#define te 2
+		value1 = $(t)$(te)
+		value2 = 2
+	}
+	value3 = 3
+}

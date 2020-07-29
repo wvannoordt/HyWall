@@ -36,6 +36,52 @@ namespace PropTreeLib
     {
         return &context;
     }
+    
+    PropertySection* PropertySection::PushSection(std::string pushedSection)
+    {
+        PropertySection* prevHost = host;
+        std::string oldName = sectionName;
+        this->SetName(pushedSection);
+        host = new PropertySection(stringHandler, depth, prevHost);
+        host->DeclareIsNotPrincipal();
+        if (prevHost!=NULL) prevHost->KeyToNewValue(oldName, host);
+        host->SetExistingKeyValuePair(sectionName, this);
+        host->SetName(oldName);
+        if (prevHost!=NULL) host->GetContext()->SetHostContext(prevHost->GetContext());
+        context.SetHostContext(host->GetContext());
+        
+        RecursiveIncrementDepth();
+        
+        return host;
+    }
+    
+    void PropertySection::RecursiveIncrementDepth(void)
+    {
+        depth++;
+        for (std::map<std::string, PropertySection*>::iterator it = sectionSubSections.begin(); it!=sectionSubSections.end(); it++)
+        {
+            it->second->RecursiveIncrementDepth();
+        }
+    }
+    
+    void PropertySection::SetExistingKeyValuePair(std::string key, PropertySection* val)
+    {
+        sectionSubSections.insert({key, val});
+    }
+    
+    void PropertySection::KeyToNewValue(std::string key, PropertySection* newValue)
+    {
+        std::map<std::string, PropertySection*>::iterator i = sectionSubSections.find(key);
+        if (i != sectionSubSections.end())
+        {
+            i->second = newValue;
+        }
+        else
+        {
+            ErrorKill("Error using KeyToNewValue: cannot find key \"" + key + "\"");
+        }
+    }
+    
 
     void PropertySection::DeclareIsFromTemplateDeclaration(void)
     {
@@ -45,6 +91,11 @@ namespace PropTreeLib
     void PropertySection::DeclareIsPrincipal(void)
     {
         isPrincipal = true;
+    }
+    
+    void PropertySection::DeclareIsNotPrincipal(void)
+    {
+        isPrincipal = false;
     }
 
     void PropertySection::DeclareIsTerminal(void)
@@ -150,7 +201,7 @@ namespace PropTreeLib
     void PropertySection::DebugPrint(void)
     {
         std::string style = "|";
-        for (int i = 0; i < depth; i++) style = style + "--";
+        for (int i = 0; i < depth; i++) style = style + "----";
         if (isTerminalNode)
         {
             std::cout << style << " " << sectionName << " = " << sectionValue << std::endl;

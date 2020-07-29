@@ -13,6 +13,7 @@ namespace PropTreeLib
         stringHandler = PropStringHandler();
         principalSection = new PropertySection(&stringHandler, 0, NULL);
         principalSection->DeclareIsPrincipal();
+        principalSection->SetName("[ROOT]");
         closeMessage = "none";
         wasCreatedAsSubtree = false;
     }
@@ -20,6 +21,12 @@ namespace PropTreeLib
     PropertyTree::~PropertyTree(void)
     {
         this->Destroy();
+    }
+
+    void PropertyTree::PushSection(std::string pushedSection)
+    {
+        principalSection = principalSection->PushSection(pushedSection);
+        principalSection->DeclareIsPrincipal();
     }
 
     void PropertyTree::SetAsSubtree(PropertySection& newPrincipal)
@@ -58,7 +65,6 @@ namespace PropTreeLib
     {
         std::string fileRawContents = stringHandler.Sanitize(stringHandler.ReadFileToString(filename), principalSection->GetContext());
         principalSection->PopulateInstanceFromString(fileRawContents);
-        principalSection->SetName("[ROOT]");
         principalSection->SetValue(fileRawContents);
     }
 
