@@ -12,6 +12,7 @@ namespace HyWall
     extern CliInput commandLine;
     extern Parallel::ParallelHandler parallel;
     extern GlobalSettings settings;
+    extern bool hasReadInputFile;
     void Initialize(int argc, char** argv);
     void ReadInputFile(std::string inputFileName);
     void SetPropTree(PropTreeLib::PropertyTree hostTree);

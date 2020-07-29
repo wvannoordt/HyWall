@@ -21,13 +21,15 @@ namespace HyWall
     
     std::string globName;
     bool inputTreeHasHost;
+    bool hasReadInputFile;
 
     void Initialize(int argc, char** argv)
     {
         inputTreeHasHost = false;
+        hasReadInputFile = false;
         commandLine = CliInput(argc, argv);
         globName = "HyWall";
-        WriteLine(1, "Initialize HyWall");
+        WriteLine("Initialize HyWall");
     }
     
     void SetPropTree(PropTreeLib::PropertyTree hostTree)
@@ -42,14 +44,15 @@ namespace HyWall
     {
         if (!inputTreeHasHost)
         {
-            inputTree.ReadInputFileToTreeData(inputFileName);
-            inputTree.PushSection(globName);
             DefineVariables();
+            inputTree.PushSection(globName);
+            inputTree.ReadInputFileToTreeData(inputFileName);
             inputTree.StrictParse();
         }
         else
         {
             __erkill("ReadInputFile file called, but subtree was declared.");
         }
+        hasReadInputFile = true;
     }
 }

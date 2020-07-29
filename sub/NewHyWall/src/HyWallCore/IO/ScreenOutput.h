@@ -12,12 +12,14 @@
 #endif
 
 #define GET_MACRO(_1,_2,_3,NAME,...) NAME
-#define WriteLine(...) GET_MACRO(__VA_ARGS__, WriteLine2, WriteLine1)(__VA_ARGS__)
+#define WriteLine(...) GET_MACRO(__VA_ARGS__, WriteLine2, WriteLine1, WriteLine0)(__VA_ARGS__)
+#define WriteLine0(myMessage) internal_output(myMessage, __FILE__, __LINE__)
 #define WriteLine1(myLevel, myMessage) internal_output(myLevel, myMessage, __FILE__, __LINE__)
 #define WriteLine2(myLevel, myMessage, myStyle) internal_output(myLevel, myMessage, myStyle, __FILE__, __LINE__)
 
 namespace HyWall
 {
+    void internal_output(std::string message, const char* file, const int line);
     void internal_output(int messageVerboseLevel, std::string message, const char* file, const int line);
     void internal_output(int messageVerboseLevel, std::string message, std::string styleString, const char* file, const int line);
 }
