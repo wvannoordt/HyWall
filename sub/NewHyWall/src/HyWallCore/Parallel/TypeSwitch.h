@@ -41,8 +41,6 @@ struct typeswitch<double>
 };
 
 #define htypeid(myTypeIn) (switch_value<myTypeIn>::value)
-
-#ifdef OMPI_MPI_H
 #define mpitypeid(myTypeIn) (GetMpiType(typeswitch<myTypeIn>::value))
 static inline MPI_Datatype GetMpiType(int i)
 {
@@ -56,5 +54,5 @@ static inline MPI_Datatype GetMpiType(int i)
         default: return MPI_DATATYPE_NULL;
     }
 }
-#endif
+
 #endif

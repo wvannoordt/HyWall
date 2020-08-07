@@ -1,6 +1,7 @@
 #ifndef PAR_H
 #define PAR_H
 #include "mpi.h"
+#include <string>
 namespace HyWall
 {
     namespace Parallel
