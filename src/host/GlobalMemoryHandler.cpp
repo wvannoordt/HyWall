@@ -6,7 +6,7 @@
 #include <vector>
 namespace HyWall
 {
-    GlobalMemoryHandler::GlobalMemoryHandler(void){initializePoliciesWereApplied=false;}
+    GlobalMemoryHandler::GlobalMemoryHandler(void){initializePoliciesWereApplied=false;localTotalPoints=0}
 
     void GlobalMemoryHandler::SetSize(int numPoints_in, int rayDim_in)
     {
