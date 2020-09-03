@@ -6,10 +6,6 @@
 #define CUDA_ENABLE 0
 #endif
 
-#ifndef PROBLEM_DIMENSION
-#define PROBLEM_DIMENSION 2
-#endif
-
 #ifndef DEBUG_LEVEL
 #define DEBUG_LEVEL 0
 #endif
