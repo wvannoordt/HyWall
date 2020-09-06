@@ -13,15 +13,15 @@
 #ifdef __CUDACC__
 
 #define __common __device__
-#define __gpu 1
-#define __cpu 0
+#define ___gpu 1
+#define ___cpu 0
 #define HyCore HyCoreGPU
 
 #else
 
 #define __common
-#define __gpu 0
-#define __cpu 1
+#define ___gpu 0
+#define ___cpu 1
 #define HyCore HyCoreCPU
 
 #endif
