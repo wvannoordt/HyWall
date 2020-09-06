@@ -142,7 +142,7 @@ export FORCE_NO_CLEAN=1
 postprocess: final
 	${PY_EXE} ${POSTPROCESSOR}
 
-final: ${DO_CLEAN} setup subs.build preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
+final: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
 	${CC_HOST} -fPIC -shared ${LIB_OBJECTS} ${WM_IFLAGS} ${COMPILE_TIME_OPT} ${LZLIB} ${LCUDA} -o ${TARGET}
 
 preprocess:
