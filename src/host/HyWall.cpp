@@ -169,6 +169,7 @@ namespace HyWall
 
     void ReadRestart(int timeStep)
     {
+        if (!settings.enableWallModel) return;
         if (!settings.readRestart) return;
         std::string prefix = "restart";
         char buf[100] = {0};
@@ -181,7 +182,7 @@ namespace HyWall
 
     void WriteRestart(int timeStep)
     {
-        if (!hasInitialized||memory.localTotalPoints==0) return;
+        if (!settings.enableWallModel) return;
         std::string prefix = "restart";
         char buf[100] = {0};
         std::snprintf(buf, sizeof(buf), "%08d", timeStep);

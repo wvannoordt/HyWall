@@ -9,6 +9,9 @@ namespace HyWall
     #pragma HWPP SerialIoStructStart UserSettings
     struct UserSettings
     {
+        #pragma HWPP SerialIoMember enableWallModel false
+        bool enableWallModel;
+        
         #pragma HWPP SerialIoMember readRestart false
         bool readRestart;
 
