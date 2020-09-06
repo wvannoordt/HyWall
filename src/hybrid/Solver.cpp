@@ -8,7 +8,7 @@
 #include "AllEquations.h"
 #include "CoreUtils.h"
 #include "Thermodynamics.h"
-#if(__cpu)
+#if(___cpu)
 #include <cmath>
 using std::sqrt;
 #endif

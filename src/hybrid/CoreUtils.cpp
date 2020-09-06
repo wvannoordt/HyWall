@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include "Typedef.h"
 #include <fstream>
-#if(__cpu)
+#if(___cpu)
 #include <cmath>
 using std::pow;
 using std::atan2;

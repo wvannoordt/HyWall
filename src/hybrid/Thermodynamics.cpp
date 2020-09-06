@@ -6,7 +6,7 @@
 #include "CoreUtils.h"
 #include "ViscousLaws.h"
 #include "DebugTools.h"
-#if(__cpu)
+#if(___cpu)
 #include <cmath>
 using std::pow;
 #endif

@@ -5,7 +5,7 @@
 #include "Indexing.h"
 #include "CoreUtils.h"
 #include "Constants.h"
-#if(__cpu)
+#if(___cpu)
 #include <cmath>
 using std::sqrt;
 using std::exp;

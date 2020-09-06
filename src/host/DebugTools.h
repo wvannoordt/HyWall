@@ -5,7 +5,7 @@
 
 #define __longline "---------------------------------------------------------"
 
-#if __cpu
+#if ___cpu
 #define __dump(mystuff) {std::cout << __FILE__ <<  " (" << __LINE__ << "): " << mystuff << std::endl;}
 #define __qdump(mystuff) {std::cout << mystuff << std::endl;}
 #define __dumpwait(mystuff) {std::cout << __FILE__ <<  " (" << __LINE__ << "): " << mystuff << std::endl;std::cin.get();}
@@ -13,7 +13,7 @@
 #endif
 
 
-#if __gpu
+#if ___gpu
 #define __dump(mystuff) ;
 #define __qdump(mystuff) ;
 #define __dumpwait(mystuff) ;

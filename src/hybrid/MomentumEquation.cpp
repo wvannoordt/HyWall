@@ -5,7 +5,7 @@
 #include "Indexing.h"
 #include "CoreUtils.h"
 #include "Typedef.h"
-#if (__cpu)
+#if (___cpu)
 #include <cmath>
 using std::sqrt;
 #endif
