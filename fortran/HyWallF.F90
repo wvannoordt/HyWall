@@ -25,8 +25,28 @@ module HyWallF
         if (allocated(swapBufferSingular)) deallocate(swapBufferSingular)
         allocate(swapBufferSingular(numPoints))
         numPointsGlob = numPoints
+        
     end subroutine HyWallSetDomainSize
+    
+    
+    subroutine HyWallGetSolGradAndSol(wallPointIdx, solIdx, solOut, solGradOut)
 
+        use, intrinsic :: iso_c_binding
+        implicit none
+        integer, intent(in)  :: wallPointIdx, solIdx
+        real*8,  intent(out) :: solOut(1:5), solGradOut(1:5)
+        interface
+			subroutine hywall_getsolgradandsol_f(wallPointIdxF, solIdxF, solOutF, solGradOutF) bind (c)
+				use iso_c_binding
+                integer (c_int),    intent(in)  :: wallPointIdxF
+                integer (c_int),    intent(in)  :: solIdxF
+                integer (c_double), intent(out) :: solOutF(1:5)
+                integer (c_double), intent(out) :: solGradOutF(1:5)
+			end subroutine hywall_getsolgradandsol_f
+		end interface
+        call hywall_getsolgradandsol_f(wallPointIdx, solIdx, solOut, solGradOut)
+
+    end subroutine HyWallGetSolGradAndSol
 
     subroutine HyWallWriteRestart(nt_timestep)
 

@@ -166,6 +166,11 @@ namespace HyWall
 
         }
     }
+    
+    void GetSolutionAndGradient(int widx, int solIdx, double* solOut, double* solGradOut)
+    {
+        HyCore::GetSolutionAndGradient(widx, solIdx, solOut, solGradOut);
+    }
 
     void ReadRestart(int timeStep)
     {

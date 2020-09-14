@@ -24,6 +24,11 @@ namespace HyWall
     {
         Allocate();
     }
+    
+    void hywall_getsolgradandsol_f(int* widx, int* solIdx, double* solOut, double* solGradOut)
+    {
+        GetSolutionAndGradient(*widx, *solIdx, solOut, solGradOut);
+    }
 
     void hywall_settimestep_f(double* timeStep)
     {

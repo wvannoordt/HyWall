@@ -6,6 +6,7 @@
 
 namespace HyCore
 {
+    __common void GetSolutionAndGradient(int widx, int solIdx, double* solOut, double* solGradOut);
     __common void MetaDataSet(HyWall::UserSettings* inputSettings);
     __common void Initialize(const int idx);
     __common void MainSolver(const int idx);

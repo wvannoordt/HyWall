@@ -34,6 +34,7 @@ namespace HyWall
         void SetTimeStep(double timeStep_in);
         void Finalize(void);
         void WhenSettingsAreConstant(void);
+        void GetSolutionAndGradient(int widx, int solIdx, double* solOut, double* solGradOut);
         void ReadRestart(int timeStep);
         void WriteRestart(int timeStep);
     }

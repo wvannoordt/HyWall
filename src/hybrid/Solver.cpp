@@ -14,6 +14,27 @@ using std::sqrt;
 #endif
 namespace HyCore
 {
+    __common void GetSolutionAndGradient(int widx, int solIdx, double* solOut, double* solGradOut)
+    {
+        localtriple(uLoc, u, widx, solIdx);
+        localtriple(muLoc, mu, widx, solIdx);
+        localtriple(yLoc, d, widx, solIdx);
+        localtriple(mutLoc, mu_t, widx, solIdx);
+        localtriple(rhoLoc, rho, widx, solIdx);
+        localtriple(TLoc, T, widx, solIdx);
+        *(solOut+0) = TLoc[1];
+        *(solOut+1) = rhoLoc[1];
+        *(solOut+2) = muLoc[1];
+        *(solOut+3) = mutLoc[1];
+        *(solOut+4) = uLoc[1];
+        double alpha = (yLoc[1]-yLoc[0]) / (yLoc[2]-yLoc[0]);
+        *(solGradOut+0) = (1.0-alpha)*((TLoc[1]  -TLoc[0]  )/(yLoc[1]-yLoc[0])) + alpha*((TLoc[2]  -TLoc[1]  )/(yLoc[2]-yLoc[1]));
+        *(solGradOut+1) = (1.0-alpha)*((rhoLoc[1]-rhoLoc[0])/(yLoc[1]-yLoc[0])) + alpha*((rhoLoc[2]-rhoLoc[1])/(yLoc[2]-yLoc[1]));
+        *(solGradOut+2) = (1.0-alpha)*((muLoc[1] -muLoc[0] )/(yLoc[1]-yLoc[0])) + alpha*((muLoc[2] -muLoc[1] )/(yLoc[2]-yLoc[1]));
+        *(solGradOut+3) = (1.0-alpha)*((mutLoc[1]-mutLoc[0])/(yLoc[1]-yLoc[0])) + alpha*((mutLoc[2]-mutLoc[1])/(yLoc[2]-yLoc[1]));
+        *(solGradOut+4) = (1.0-alpha)*((uLoc[1]  -uLoc[0]  )/(yLoc[1]-yLoc[0])) + alpha*((uLoc[2]  -uLoc[1]  )/(yLoc[2]-yLoc[1]));
+        
+    }
     __common void MetaDataSet(HyWall::UserSettings* inputSettings)
     {
         SetMomentumEquationType(inputSettings);

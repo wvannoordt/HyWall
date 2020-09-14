@@ -175,12 +175,12 @@ setup:
 		ln -s $${hdr} -t ${WM_HDR_DIR};\
 	done
 
-test: subs.test final
+test: final
 	@for fldr in testing/* ; do \
                 ${MAKE} -C $${fldr} -f makefile -s test || exit 1; \
         done
 
-clean: subs.clean
+clean:
 	for fldr in testing/* ; do \
 	            ${MAKE} -C $${fldr} -f makefile clean ; \
 	    done
