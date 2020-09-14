@@ -40,8 +40,8 @@ module HyWallF
 				use iso_c_binding
                 integer (c_int),    intent(in)  :: wallPointIdxF
                 integer (c_int),    intent(in)  :: solIdxF
-                integer (c_double), intent(out) :: solOutF(1:5)
-                integer (c_double), intent(out) :: solGradOutF(1:5)
+                real    (c_double), intent(out) :: solOutF(1:5)
+                real    (c_double), intent(out) :: solGradOutF(1:5)
 			end subroutine hywall_getsolgradandsol_f
 		end interface
         call hywall_getsolgradandsol_f(wallPointIdx, solIdx, solOut, solGradOut)
