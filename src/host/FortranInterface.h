@@ -13,6 +13,7 @@ namespace HyWall
         void hywall_solve_f(void);
         void hywall_settimestep_f(double* timeStep);
         void hywall_await_f(void);
+        void hywall_get_probe_pointer_f(char* name, int* namelen, double*& ptrOut, int* size);
         void hywall_define_probe_index_f(char* name, int* namelen, int* idxOut);
         void hywall_getraydim_f(int* output);
         void hywall_probe_solution_f(int* probeIndex, int* solutionIndex, double* buffer);

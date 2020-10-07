@@ -86,16 +86,20 @@ module HyWallF
         use, intrinsic :: iso_c_binding
         implicit none
         character*(*),   intent(in)    :: arrayName
-        type(c_ptr),  intent(out) :: pointerOut
+        type(c_ptr) :: cdoublearray
+        real(c_double), pointer :: pointerOut(:)
+        integer(c_int) :: sizeInt
         interface
-            subroutine hywall_get_probe_pointer_f(nameF, lenF, ptrF) bind (c)
+            subroutine hywall_get_probe_pointer_f(nameF, lenF, ptrF, sizeF) bind (c)
                 use iso_c_binding
                 character (c_char), intent(in)  :: nameF
                 integer   (c_int),  intent(in)  :: lenF
                 type(c_ptr),        intent(out) :: ptrF
+                integer   (c_int),  intent(in)  :: sizeF
             end subroutine hywall_get_probe_pointer_f
         end interface
-        call hywall_get_probe_pointer_f(arrayName, len(trim(arrayName)), pointerOut)
+        call hywall_get_probe_pointer_f(arrayName, len(trim(arrayName)), cdoublearray, sizeInt)
+        call c_f_pointer(cdoublearray, pointerOut, [sizeInt])
 
     end subroutine HyWallGetProbePointer
 

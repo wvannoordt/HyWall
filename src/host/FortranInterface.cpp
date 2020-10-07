@@ -49,13 +49,14 @@ namespace HyWall
         DefineProbeIndex(strname, idxOut);
     }
     
-    void hywall_get_probe_pointer_f(char* name, int* namelen, double*& ptrOut)
+    void hywall_get_probe_pointer_f(char* name, int* namelen, double*& ptrOut, int* size)
     {
         char namebuf[120] = {0};
         int len = *namelen;
         memcpy(namebuf, name, len*sizeof(char));
         std::string strname(namebuf);
-        ptrOut = (double*)memory.GetVariable(name);
+        ptrOut = (double*)memory.GetVariable(strname);
+        *size = memory.localTotalPoints * settings.rayDim;
     }
 
     void hywall_copy_singular_buffer_f(char* name, int* namelen, double* buf)
