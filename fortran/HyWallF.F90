@@ -81,19 +81,18 @@ module HyWallF
 
     end subroutine HyWallReadRestart
 
-
     subroutine HyWallGetProbePointer(arrayName, pointerOut)
 
         use, intrinsic :: iso_c_binding
         implicit none
         character*(*),   intent(in)    :: arrayName
-        real(c_double),  pointer,  intent(out) :: pointerOut
+        type(c_ptr),  intent(out) :: pointerOut
         interface
             subroutine hywall_get_probe_pointer_f(nameF, lenF, ptrF) bind (c)
                 use iso_c_binding
                 character (c_char), intent(in)  :: nameF
                 integer   (c_int),  intent(in)  :: lenF
-                real(c_double),     pointer,  intent(out) :: ptrF
+                type(c_ptr),        intent(out) :: ptrF
             end subroutine hywall_get_probe_pointer_f
         end interface
         call hywall_get_probe_pointer_f(arrayName, len(trim(arrayName)), pointerOut)
