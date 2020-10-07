@@ -30,7 +30,10 @@ module HyWallF
     
     
     subroutine HyWallGetSolGradAndSol(wallPointIdx, solIdx, solOut, solGradOut)
-
+        !wallPointIdx = index of the face w.r.t surface triangulation
+        !solIdx = index of solution away from wall
+        !solOut = T, rho, mu, mu_t, u 
+        !solGradOut = T, rho, mu, mu_t, u (gradients)
         use, intrinsic :: iso_c_binding
         implicit none
         integer, intent(in)  :: wallPointIdx, solIdx
@@ -79,6 +82,23 @@ module HyWallF
     end subroutine HyWallReadRestart
 
 
+    subroutine HyWallGetProbePointer(arrayName, pointerOut)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)    :: arrayName
+        real(c_double),  pointer,  intent(out) :: pointerOut
+        interface
+            subroutine hywall_get_probe_pointer_f(nameF, lenF, ptrF) bind (c)
+                use iso_c_binding
+                character (c_char), intent(in)  :: nameF
+                integer   (c_int),  intent(in)  :: lenF
+                real(c_double),     pointer,  intent(out) :: ptrF
+            end subroutine hywall_get_probe_pointer_f
+        end interface
+        call hywall_get_probe_pointer_f(arrayName, len(trim(arrayName)), pointerOut)
+
+    end subroutine HyWallGetProbePointer
 
     subroutine HyWallDefineProbeIndex(arrayName, idx)
 
