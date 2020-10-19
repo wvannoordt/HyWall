@@ -148,6 +148,7 @@ namespace HyWall
             for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
 
             double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
+            int maxIts = Parallel::GlobalMaxAbs(iterationsOutput, memory.localTotalPoints);
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
             if (settings.laminarOnSolveFail)
             {
@@ -157,6 +158,7 @@ namespace HyWall
                 if (totalFailedPoints > 0.5) WriteLine(1, "Detected failure. Total: " + std::to_string(totalFailedPoints) + ", xmin/xmax: " + std::to_string(xMinFail) + ", " + std::to_string(xMaxFail));
             }
             WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
+            WriteLine(4, "Max iterations: " + to_estring(maxIts));
             isFirstSolve = false;
             if (settings.averageSolution)
             {

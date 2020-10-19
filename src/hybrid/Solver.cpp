@@ -96,13 +96,14 @@ namespace HyCore
         double totalIts = 0.0;
         double localError = 0.0;
         double localIts = 0.0;
+        double dummy = 0.0;
         int numIts = 0;
         double relaxationFactor = 0.2;
         double growth = 1.1;
 
         UpdateBoundaryConditions(widx);
         EquationsOfState(widx);
-        ComputeExplicitExpressions(widx, &localError, &localIts);
+        ComputeExplicitExpressions(widx, &localError, &dummy);
         if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) ZeroTurbInit(widx);
         totalError += localError;
         totalIts += localIts;
@@ -133,7 +134,7 @@ namespace HyCore
         double u1  = elem(u, widx, 1);
         double mu1 = elem(mu, widx, 1);
         elem(error, widx) = totalError;
-        elem(iterations, widx) = totalIts;
+        elem(iterations, widx) = numIts;
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
         elem(vorticity, widx) = u1/settings.wallSpacing;
         elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;

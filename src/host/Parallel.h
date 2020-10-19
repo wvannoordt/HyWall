@@ -23,6 +23,7 @@ namespace HyWall
         double GlobalTotalAbs(double* ar, int num);
         double GlobalAverageAbs(double* ar, int num);
         double GlobalMaxAbs(double* ar, int num);
+        double GlobalMaxAbs(int* ar, int num);
         double GlobalMax(double* ar, int num);
         double GlobalMin(double* ar, int num);
         double GlobalSum(double* ar, int num);

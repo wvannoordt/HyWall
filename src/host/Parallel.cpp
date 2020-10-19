@@ -122,7 +122,19 @@ namespace HyWall
         {
             MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, globalComm);
         }
-
+        double GlobalMaxAbs(int* ar, int num)
+        {
+            int glob_max;
+            int loc_max = 0;
+            if (num > 0)
+            {
+                loc_max = d_abs(ar[0]);
+                for (int i = 0; i < num; i++) loc_max = (d_abs(ar[i])>loc_max)?d_abs(ar[i]):loc_max;
+            }
+            MPI_Allreduce(&loc_max, &glob_max, 1, MPI_INT, MPI_MAX, globalComm);
+            return glob_max;
+        }
+        
         double GlobalMaxAbs(double* ar, int num)
         {
             double glob_max;
