@@ -159,6 +159,10 @@ namespace HyWall
             }
             WriteLine(1, "Solve end, residual max:" + to_estring(maxError) + ", mean iterations: " + to_estring(meanIts));
             WriteLine(4, "Max iterations: " + to_estring(maxIts));
+            
+            double* tauBuf = (double*)memory.GetVariable("out:tau");
+            double tauMean = Parallel::GlobalMaxAbs(tauBuf, memory.localTotalPoints);
+            WriteLine(4, "Max shear stress: " + to_estring(tauMean));
             isFirstSolve = false;
             if (settings.averageSolution)
             {
