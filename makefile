@@ -172,7 +172,7 @@ setup:
 	mkdir -p ${WM_OBJ_DIR}
 	mkdir -p ${WM_HDR_DIR}
 	@for hdr in ${HEADER_FILES} ; do \
-		ln -s $${hdr} -t ${WM_HDR_DIR};\
+		ln -sf $${hdr} -t ${WM_HDR_DIR};\
 	done
 
 test: final

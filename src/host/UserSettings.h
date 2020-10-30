@@ -131,9 +131,6 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember viscousLaw HyCore::visclaw::constant
         int viscousLaw;
-        
-        #pragma HWPP SerialIoMember viscosity 1.81e-5
-        double viscosity;
 
         #pragma HWPP SerialIoMember transitionLocation 0.0
         double transitionLocation;

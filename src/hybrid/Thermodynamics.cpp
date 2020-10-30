@@ -36,11 +36,6 @@ namespace HyCore
                 for (int i = 0; i < N; i++) elem(mu, widx, i) = SutherlandViscosityRelation(elem(T, widx, i));
                 break;
             }
-            case visclaw::constant:
-            {
-                for (int i = 0; i < N; i++) elem(mu, widx, i) = settings.viscosity;
-                break;
-            }
         }
     }
 }
