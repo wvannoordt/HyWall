@@ -43,7 +43,6 @@ namespace HyWall
         isFirstSolve = true;
         Testing::testingMode = false;
         InitProbeIndex();
-        if (settings.averageSolution) InitializeAveraging();
         //settings are still volatile here.
         hasInitialized = true;
         restartFileContainedSolutionInit = false;
@@ -131,6 +130,7 @@ namespace HyWall
 
     void Solve(void)
     {
+        if (isFirstSolve && settings.averageSolution) InitializeAveraging();
         if (solveCount++ % settings.solveSkip == 0)
         {
             HyCoreCPU::solveCount = solveCount;
@@ -164,12 +164,14 @@ namespace HyWall
             double tauMean = Parallel::GlobalMaxAbs(tauBuf, memory.localTotalPoints);
             WriteLine(4, "Max shear stress: " + to_estring(tauMean));
             isFirstSolve = false;
-            if (settings.averageSolution)
+        }
+        if (settings.averageSolution)
+        {
+            ComputeAverages();
+            if (solveCount%settings.averageOutputInterval==0)
             {
-                ComputeAverages();
-                if (solveCount%settings.averageOutputInterval==0) SaveAveragesToFile(solveCount);
+                SaveAveragesToFile(solveCount);
             }
-
         }
     }
     

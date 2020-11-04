@@ -5,6 +5,7 @@
 
 #define HY_INT MPI_INT
 #define HY_DOUBLE MPI_DOUBLE
+#define HY_SIZE_T MPI_LONG
 #define HY_SUM MPI_SUM
 #define HY_DATATYPE const MPI_Datatype
 #define HY_OPERATION const MPI_Op
