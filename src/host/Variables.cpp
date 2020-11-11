@@ -46,12 +46,12 @@ namespace HyWall
             memory.AddStaticVariable<double>("jac:mom3", &(HyCoreCPU::momSystem[TD_RHS]), NULL, settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
         }
 
+        memory.AddStaticVariable<double>("in:momRHS", &(HyCoreCPU::momBalancedRHS), NULL, 1, 1, bflag::input | bflag::userMustProvide);
         if (settings.includeMomentumRhs)
         {
-            memory.AddStaticVariable<double>("in:momRHS", &(HyCoreCPU::momBalancedRHS), NULL, 1, 1, bflag::input | bflag::userMustProvide);
             memory.AddStaticVariable<double>("sol:u_SA",  &(HyCoreCPU::u_SA),           NULL, settings.rayDim, 1, bflag::solution);
-            memory.AddStaticVariable<double>("in:dpdx",   &(HyCoreCPU::dpdx),           NULL, 1, 1, bflag::input | bflag::userMustProvide);
         }
+        memory.AddStaticVariable<double>("in:dpdx",   &(HyCoreCPU::dpdx),           NULL, 1, 1, bflag::input | bflag::userMustProvide);
     }
 
     void DefineEnergyVariables(void)

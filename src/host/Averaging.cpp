@@ -43,6 +43,7 @@ namespace HyWall
         ApplyAveragingTo("sol:mu_t", settings.rayDim);
         ApplyAveragingTo("sol:rho", settings.rayDim);
         ApplyAveragingTo("sol:T", settings.rayDim);
+        ApplyAveragingTo("sol:d", settings.rayDim);
         pointNums = new int[Parallel::pNum];
         Parallel::Allgather(&(memory.localTotalPoints), 1, pointNums, 1, HY_INT);
         for (int i = 0; i < Parallel::pId; i++) globalOffset += pointNums[i];
@@ -57,7 +58,6 @@ namespace HyWall
     {
         WriteLine(2, "Applying averaging to " + variableName);
         avgVars[3*numAvgVars] = (double*)memory.GetVariable(variableName);
-        double* recvbuf = (double*)memory.GetVariable(variableName);
         memory.AddStaticVariable<double>(variableName+"_avg1", avgVars+3*numAvgVars+1, NULL, dim, 1, bflag::auxilary | bflag::allocateNow | bflag::restorable);
         memory.AddStaticVariable<double>(variableName+"_avg2", avgVars+3*numAvgVars+2, NULL, dim, 1, bflag::auxilary | bflag::allocateNow | bflag::restorable);
         avgVarDims[numAvgVars] = dim;
@@ -115,9 +115,11 @@ namespace HyWall
         MPI_File_open(MPI_COMM_WORLD, "hywallAveraging.dat", MPI_MODE_RDWR | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
         int headerSize = 3*NAME_BUF_LENGTH*numAvgVars+sizeof(int);
         int writefactor = (Parallel::isRoot)?1:0;
+        int totalVars = 3*numAvgVars;
         MPI_File_set_view(fh, 0, MPI_INT, MPI_INT, "native", MPI_INFO_NULL);
-        MPI_File_write_at(fh, 0, &(memory.globalTotalPoints), writefactor*1, MPI_INT, &st);
-        MPI_File_set_view(fh, sizeof(int), MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL);
+        MPI_File_write_at(fh, 0, &(totalVars), writefactor*1, MPI_INT, &st);
+        MPI_File_write_at(fh, 1, &(memory.globalTotalPoints), writefactor*1, MPI_INT, &st);
+        MPI_File_set_view(fh, 2*sizeof(int), MPI_CHAR, MPI_CHAR, "native", MPI_INFO_NULL);
         int blockOffset = NAME_BUF_LENGTH+memory.globalTotalPoints*sizeof(double);
         size_t currentPosition = 0;
         size_t currentLocalWriteSize = 0;
@@ -134,7 +136,7 @@ namespace HyWall
             currentPosition += sizeof(int);
             MPI_File_write_at(fh, currentPosition, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
             currentPosition += NAME_BUF_LENGTH;
-            MPI_File_write_at(fh, currentPosition+globalOffset*sizeof(double), (char*)avgVars[3*i+0], dim*sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+            MPI_File_write_at(fh, currentPosition+dim*globalOffset*sizeof(double), (char*)avgVars[3*i+0], currentLocalWriteSize, MPI_CHAR, &st);
             currentPosition += currentGlobalWriteSize;
 
             memset(nameBuffer, 0, NAME_BUF_LENGTH*sizeof(char));
@@ -143,7 +145,7 @@ namespace HyWall
             currentPosition += sizeof(int);
             MPI_File_write_at(fh, currentPosition, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
             currentPosition += NAME_BUF_LENGTH;
-            MPI_File_write_at(fh,currentPosition+globalOffset*sizeof(double), (char*)avgVars[3*i+1], dim*sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+            MPI_File_write_at(fh,currentPosition+dim*globalOffset*sizeof(double), (char*)avgVars[3*i+1], currentLocalWriteSize, MPI_CHAR, &st);
             currentPosition += currentGlobalWriteSize;
             
             memset(nameBuffer, 0, NAME_BUF_LENGTH*sizeof(char));
@@ -152,7 +154,7 @@ namespace HyWall
             currentPosition += sizeof(int);
             MPI_File_write_at(fh, currentPosition, nameBuffer, writefactor*NAME_BUF_LENGTH, MPI_CHAR, &st);
             currentPosition += NAME_BUF_LENGTH;
-            MPI_File_write_at(fh, currentPosition+globalOffset*sizeof(double), (char*)avgVars[3*i+2], dim*sizeof(double)*memory.localTotalPoints, MPI_CHAR, &st);
+            MPI_File_write_at(fh, currentPosition+dim*globalOffset*sizeof(double), (char*)avgVars[3*i+2], currentLocalWriteSize, MPI_CHAR, &st);
             currentPosition += currentGlobalWriteSize;
         }
         MPI_File_close(&fh);
