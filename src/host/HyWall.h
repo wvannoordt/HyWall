@@ -37,5 +37,7 @@ namespace HyWall
         void GetSolutionAndGradient(int widx, int solIdx, double* solOut, double* solGradOut);
         void ReadRestart(int timeStep);
         void WriteRestart(int timeStep);
+        void DumpInputState(std::string dirname);
+        void DumpOutputState(std::string dirname);
     }
 }

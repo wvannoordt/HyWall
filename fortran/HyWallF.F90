@@ -80,6 +80,38 @@ module HyWallF
         call hywall_read_restart_file_f(nt_timestep)
 
     end subroutine HyWallReadRestart
+    
+    subroutine HyWallDumpInputState(dirname)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)    :: dirname
+        interface
+			subroutine hywall_dump_input_state_f(dirnameF, lenDirnameF) bind (c)
+				use iso_c_binding
+                character (c_char), intent(in)  :: dirnameF
+                integer   (c_int),  intent(in)  :: lenDirnameF
+			end subroutine hywall_dump_input_state_f
+		end interface
+        call hywall_dump_input_state_f(dirname, len(dirname))
+
+    end subroutine HyWallDumpInputState
+    
+    subroutine HyWallDumpOuputState(dirname)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)    :: dirname
+        interface
+			subroutine hywall_dump_output_state_f(dirnameF, lenDirnameF) bind (c)
+				use iso_c_binding
+                character (c_char), intent(in)  :: dirnameF
+                integer   (c_int),  intent(in)  :: lenDirnameF
+			end subroutine hywall_dump_input_state_f
+		end interface
+        call hywall_dump_output_state_f(dirname, len(dirname))
+
+    end subroutine HyWallDumpOuputState
 
     subroutine HyWallGetProbePointer(arrayName, pointerOut)
 

@@ -21,6 +21,8 @@ namespace HyWall
         void hywall_write_restart_file_f(int* nt_timestep);
         void hywall_read_restart_file_f(int* nt_timestep);
         void hywall_getsolgradandsol_f(int* widx, int* solIdx, double* solOut, double* solGradOut);
+        void hywall_dump_input_state_f(char* dirname, int* lenDirname);
+        void hywall_dump_output_state_f(char* dirname, int* lenDirname);
     }
 }
 

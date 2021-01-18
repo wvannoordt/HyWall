@@ -103,6 +103,16 @@ namespace HyWall
     {
 
     }
+    
+    void DumpInputState(std::string dirname)
+    {
+        WriteLine(1, "DumpInputState [DEBUGGING ONLY!]");
+    }
+    
+    void DumpOutputState(std::string dirname)
+    {
+        WriteLine(1, "DumpInputState [DEBUGGING ONLY!]");
+    }
 
     void CopySymbols(void)
     {

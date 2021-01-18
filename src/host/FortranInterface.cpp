@@ -91,6 +91,24 @@ namespace HyWall
         std::string strname(namebuf);
         PassVariable(strname, ptr);
     }
+    
+    void hywall_dump_input_state_f(char* dirname, int* lenDirname)
+    {
+        char namebuf[120] = {0};
+        int len = *lenDirname;
+        memcpy(namebuf, dirname, len*sizeof(char));
+        std::string strname(namebuf);
+        DumpInputState(strname);
+    }
+    
+    void hywall_dump_output_state_f(char* dirname, int* lenDirname)
+    {
+        char namebuf[120] = {0};
+        int len = *lenDirname;
+        memcpy(namebuf, dirname, len*sizeof(char));
+        std::string strname(namebuf);
+        DumpOutputState(strname);
+    }
 
     void hywall_write_restart_file_f(int* nt_timestep)
     {
