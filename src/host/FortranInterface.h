@@ -23,6 +23,7 @@ namespace HyWall
         void hywall_getsolgradandsol_f(int* widx, int* solIdx, double* solOut, double* solGradOut);
         void hywall_dump_input_state_f(char* dirname, int* lenDirname);
         void hywall_dump_output_state_f(char* dirname, int* lenDirname);
+        void hywall_dump_partition_f(char* dirname, int* lenDirname);
     }
 }
 

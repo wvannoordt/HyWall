@@ -32,6 +32,7 @@ namespace HyWall
         void Allreduce(const void *sendbuf, void *recvbuf, int count, HY_DATATYPE datatype, HY_OPERATION op);
         void GlobalBoundsProduct(double* ar1, double* ar2, int num, double* minVal, double* maxVal);
         void MarkActiveRanks(bool isActive_in);
+        void Sync(void);
     }
 }
 

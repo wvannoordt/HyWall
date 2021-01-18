@@ -7,13 +7,16 @@
 #include "TransitionSensorTypes.h"
 #include "TransitionSensor.h"
 #include <string>
+#include <vector>
 #include "Variables.h"
+#include <algorithm>
 #include "ScreenOutput.h"
 #include "HWPP.hpp"
 #include "HyWallCuda.h"
 #include "Solver.h"
 #include "Typedef.h"
 #include "HostUtils.h"
+#include <fstream>
 #include "SolutionOutput.h"
 #include "ViscousLaws.h"
 #include "Averaging.h"
@@ -104,14 +107,79 @@ namespace HyWall
 
     }
     
+    void DumpPartition(std::string dirname)
+    {
+        WriteLine(1, "DumpPartition [DEBUGGING ONLY!]");
+        std::ofstream myfile;
+        if (Parallel::isRoot)
+        {
+            myfile.open(dirname + "/hywallPartition.dat");
+            myfile << "pId/cpu/gpu" << std::endl;
+        }
+        for (int p = 0; p < Parallel::pNum; p++)
+        {
+            if (p==Parallel::pId)
+            {
+                std::cout << "p = " << p << ", (C/G)=" << memory.localCpuPoints << "/" << memory.localGpuPoints <<std::endl;
+            }
+            int numCpuPoints = (p==Parallel::pId)?memory.localCpuPoints:0;
+            int numGpuPoints = (p==Parallel::pId)?memory.localGpuPoints:0;
+            int numPointsCpuCur = 0;
+            int numPointsGpuCur = 0;
+            Parallel::Allreduce(&numCpuPoints, &numPointsCpuCur, 1, HY_INT, HY_SUM);
+            Parallel::Allreduce(&numGpuPoints, &numPointsGpuCur, 1, HY_INT, HY_SUM);
+            Parallel::Sync();
+            if (Parallel::isRoot)
+            {
+                myfile << p << " " << numPointsCpuCur << " " << numPointsGpuCur << std::endl;
+            }
+            Parallel::Sync();
+        }
+        if (Parallel::isRoot)
+        {
+            myfile.close();
+        }
+    }
+    
+    template <typename mytype> void DebugOutput(std::string variableName, std::string filename)
+    {
+        mytype* buf = (mytype*)memory.GetVariable(variableName);
+        std::ofstream myfile;
+        myfile.open(filename);
+        size_t vSize = memory.localCpuPoints;
+        for (int i = 0; i < vSize; i++)
+        {
+            myfile << buf[i] << "\n";
+        }
+        myfile.close();
+    }
+    
     void DumpInputState(std::string dirname)
     {
         WriteLine(1, "DumpInputState [DEBUGGING ONLY!]");
+        std::vector<std::string> varnames = memory.GetVarsByStartingString("in:");
+        for (auto& v:varnames)
+        {
+            std::string varname = v;
+            std::string filename = v;
+            std::replace(filename.begin(), filename.end(), ':', '_');
+            WriteLine(1, "Output " + v);
+            DebugOutput<double>(varname, dirname + "/" + filename + std::to_string(Parallel::pId) + ".dat");
+        }
     }
     
     void DumpOutputState(std::string dirname)
     {
-        WriteLine(1, "DumpInputState [DEBUGGING ONLY!]");
+        WriteLine(1, "DumpOutputState [DEBUGGING ONLY!]");
+        std::vector<std::string> varnames = memory.GetVarsByStartingString("out:");
+        for (auto& v:varnames)
+        {
+            std::string varname = v;
+            std::string filename = v;
+            std::replace(filename.begin(), filename.end(), ':', '_');
+            WriteLine(1, "Output " + v);
+            DebugOutput<double>(varname, dirname + "/" + filename + std::to_string(Parallel::pId) + ".dat");
+        }
     }
 
     void CopySymbols(void)

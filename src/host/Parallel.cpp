@@ -85,6 +85,11 @@ namespace HyWall
             MPI_Allreduce(&loc_min, &glob_min, 1, MPI_DOUBLE, MPI_MIN, globalComm);
             MPI_Allreduce(&loc_max, &glob_max, 1, MPI_DOUBLE, MPI_MAX, globalComm);
         }
+        
+        void Sync(void)
+        {
+            MPI_Barrier(globalComm);
+        }
 
         double GlobalMin(double* ar, int num)
         {

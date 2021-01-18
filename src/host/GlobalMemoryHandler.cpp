@@ -42,6 +42,19 @@ namespace HyWall
         }
         __erkill("Could not set appropriate global variable for \"" + name + "\". Variable was probably never declared.");
     }
+    
+    std::vector<std::string> GlobalMemoryHandler::GetVarsByStartingString(std::string startStr)
+    {
+        std::vector<std::string> output;
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i].rfind(startStr, 0) == 0)
+            {
+                output.push_back(variableNames[i]);
+            }
+        }
+        return output;
+    }
 
     void* GlobalMemoryHandler::GetVariable(std::string name)
     {
@@ -254,6 +267,18 @@ namespace HyWall
             if (variableNames[i] == varname)
             {
                 return bufferSizes[i];
+            }
+        }
+        __erkill("Could not get appropriate global variable for \"" + varname + "\"");
+    }
+    
+    size_t GlobalMemoryHandler::GetVariableElemCount(std::string varname)
+    {
+        for (int i = 0; i < numGlobalVariables; i++)
+        {
+            if (variableNames[i] == varname)
+            {
+                return elementCount[i];
             }
         }
         __erkill("Could not get appropriate global variable for \"" + varname + "\"");

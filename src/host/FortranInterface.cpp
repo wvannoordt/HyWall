@@ -101,6 +101,15 @@ namespace HyWall
         DumpInputState(strname);
     }
     
+    void hywall_dump_partition_f(char* dirname, int* lenDirname)
+    {
+        char namebuf[120] = {0};
+        int len = *lenDirname;
+        memcpy(namebuf, dirname, len*sizeof(char));
+        std::string strname(namebuf);
+        DumpPartition(strname);
+    }
+    
     void hywall_dump_output_state_f(char* dirname, int* lenDirname)
     {
         char namebuf[120] = {0};

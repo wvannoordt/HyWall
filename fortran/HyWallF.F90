@@ -97,7 +97,23 @@ module HyWallF
 
     end subroutine HyWallDumpInputState
     
-    subroutine HyWallDumpOuputState(dirname)
+    subroutine HyWallDumpPartition(dirname)
+
+        use, intrinsic :: iso_c_binding
+        implicit none
+        character*(*),   intent(in)    :: dirname
+        interface
+			subroutine hywall_dump_partition_f(dirnameF, lenDirnameF) bind (c)
+				use iso_c_binding
+                character (c_char), intent(in)  :: dirnameF
+                integer   (c_int),  intent(in)  :: lenDirnameF
+			end subroutine hywall_dump_partition_f
+		end interface
+        call hywall_dump_partition_f(dirname, len(dirname))
+
+    end subroutine HyWallDumpPartition
+    
+    subroutine HyWallDumpOutputState(dirname)
 
         use, intrinsic :: iso_c_binding
         implicit none
@@ -107,11 +123,11 @@ module HyWallF
 				use iso_c_binding
                 character (c_char), intent(in)  :: dirnameF
                 integer   (c_int),  intent(in)  :: lenDirnameF
-			end subroutine hywall_dump_input_state_f
+			end subroutine hywall_dump_output_state_f
 		end interface
         call hywall_dump_output_state_f(dirname, len(dirname))
 
-    end subroutine HyWallDumpOuputState
+    end subroutine HyWallDumpOutputState
 
     subroutine HyWallGetProbePointer(arrayName, pointerOut)
 
