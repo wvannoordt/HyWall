@@ -17,7 +17,7 @@ namespace HyWall
             template <typename vartype> void AddStaticVariable(std::string name, vartype** hostSymbol, vartype** deviceSymbol,  int numPerRay, int dimension, const int manageMode);
             template <typename vartype> void FillByFlag(const int flag, vartype bValue);
             template <typename vartype> void CopySingularBuffer(std::string name, vartype* buf);
-            void SetUserAssociatedVariable(std::string name, double* ptr, size_t numElems);
+            void SetUserAssociatedVariable(std::string name, double* ptr);
             void* GetVariable(std::string name);
             void* GetVariable(std::string name, const int assertFlag);
             void ApplyInitializationPolicies(void);
