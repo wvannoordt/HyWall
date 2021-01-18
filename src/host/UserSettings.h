@@ -134,6 +134,9 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember transitionLocation 0.0
         double transitionLocation;
+        
+        #pragma HWPP SerialIoMember loadBalance false
+        bool loadBalance;
     };
     #pragma HWPP SerialIoStructEnd
 

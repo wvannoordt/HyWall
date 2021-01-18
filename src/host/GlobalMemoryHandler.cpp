@@ -4,12 +4,14 @@
 #include "DebugTools.h"
 #include <string>
 #include <vector>
+#include "HyWall.h"
 namespace HyWall
 {
     GlobalMemoryHandler::GlobalMemoryHandler(void){initializePoliciesWereApplied=false;localTotalPoints=0;}
 
     void GlobalMemoryHandler::SetSize(int numPoints_in, int rayDim_in)
     {
+        balancer = NULL;
         rayDim = rayDim_in;
         localTotalPoints = numPoints_in;
         localCpuPoints = localTotalPoints;
@@ -18,6 +20,13 @@ namespace HyWall
         globalCpuPoints = 0;
         globalTotalPoints = 0;
         numGlobalVariables = 0;
+        localCpuPointsNative = numPoints_in;
+        localGpuPointsNative = 0;
+        localTotalPointsNative = localTotalPoints;
+        if (settings.loadBalance)
+        {
+            balancer = new LoadBalancer(this);
+        }
         initializePoliciesWereApplied = false;
         Parallel::Allreduce(&localTotalPoints, &globalTotalPoints, 1, HY_INT, HY_SUM);
         Parallel::Allreduce(&localGpuPoints,   &globalGpuPoints,   1, HY_INT, HY_SUM);
@@ -302,6 +311,15 @@ namespace HyWall
                 WriteLine(2, "Freeing host-side buffer for \"" + variableNames[i] + "\"");
                 free(hostBuffers[i]);
             }
+        }
+    }
+    
+    GlobalMemoryHandler::~GlobalMemoryHandler(void)
+    {
+        if (settings.loadBalance)
+        {
+            delete balancer;
+            balancer = NULL;
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "BufferFlags.h"
 #include "Parallel.h"
+#include "LoadBalancer.h"
 #include <string>
 #include <vector>
 #ifndef GLOBAL_MEM_HAN_H
@@ -10,12 +11,13 @@ namespace HyWall
     {
         public:
             GlobalMemoryHandler(void);
+            ~GlobalMemoryHandler(void);
             void SetSize(int numPoints_in, int rayDim_in);
             template <typename vartype> void FillVariable(std::string name, vartype bValue);
             template <typename vartype> void AddStaticVariable(std::string name, vartype** hostSymbol, vartype** deviceSymbol,  int numPerRay, int dimension, const int manageMode);
             template <typename vartype> void FillByFlag(const int flag, vartype bValue);
             template <typename vartype> void CopySingularBuffer(std::string name, vartype* buf);
-            void SetUserAssociatedVariable(std::string name, double* ptr);
+            void SetUserAssociatedVariable(std::string name, double* ptr, size_t numElems);
             void* GetVariable(std::string name);
             void* GetVariable(std::string name, const int assertFlag);
             void ApplyInitializationPolicies(void);
@@ -32,6 +34,9 @@ namespace HyWall
             int globalGpuPoints;
             int globalCpuPoints;
             int globalTotalPoints;
+            int localCpuPointsNative;
+            int localGpuPointsNative;
+            int localTotalPointsNative;
         private:
             int rayDim;
             void* hostBuffers[MAX_BUFFERS];
@@ -49,8 +54,7 @@ namespace HyWall
             int elementCount[MAX_BUFFERS];
             int numGlobalVariables;
             bool initializePoliciesWereApplied;
-
-
+            LoadBalancer* balancer;
     };
 }
 #endif
