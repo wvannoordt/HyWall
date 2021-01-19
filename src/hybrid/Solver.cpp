@@ -8,6 +8,7 @@
 #include "AllEquations.h"
 #include "CoreUtils.h"
 #include "Thermodynamics.h"
+#include "Parallel.h"
 #if(___cpu)
 #include <cmath>
 using std::sqrt;
@@ -165,6 +166,7 @@ namespace HyCore
         else
         {
             __qdump("Wall model solve failed. Data:");
+            __qdump("PID    = " << HyWall::Parallel::pId);
             __qdump("widx   = " << widx);
             __qdump("|u_F|  = " << umag);
             __qdump("u_F    = (" << elem(u_F, widx) << ", " << elem(v_F, widx) << ", " << elem(w_F, widx) << ")");
