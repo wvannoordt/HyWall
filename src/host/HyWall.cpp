@@ -166,6 +166,15 @@ namespace HyWall
             WriteLine(1, "Output " + v);
             DebugOutput<double>(varname, dirname + "/" + filename + std::to_string(Parallel::pId) + ".dat");
         }
+        std::vector<std::string> varnames2 = memory.GetVarsByStartingString("aux:");
+        for (auto& v:varnames2)
+        {
+            std::string varname = v;
+            std::string filename = v;
+            std::replace(filename.begin(), filename.end(), ':', '_');
+            WriteLine(1, "Output " + v);
+            DebugOutput<double>(varname, dirname + "/" + filename + std::to_string(Parallel::pId) + ".dat");
+        }
     }
     
     void DumpOutputState(std::string dirname)

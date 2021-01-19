@@ -10,6 +10,8 @@ namespace HyWall
             LoadBalancer(GlobalMemoryHandler* mem_in);
         private:
             GlobalMemoryHandler* mem;
+            void Balance(int numTasksIn, int* numTasksOut);
+            void DebugPrintTasks(int num);
     };
 }
 

@@ -157,7 +157,7 @@ namespace HyCore
             u1  = elem(u, widx, 1);
             elem(error, widx) = 0;
             elem(iterations, widx) = 0;
-            elem(tau, widx) = elem(mu_F, widx)*umag/elem(distance, widx);
+            elem(tau, widx) = elem(mu_F, widx)*umag/elem(distance, widx) ;
             elem(vorticity, widx) = u1/settings.wallSpacing;
             elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
             elem(failurelevel, widx) = 1.0;
