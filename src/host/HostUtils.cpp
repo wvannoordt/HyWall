@@ -16,4 +16,11 @@ namespace HyWall
     {
         for (int i = 0;  i < num; i++) array[i] = bValue;
     }
+    
+    std::string bufStr(int num, int bufSize)
+    {
+        std::string output = std::to_string(num);
+        while (output.length()<bufSize) output = " " + output;
+        return output;
+    }
 }
