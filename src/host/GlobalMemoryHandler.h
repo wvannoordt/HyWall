@@ -40,6 +40,11 @@ namespace HyWall
         private:
             int rayDim;
             void* hostBuffers[MAX_BUFFERS];
+            void*  loadBalanceBuffer[MAX_BUFFERS]; // stores the input / output information that results from load balancing
+            bool   hasLoadBalanceBuffer[MAX_BUFFERS];
+            bool   loadBalanceBufferIsAllocated[MAX_BUFFERS];
+            size_t loadBalanceBufferSize[MAX_BUFFERS];
+            
             void* deviceBuffers[MAX_BUFFERS];
             void** hostSymbols[MAX_BUFFERS];
             void** deviceSymbols[MAX_BUFFERS];

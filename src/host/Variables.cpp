@@ -10,19 +10,19 @@ namespace HyWall
     void DefineInputVariables(void)
     {
         //Once GPU implementation is good, should ideally pass in host and device symbols and immediately copy when available.
-        memory.AddStaticVariable<double>("in:x",        &(HyCoreCPU::x),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:y",        &(HyCoreCPU::y),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:z",        &(HyCoreCPU::z),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("in:x",        &(HyCoreCPU::x),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:y",        &(HyCoreCPU::y),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:z",        &(HyCoreCPU::z),        NULL, 1, 1, bflag::constInput | bflag::userMustProvide | bflag::loadBalanced);
 
-        memory.AddStaticVariable<double>("in:p",        &(HyCoreCPU::p_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:u",        &(HyCoreCPU::u_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:v",        &(HyCoreCPU::v_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:w",        &(HyCoreCPU::w_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:T",        &(HyCoreCPU::T_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:mu_t",     &(HyCoreCPU::mu_t_F),   NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:rho",      &(HyCoreCPU::rho_F),    NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:mu_lam",   &(HyCoreCPU::mu_F),     NULL, 1, 1, bflag::input | bflag::userMustProvide);
-        memory.AddStaticVariable<double>("in:distance", &(HyCoreCPU::distance), NULL, 1, 1, bflag::input | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("in:p",        &(HyCoreCPU::p_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:u",        &(HyCoreCPU::u_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:v",        &(HyCoreCPU::v_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:w",        &(HyCoreCPU::w_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:T",        &(HyCoreCPU::T_F),      NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:mu_t",     &(HyCoreCPU::mu_t_F),   NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:rho",      &(HyCoreCPU::rho_F),    NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:mu_lam",   &(HyCoreCPU::mu_F),     NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("in:distance", &(HyCoreCPU::distance), NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
     }
 
     void DefineAuxilaryVariables(void)
@@ -46,12 +46,12 @@ namespace HyWall
             memory.AddStaticVariable<double>("jac:mom3", &(HyCoreCPU::momSystem[TD_RHS]), NULL, settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
         }
 
-        memory.AddStaticVariable<double>("in:momRHS", &(HyCoreCPU::momBalancedRHS), NULL, 1, 1, bflag::input | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("in:momRHS", &(HyCoreCPU::momBalancedRHS), NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
         if (settings.includeMomentumRhs)
         {
             memory.AddStaticVariable<double>("sol:u_SA",  &(HyCoreCPU::u_SA),           NULL, settings.rayDim, 1, bflag::solution);
         }
-        memory.AddStaticVariable<double>("in:dpdx",   &(HyCoreCPU::dpdx),           NULL, 1, 1, bflag::input | bflag::userMustProvide);
+        memory.AddStaticVariable<double>("in:dpdx",   &(HyCoreCPU::dpdx),           NULL, 1, 1, bflag::input | bflag::userMustProvide | bflag::loadBalanced);
     }
 
     void DefineEnergyVariables(void)
@@ -84,12 +84,12 @@ namespace HyWall
 
     void DefineOutputVariables(void)
     {
-        memory.AddStaticVariable<double>("out:vorticity",   &(HyCoreCPU::vorticity),    NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:tau",         &(HyCoreCPU::tau),          NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:heatflux",    &(HyCoreCPU::heatflux),     NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:error"   ,    &(HyCoreCPU::error),        NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:iterations",  &(HyCoreCPU::iterations),   NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
-        memory.AddStaticVariable<double>("out:failurelevel",&(HyCoreCPU::failurelevel), NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput);
+        memory.AddStaticVariable<double>("out:vorticity",   &(HyCoreCPU::vorticity),    NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("out:tau",         &(HyCoreCPU::tau),          NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("out:heatflux",    &(HyCoreCPU::heatflux),     NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("out:error"   ,    &(HyCoreCPU::error),        NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("out:iterations",  &(HyCoreCPU::iterations),   NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
+        memory.AddStaticVariable<double>("out:failurelevel",&(HyCoreCPU::failurelevel), NULL, 1, 1, bflag::input | bflag::userCanProvide | bflag::vtkOutput | bflag::loadBalanced);
     }
 
     bool HasFlag(int a, int flag)

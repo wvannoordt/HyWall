@@ -9,11 +9,9 @@
 #include "DebugTools.h"
 namespace HyWall
 {
-    LoadBalancer::LoadBalancer(GlobalMemoryHandler* mem_in)
+    LoadBalancer::LoadBalancer(void)
     {
-        mem = mem_in;
-        int myTasksAfterLoadBalance;
-        Balance(mem->localCpuPointsNative, &myTasksAfterLoadBalance);
+        
     }
     
     void LoadBalancer::Balance(int numTasksIn, int* numTasksOut)
@@ -21,12 +19,16 @@ namespace HyWall
         int numTasksBefore = numTasksIn;
         std::vector<int> allTasks;
         std::vector<int> procs;
+        int me = Parallel::pId;
         allTasks.resize(Parallel::pNum, 0);
         Parallel::Allgather(&numTasksBefore, 1, allTasks.data(), 1, HY_INT);
         for (int i = 0; i < Parallel::pNum; i++) procs.push_back(i);
         WriteLine(1, "Balancing Load");
         pattern = CreateLoadBalance(procs, allTasks);
-        WriteLine(1, "Balanced Load");        
+        OptimizeForSparseness(pattern);
+        *numTasksOut = numTasksIn;
+        for (const auto& r:pattern[me]) *numTasksOut += r;
+        WriteLine(1, "Balanced Load");
     }
     
     Mat<int> LoadBalancer::CreateLoadBalance(std::vector<int> procs, std::vector<int> numTasks)
@@ -50,7 +52,7 @@ namespace HyWall
         Mat<int> commPattern(procs.size(), procs.size());
         commPattern.fill(0);
         int maxIts = 1000;
-        int tol = 8;
+        int tol = 10;
         for (int iter = 0; iter < maxIts; iter++)
         {
             ISort<int,int>(numTasks, procs);
@@ -62,11 +64,12 @@ namespace HyWall
             }
             for (int i = 0; i < procs.size()/2; i++)
             {
-                int small = procs[i];
-                int big = procs[nProc-i-1];
+                //careful... this is a little tricky!
+                int receiver = procs[i];
+                int donor = procs[nProc-i-1];
                 int exchange = (meanTasks-numTasks[i])/6;
-                commPattern(small, big) += exchange;
-                commPattern(big, small) -= exchange;
+                commPattern(receiver, donor) += exchange;
+                commPattern(donor, receiver) -= exchange;
             }
             std::vector<int> resultTasks;
             resultTasks.resize(nProc, 0);
@@ -91,6 +94,11 @@ namespace HyWall
         return commPattern;
     }
     
+    void LoadBalancer::OptimizeForSparseness(Mat<int>& nums)
+    {
+        // TODO
+    }
+    
     void LoadBalancer::SerialPrint(Mat<int>& nums)
     {
         if (0==Parallel::pId)
@@ -103,6 +111,7 @@ namespace HyWall
                 }
                 std::cout << std::endl;
             }
+            std::cout << std::endl;
         }
     }
     

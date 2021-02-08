@@ -25,7 +25,8 @@ namespace HyWall
         localTotalPointsNative = localTotalPoints;
         if (settings.loadBalance)
         {
-            balancer = new LoadBalancer(this);
+            balancer = new LoadBalancer();
+            balancer->Balance(localCpuPointsNative, &localCpuPoints);
         }
         initializePoliciesWereApplied = false;
         Parallel::Allreduce(&localTotalPoints, &globalTotalPoints, 1, HY_INT, HY_SUM);
@@ -42,8 +43,13 @@ namespace HyWall
             {
                 if (!HasFlag(manageModes[i], bflag::userCanProvide) && !HasFlag(manageModes[i], bflag::userMustProvide)) __erkill("User is not allowed to provide aux variable \"" + name + "\"");
                 isAllocated[i] = true;
+                if (userHasProvided[i]) __erkill("User is not allowed to set \"" + name + "\" twice");
                 userHasProvided[i] = true;
                 hostBuffers[i] = ptr;
+                // loadBalanceBuffer[i] = NULL;
+                // hasLoadBalanceBuffer = true;
+                // loadBalanceBufferIsAllocated[i] = false;
+                // if ()
                 elementCount[i] = -999;
                 WriteLine(3, "Found \"" + name + "\"");
                 return;
@@ -184,6 +190,11 @@ namespace HyWall
         deviceSymbols[numGlobalVariables]          = (void**)deviceSymbol;
         doHostSymbolTransfer[numGlobalVariables]   = (hostSymbol != NULL);
         doDeviceSymbolTransfer[numGlobalVariables] = (deviceSymbol != NULL);
+        // load balancing
+        loadBalanceBuffer[numGlobalVariables]             = NULL;
+        hasLoadBalanceBuffer[numGlobalVariables]          = false;
+        loadBalanceBufferIsAllocated[numGlobalVariables]  = false;
+        loadBalanceBufferSize[numGlobalVariables]         = 0;
 
         WriteLine(3, "Declaring static associated variable:");
         WriteLine(3, "name:       " + name);
@@ -194,6 +205,7 @@ namespace HyWall
 
         if (HasFlag(manageMode, bflag::allocateNow))
         {
+            // for averaging only really
             if (!HasFlag(manageMode, bflag::auxilary)) __erkill("A non-auxilary buffer has been marked for in-place allocation: \"" << name << "\"");
             WriteLine(3, "ALLOCATING IN-PLACE");
             hostBuffers[numGlobalVariables] = malloc(bufferSizes[numGlobalVariables]);

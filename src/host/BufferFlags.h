@@ -19,7 +19,8 @@ namespace HyWall
             vtkOutput       = 0b00000000000000000000000010000000,
             serialHostUsage = 0b00000000000000000000000100000000,
             allocateNow     = 0b00000000000000000000001000000000,
-            restorable      = 0b00000000000000000000010000000000
+            restorable      = 0b00000000000000000000010000000000,
+            loadBalanced    = 0b00000000000000000000100000000000   // if communication patterns are required for the variable
         };
     }
 }
