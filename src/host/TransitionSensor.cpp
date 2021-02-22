@@ -18,6 +18,7 @@ namespace HyWall
         memory.AddStaticVariable<double>("aux:sensor_val",      &sensor_val,                 NULL, 1, 1, bflag::auxilary | bflag::vtkOutput | bflag::userCanProvide | bflag::restorable);
         memory.AddStaticVariable<double>("aux:sensorMult",      &HyCoreCPU::sensorMult,      NULL, 1, 1, bflag::auxilary | bflag::userCanProvide | bflag::restorable);
         memory.AddStaticVariable<double>("aux:strain_rate",     &strain_rate,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide | bflag::restorable);
+        memory.AddStaticVariable<double>("aux:sensor_preMult",  &sensor_preMult,                NULL, 1, 1, bflag::auxilary | bflag::userMustProvide | bflag::restorable);
         switch(sensorType)
         {
             case sensor::mettu18:
@@ -171,7 +172,7 @@ namespace HyWall
 
         for (int i = 0; i < pointNum; i++)
         {
-            sensor_val[i] = (0.15 * rho_avg[i]*k_avg[i] / (mu_avg[i] * (strain_rate_avg[i]+1e-16)))/settings.sensorThreshold;            
+            sensor_val[i] = (sensor_preMult[i] * 0.15 * rho_avg[i]*k_avg[i] / (mu_avg[i] * (strain_rate_avg[i]+1e-16)))/settings.sensorThreshold;            
             sensorMult[i] = (sensor_val[i]>1.0) ? 1.0 : 0.0;
         }
         double smin = Parallel::GlobalMin(sensor_val, pointNum);
