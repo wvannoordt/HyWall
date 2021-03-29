@@ -75,6 +75,10 @@ CC_HOST := g++
 CC_DEVICE := none
 endif
 
+ifdef CC
+CC_HOST := ${CC}
+endif
+
 CU_O_TARGET_NAME := ${WM_OBJ_DIR}/CU_dlink.o
 ifeq (${CUDA_ENABLE}, 1)
 LINK_STEP := link_step
