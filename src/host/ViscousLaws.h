@@ -10,7 +10,8 @@ namespace HyCore
         enum visclawenum
         {
             constant           = 32489,
-            sutherland         = 982374
+            sutherland         = 982374,
+            PowerLaw           = 123576
         };
     }
 }

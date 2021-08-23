@@ -19,6 +19,12 @@ namespace HyCore
         return mu;
     }
 
+    __common double PowerLawViscosityRelation(double T)
+    {
+         double mu = settings.suthViscRef*pow(T/settings.suthTRef,0.76);
+         return mu;
+    }  
+
     __common double DensityRelation(double P, double T)
     {
         double rho = P/(settings.gasConstant*T);
@@ -36,6 +42,11 @@ namespace HyCore
                 for (int i = 0; i < N; i++) elem(mu, widx, i) = SutherlandViscosityRelation(elem(T, widx, i));
                 break;
             }
+            case visclaw::PowerLaw:
+            {
+                for (int i = 0; i < N; i++) elem(mu, widx, i) = PowerLawViscosityRelation(elem(T, widx, i));
+                break;
+            }            
         }
     }
 }
