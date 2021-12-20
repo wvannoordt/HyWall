@@ -42,7 +42,7 @@ namespace HyWall
         #pragma HWPP SerialIoMember wallTemperature 300
     	double wallTemperature;
 
-        #pragma HWPP SerialIoMember adiabaticWall false
+        #pragma HWPP SerialIoMember adiabaticWall true
     	bool adiabaticWall;
 
         #pragma HWPP SerialIoMember fluidCp 1005.0
