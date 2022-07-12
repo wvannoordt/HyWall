@@ -1,9 +1,15 @@
 #include "AllEquations.h"
+#include "TurbulenceEquation.h"
 #include "HybridComputing.h"
 #include "CoreData.h"
 #include "Indexing.h"
 #include "DebugTools.h"
 #include "CoreUtils.h"
+#if(___cpu)
+#include <cmath>
+using std::sqrt;
+using std::exp;
+#endif
 namespace HyCore
 {
     __common bool EnergyHasJacobian(HyWall::UserSettings* inputSettings)
@@ -76,13 +82,35 @@ namespace HyCore
             localtriple(yLoc, d, widx, i);
             localtriple(TLoc, T, widx, i);
 
+            double Pr_t_b = Pr_t;
+            double Pr_t_f = Pr_t;
+            if (settings.variablePrandtlT)
+            {
+                localtriple(ypLoc, T, widx, i);
+                ypLoc[0] = ComputeYCoord(widx, i-1, settings.yscaleType);
+                ypLoc[1] = ComputeYCoord(widx, i,   settings.yscaleType);
+                ypLoc[2] = ComputeYCoord(widx, i+1, settings.yscaleType);
+                const double K_T = 0.4716981132;
+                const double K   = 0.41;
+                const double A_T = 20.0;
+                const double A   = settings.vanDriestAPlus;
+                const double yp_f = 0.5*(ypLoc[1] + ypLoc[2]);
+                const double yp_b = 0.5*(ypLoc[1] + ypLoc[0]);
+                const double expt_f = 1.0-exp(-yp_f/A);
+                const double expb_f = 1.0-exp(-yp_f/A_T);
+                const double expt_b = 1.0-exp(-yp_b/A);
+                const double expb_b = 1.0-exp(-yp_b/A_T);
+                const double eps = 1e-6;
+                Pr_t_b = (K*(expt_b*expt_b + A_T*A_T*eps))/(K_T*(expb_b*expb_b + A*A*eps));
+                Pr_t_f = (K*(expt_f*expt_f + A_T*A_T*eps))/(K_T*(expb_f*expb_f + A*A*eps));
+            }
 
             double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
             double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
             double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);
 
-            double df_engy = 0.5*Cp*((muLoc[1]+muLoc[2])/Pr+iTurb*(mutLoc[1]+mutLoc[2])/Pr_t);
-            double db_engy = 0.5*Cp*((muLoc[1]+muLoc[0])/Pr+iTurb*(mutLoc[1]+mutLoc[0])/Pr_t);
+            double df_engy = 0.5*Cp*((muLoc[1]+muLoc[2])/Pr+iTurb*(mutLoc[1]+mutLoc[2])/Pr_t_f);
+            double db_engy = 0.5*Cp*((muLoc[1]+muLoc[0])/Pr+iTurb*(mutLoc[1]+mutLoc[0])/Pr_t_b);
 
             double df_mom = 0.5*((muLoc[2]+iTurb*mutLoc[2])*uLoc[2] + (muLoc[1]+iTurb*mutLoc[1])*uLoc[1]);
             double db_mom = 0.5*((muLoc[0]+iTurb*mutLoc[0])*uLoc[0] + (muLoc[1]+iTurb*mutLoc[1])*uLoc[1]);

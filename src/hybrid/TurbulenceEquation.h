@@ -16,6 +16,7 @@ namespace HyCore
     __common void ComputeAlgebraicTurbulence(const int widx, const int turbEq);
     __common void ZeroTurbInit(const int widx);
     __common void ComputeVanDriestTurbulence(const int widx);
+    __common double ComputeYCoord(const int widx, const int i, const int scale_type);
 }
 
 #endif

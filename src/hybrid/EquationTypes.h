@@ -24,6 +24,16 @@ namespace HyCore
             ODE              = 26323
         };
     }
+    
+    namespace yscale
+    {
+        enum yscaleenum
+        {
+            trettelLarsson = 12,
+            yPlus = 14,
+            mixed = 16
+        };
+    }
 
     namespace turbulence
     {

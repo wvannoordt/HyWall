@@ -83,12 +83,18 @@ namespace HyWall
 
         #pragma HWPP SerialIoMember turbulenceEquationType HyCore::turbulence::linear
     	int turbulenceEquationType;
+        
+        #pragma HWPP SerialIoMember yscaleType HyCore::yscale::trettelLarsson
+    	int yscaleType;
 
         #pragma HWPP SerialIoMember energyEquationType HyCore::energy::linear
     	int energyEquationType;
 
         #pragma HWPP SerialIoMember momentumUnderRelaxationODE 0.8
     	double momentumUnderRelaxationODE;
+        
+        #pragma HWPP SerialIoMember variablePrandtlT false
+    	bool variablePrandtlT;
 
         #pragma HWPP SerialIoMember turbulenceUnderRelaxationODE 0.6
     	double turbulenceUnderRelaxationODE;

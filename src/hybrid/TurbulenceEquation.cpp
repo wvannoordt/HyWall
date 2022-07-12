@@ -69,16 +69,48 @@ namespace HyCore
             }
         }
     }
+    
+    __common double ComputeYCoord(const int widx, const int i, const int scale_type)
+    {
+        const auto min = [](double a, double b) -> double {return a<b?a:b;};
+        double tau = elem(mu, widx, 0)*elem(u, widx, 1)/settings.wallSpacing;
+        switch (scale_type)
+        {
+            case yscale::trettelLarsson:
+            {
+                const double ystar = elem(d, widx, i) * sqrt(tau*elem(rho, widx, i))/elem(mu, widx, i);
+                return ystar;
+            }
+            case yscale::yPlus:
+            {
+                const double yplus = elem(d, widx, i) * sqrt(tau*elem(rho, widx, 0))/elem(mu, widx, 0);
+                return yplus;
+            }
+            case yscale::mixed:
+            {
+                const double utau   = sqrt(tau/elem(rho, widx, 0));
+                const double ystar  = ComputeYCoord(widx, i, yscale::trettelLarsson);
+                const double yplus  = ComputeYCoord(widx, i, yscale::yPlus);
+                const double yother = elem(d, widx, i) * elem(rho, widx, i)*utau/elem(mu, widx, i);
+                const double ym1 = 0.5*(ystar + yplus);
+                const double ym2 = 0.5*(ystar + yother);
+                return min(ym1, ym2);
+            }
+            default:
+            {
+                return 0.0;
+            }
+        }
+    }
 
     __common void ComputeVanDriestTurbulence(const int widx)
     {
         if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
-        double tau = elem(mu, widx, 0)*elem(u, widx, 1)/settings.wallSpacing;
         for (int i = 0; i < N; i++)
         {
-            double yPlus = elem(d, widx, i) * sqrt(tau*elem(rho, widx, i))/elem(mu, widx, i);
-            double expfactor = 1.0 - exp(-yPlus/settings.vanDriestAPlus);
-            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yPlus * expfactor*expfactor;
+            double ycoord = ComputeYCoord(widx, i, settings.yscaleType);
+            double expfactor = 1.0 - exp(-ycoord/settings.vanDriestAPlus);
+            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * ycoord * expfactor*expfactor;
         }
     }
 
