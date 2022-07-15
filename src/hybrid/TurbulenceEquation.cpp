@@ -205,6 +205,7 @@ namespace HyCore
     
     __common double GetTurbPrandtl(const int widx, const int i, const bool is_variable_prt, const int scale_type)
     {
+        if (!is_variable_prt) return settings.turbPradntl;
         const double yp = ComputeYCoord(widx, i, scale_type);
         const double K_T = 0.4716981132;
         const double K   = 0.41;
