@@ -120,7 +120,7 @@ namespace HyWall
         #pragma HWPP SerialIoMember averageSolution false
         bool averageSolution;
 
-        #pragma HWPP SerialIoMember averageOutputInterval 100
+        #pragma HWPP SerialIoMember averageOutputInterval 10
         int averageOutputInterval;
 
         #pragma HWPP SerialIoMember wallDataOutputInterval 100
