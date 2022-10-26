@@ -89,29 +89,13 @@ namespace HyCore
             localtriple(mutLoc, mu_t, widx, i);
             localtriple(yLoc, d, widx, i);
             localtriple(TLoc, T, widx, i);
+            double prt[3];
+            prt[0] = GetTurbPrandtl(widx, i-1, settings.variablePrandtlT, settings.yscaleType);
+            prt[1] = GetTurbPrandtl(widx, i,   settings.variablePrandtlT, settings.yscaleType);
+            prt[2] = GetTurbPrandtl(widx, i+1, settings.variablePrandtlT, settings.yscaleType);
 
-            double Pr_t_b = Pr_t;
-            double Pr_t_f = Pr_t;
-            if (settings.variablePrandtlT)
-            {
-                localtriple(ypLoc, T, widx, i);
-                ypLoc[0] = ComputeYCoord(widx, i-1, settings.yscaleType);
-                ypLoc[1] = ComputeYCoord(widx, i,   settings.yscaleType);
-                ypLoc[2] = ComputeYCoord(widx, i+1, settings.yscaleType);
-                const double K_T = 0.4716981132;
-                const double K   = 0.41;
-                const double A_T = 20.0;
-                const double A   = settings.vanDriestAPlus;
-                const double yp_f = 0.5*(ypLoc[1] + ypLoc[2]);
-                const double yp_b = 0.5*(ypLoc[1] + ypLoc[0]);
-                const double expt_f = 1.0-exp(-yp_f/A);
-                const double expb_f = 1.0-exp(-yp_f/A_T);
-                const double expt_b = 1.0-exp(-yp_b/A);
-                const double expb_b = 1.0-exp(-yp_b/A_T);
-                const double eps = 1e-6;
-                Pr_t_b = (K*(expt_b*expt_b + A_T*A_T*eps))/(K_T*(expb_b*expb_b + A*A*eps));
-                Pr_t_f = (K*(expt_f*expt_f + A_T*A_T*eps))/(K_T*(expb_f*expb_f + A*A*eps));
-            }
+            double Pr_t_b = 0.5*(prt[0]+prt[1]);
+            double Pr_t_f = 0.5*(prt[2]+prt[1]);
 
             double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
             double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);

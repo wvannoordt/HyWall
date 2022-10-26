@@ -4,6 +4,8 @@
 #include "ScreenOutput.h"
 #include "DebugTools.h"
 #include <cstring>
+#include <vector>
+#include <fstream>
 #define NAME_BUF_LENGTH 32
 #define MAX_AVERAGING_VALS 1024
 namespace HyWall
@@ -18,6 +20,8 @@ namespace HyWall
     double runningTime;
     bool firstCall;
     int globalOffset;
+    std::vector<double> lambda_avg, dT_dy_avg, lambda_dT_dy_avg;
+    std::vector<double> u_avg, tau_avg, u_tau_avg, y_avg;
     void InitializeAveraging(void)
     {
         WriteLine(1, "Initialize averaging");
@@ -47,6 +51,15 @@ namespace HyWall
         pointNums = new int[Parallel::pNum];
         Parallel::Allgather(&(memory.localTotalPoints), 1, pointNums, 1, HY_INT);
         for (int i = 0; i < Parallel::pId; i++) globalOffset += pointNums[i];
+        
+        lambda_avg.resize(settings.rayDim, 0.0);
+        dT_dy_avg.resize(settings.rayDim, 0.0);
+        lambda_dT_dy_avg.resize(settings.rayDim, 0.0);
+        
+        u_avg.resize(settings.rayDim, 0.0);
+        tau_avg.resize(settings.rayDim, 0.0);
+        u_tau_avg.resize(settings.rayDim, 0.0);
+        y_avg.resize(settings.rayDim, 0.0);
     }
 
     void ApplyAveragingTo(std::string variableName)
@@ -76,6 +89,7 @@ namespace HyWall
         double* phiSqAvg;
         double beta = settings.timeStep / runningTime;
         double alpha = 1.0 - beta;
+        
         for (int n = 0; n < numAvgVars; n++)
         {
             std::string varname(avgVarNames[3*n]);
@@ -101,6 +115,48 @@ namespace HyWall
                 }
             }
         }
+        
+        double* mu_buf   = (double*)memory.GetVariable("sol:mu");
+        double* mu_t_buf = (double*)memory.GetVariable("sol:mu_t");
+        double* u_buf    = (double*)memory.GetVariable("sol:u");
+        double* T_buf    = (double*)memory.GetVariable("sol:T");
+        double* y_buf    = (double*)memory.GetVariable("sol:d");
+        
+        double scal = 1.0/(double)(memory.localTotalPoints);
+        for (int i = 0; i < memory.localTotalPoints; ++i)
+        {
+            std::size_t offset = i*settings.rayDim;
+            auto inc = [&](int jh, int jl, int jm) ->void
+            {
+                double mu_loc   = mu_buf   [offset + jm];
+                double mu_t_loc = mu_t_buf [offset + jm];
+                double u_loc    = u_buf    [offset + jm];
+                double y_loc    = y_buf    [offset + jm];
+                double dy_loc   = y_buf[offset + jh] - y_buf[offset + jl];
+                double dT_loc   = T_buf[offset + jh] - T_buf[offset + jl];
+                double du_loc   = u_buf[offset + jh] - u_buf[offset + jl];
+                double du_dy_loc = du_loc/dy_loc;
+                double dT_dy_loc = dT_loc/dy_loc;
+                double lambda = settings.fluidCp*(mu_loc/settings.fluidPrandtl + mu_t_loc/settings.turbPradntl);
+                double tau    = mu_loc*du_dy_loc;
+                
+                lambda_avg[jm]       = alpha*lambda_avg[jm]       + beta*lambda;
+                dT_dy_avg[jm]        = alpha*dT_dy_avg[jm]        + beta*dT_dy_loc;
+                lambda_dT_dy_avg[jm] = alpha*lambda_dT_dy_avg[jm] + beta*lambda*dT_dy_loc;
+                u_avg[jm]            = alpha*u_avg[jm]            + beta*u_loc;
+                tau_avg[jm]          = alpha*tau_avg[jm]          + beta*tau;
+                u_tau_avg[jm]        = alpha*u_tau_avg[jm]        + beta*u_loc*tau;
+                y_avg[jm]            = alpha*y_avg[jm]            + beta*y_loc;
+            };
+            inc(1,0,0);
+            for (int j = 1; j < settings.rayDim-1; j++)
+            {
+                inc(j+1,j-1,j);
+            }
+            inc(settings.rayDim-1,settings.rayDim-2,settings.rayDim-1);
+        }
+        
+        
         firstCall = false;
     }
 
@@ -158,7 +214,56 @@ namespace HyWall
             currentPosition += currentGlobalWriteSize;
         }
         MPI_File_close(&fh);
-
+        
+        std::vector<double> lambda_avg_root, dT_dy_avg_root, lambda_dT_dy_avg_root, u_avg_root, tau_avg_root, u_tau_avg_root, y_avg_root;
+        
+        lambda_avg_root.resize(settings.rayDim, 0.0);
+        dT_dy_avg_root.resize(settings.rayDim, 0.0);
+        lambda_dT_dy_avg_root.resize(settings.rayDim, 0.0);
+        u_avg_root.resize(settings.rayDim, 0.0);
+        tau_avg_root.resize(settings.rayDim, 0.0);
+        u_tau_avg_root.resize(settings.rayDim, 0.0);
+        y_avg_root.resize(settings.rayDim, 0.0);
+        double loc_scale = (double)(memory.localTotalPoints)/(double)(memory.globalTotalPoints);
+        for (auto& p: lambda_avg)       p *= loc_scale;
+        for (auto& p: dT_dy_avg)        p *= loc_scale;
+        for (auto& p: lambda_dT_dy_avg) p *= loc_scale;
+        for (auto& p: u_avg)            p *= loc_scale;
+        for (auto& p: tau_avg)          p *= loc_scale;
+        for (auto& p: u_tau_avg)        p *= loc_scale;
+        for (auto& p: y_avg)            p *= loc_scale;
+        for (int k=0; k < lambda_avg.size(); ++k)
+        {
+            Parallel::Allreduce(&lambda_avg[k], &lambda_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&dT_dy_avg[k], &dT_dy_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&lambda_dT_dy_avg[k], &lambda_dT_dy_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&u_avg[k], &u_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&tau_avg[k], &tau_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&u_tau_avg[k], &u_tau_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+            Parallel::Allreduce(&y_avg[k], &y_avg_root[k], 1, HY_DOUBLE, HY_SUM);
+        }
+        for (auto& p: lambda_avg)       p /= loc_scale;
+        for (auto& p: dT_dy_avg)        p /= loc_scale;
+        for (auto& p: lambda_dT_dy_avg) p /= loc_scale;
+        for (auto& p: u_avg)            p /= loc_scale;
+        for (auto& p: tau_avg)          p /= loc_scale;
+        for (auto& p: u_tau_avg)        p /= loc_scale;
+        for (auto& p: y_avg)            p /= loc_scale;
+        
+        if (Parallel::isRoot)
+        {
+            std::ofstream myfile ("unsteady-energy-terms.csv");
+            for (int k = 0; k < settings.rayDim; ++k)
+            {
+                myfile << y_avg_root[k]            << ",";
+                myfile << lambda_avg_root[k]       << ",";
+                myfile << dT_dy_avg_root[k]        << ",";
+                myfile << lambda_dT_dy_avg_root[k] << ",";
+                myfile << u_avg_root[k]            << ",";
+                myfile << tau_avg_root[k]          << ",";
+                myfile << u_tau_avg_root[k]        << "\n";
+            }
+        }
     }
 
     void FinalizeAveraging(void)

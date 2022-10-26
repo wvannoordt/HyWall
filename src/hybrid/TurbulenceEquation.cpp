@@ -215,4 +215,18 @@ namespace HyCore
             elem(turb, widx, i+1) -= settings.turbulenceUnderRelaxationODE*turbSystem[TD_RHS][i];
         }
     }
+    
+    __common double GetTurbPrandtl(const int widx, const int i, const bool is_variable_prt, const int scale_type)
+    {
+        if (!is_variable_prt) return settings.turbPradntl;
+        const double yp = ComputeYCoord(widx, i, scale_type);
+        const double K_T = 0.4716981132;
+        const double K   = 0.41;
+        const double A_T = 20.0;
+        const double A   = settings.vanDriestAPlus;
+        const double expt_f = 1.0-exp(-yp/A);
+        const double expb_f = 1.0-exp(-yp/A_T);
+        const double eps = 1e-6;
+        return (K*(expt_f*expt_f + A_T*A_T*eps))/(K_T*(expb_f*expb_f + A*A*eps));
+    }
 }
