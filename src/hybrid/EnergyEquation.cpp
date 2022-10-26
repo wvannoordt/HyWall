@@ -52,6 +52,10 @@ namespace HyCore
                 LinearTInit(widx);
                 break;
             }
+            case energy::fromFile:
+            {
+                break;
+            }
         }
     }
 
@@ -62,6 +66,10 @@ namespace HyCore
             case energy::ODE:
             {
                 ComputeLhsRhsEnergyODE(widx);
+            }
+            case energy::fromFile:
+            {
+                break;
             }
         }
     }
@@ -116,6 +124,7 @@ namespace HyCore
             double db_mom = 0.5*((muLoc[0]+iTurb*mutLoc[0])*uLoc[0] + (muLoc[1]+iTurb*mutLoc[1])*uLoc[1]);
 
             engySystem[TD_RHS][i-1]  = dy2inv*(df_engy*(TLoc[2]-TLoc[1])*dyinvf - db_engy*(TLoc[1]-TLoc[0])*dyinvb) + dy2inv*(df_mom*(uLoc[2]-uLoc[1])*dyinvf - db_mom*(uLoc[1]-uLoc[0])*dyinvb);
+            // engySystem[TD_RHS][i-1]  += elem(rho, widx, i)*elem(u, widx, i)*20.75/0.498742216e-02;
             engySystem[TD_DIA][i-1] = -dy2inv*(df_engy*dyinvf + db_engy*dyinvb);
 
             if (i>1)   engySystem[TD_SUB][i-2] = dy2inv*db_engy*dyinvb;

@@ -21,7 +21,8 @@ namespace HyCore
         enum momentumenum
         {
             allmaras         = 34534,
-            ODE              = 26323
+            ODE              = 26323,
+            fromFile         = 12342
         };
     }
     
@@ -41,7 +42,8 @@ namespace HyCore
         {
             linear           = 29823,
             ODE              = 23414,
-            vanDriest        = 82984
+            vanDriest        = 82984,
+            fromFile         = 12343
         };
     }
 
@@ -51,7 +53,8 @@ namespace HyCore
         {
             croccoBusemann   = 98304,
             ODE              = 70209,
-            linear           = 27498
+            linear           = 27498,
+            fromFile         = 12344
         };
     }
 }

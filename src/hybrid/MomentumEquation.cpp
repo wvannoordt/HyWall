@@ -42,6 +42,10 @@ namespace HyCore
                 ComputeAllmarasMomentum(widx, &dummy1, &dummy2);
                 break;
             }
+            case momentum::fromFile:
+            {
+                break;
+            }
         }
     }
 
@@ -54,6 +58,10 @@ namespace HyCore
                 ComputeAllmarasMomentum(widx, errorOut, itsOut);
                 break;
             }
+            case momentum::fromFile:
+            {
+                break;
+            }
         }
     }
 
@@ -64,6 +72,10 @@ namespace HyCore
             case momentum::ODE:
             {
                 ComputeLhsRhsMomentumODE(widx);
+            }
+            case momentum::fromFile:
+            {
+                break;
             }
         }
     }
@@ -100,6 +112,7 @@ namespace HyCore
             double df = 0.5*(muLoc[1]+muLoc[2]+iTurb*mutLoc[1]+iTurb*mutLoc[2]);
             double db = 0.5*(muLoc[1]+muLoc[0]+iTurb*mutLoc[1]+iTurb*mutLoc[0]);
             momSystem[TD_RHS][i-1]  = dy2inv*(df*(uLoc[2]-uLoc[1])*dyinvf - db*(uLoc[1]-uLoc[0])*dyinvb);
+            // momSystem[TD_RHS][i-1] += elem(rho, widx, i)*20.75/0.498742216e-02;
             if (settings.includeMomentumRhs) momSystem[TD_RHS][i-1] -= (elem(dpdx, widx) + elem(momBalancedRHS, widx)*elem(u_SA, widx, i)/elem(u_F, widx));
             momSystem[TD_DIA][i-1] = -dy2inv*(df*dyinvf + db*dyinvb);
             if (i>1)   momSystem[TD_SUB][i-2] = dy2inv*db*dyinvb;

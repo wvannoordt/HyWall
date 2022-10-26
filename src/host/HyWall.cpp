@@ -107,6 +107,29 @@ namespace HyWall
 
     }
     
+    void ReadFileToVariable(const std::string& var_name, const std::string& filename)
+    {
+        std::vector<double> file_y;
+        std::vector<double> file_var;
+        std::ifstream ifile (filename);
+    }
+    
+    void ReadBufferFiles()
+    {
+        if (settings.momentumEquationType   == HyCore::momentum::fromFile)
+        {
+            ReadFileToVariable("sol:u",    settings.momentumFilename);
+        }
+        if (settings.turbulenceEquationType == HyCore::turbulence::fromFile)
+        {
+            ReadFileToVariable("sol:mu_t", settings.turbulenceFilename);
+        }
+        if (settings.energyEquationType     == HyCore::energy::fromFile)
+        {
+            ReadFileToVariable("sol:T",    settings.energyFilename);
+        }
+    }
+    
     void DumpPartition(std::string dirname)
     {
         WriteLine(1, "DumpPartition [DEBUGGING ONLY!]");
@@ -214,7 +237,18 @@ namespace HyWall
     {
         memory.SetUserAssociatedVariable(strname, ptr);
     }
-
+    
+    void TEMPORARY_FUNC()
+    {
+        double* tauBuf = (double*)memory.GetVariable("out:tau");
+        for (int i = 0; i < memory.localCpuPoints; i++)
+        {
+            double yy = 2.87*0.1562500000000000E-01;
+            yy = 0.04484375;
+            tauBuf[i] = 20.75*1.0;
+        }
+    }
+    
     void Solve(void)
     {
         if (isFirstSolve && settings.averageSolution) InitializeAveraging();
@@ -228,12 +262,14 @@ namespace HyWall
                 WriteLine(2, "Initializing wall model solution");
                 if (memory.localGpuPoints>0) __withCuda(InitGpuSolution());
                 for (int i = 0; i < memory.localCpuPoints; i++) HyCore::Initialize(i);
+                ReadBufferFiles();
             }
             WriteLine(1, "Solve start");
             if (settings.enableTransitionSensor) tSensor.OnEverySolve();
             if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
-            for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
-
+            // for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
+            WriteLine(1, "========== WARNING ========== || Temporary fix is in place for channel solver! DO NOT USE IF YOU SEE THIS MESSAGE!!!!!");
+            TEMPORARY_FUNC();
             double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
             int maxIts = Parallel::GlobalMaxAbs(iterationsOutput, memory.localTotalPoints);
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);

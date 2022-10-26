@@ -143,6 +143,15 @@ namespace HyWall
         
         #pragma HWPP SerialIoMember loadBalance false
         bool loadBalance;
+        
+        #pragma HWPP SerialIoMember momentumFilename "hywall-u.dat"
+        std::string momentumFilename;
+        
+        #pragma HWPP SerialIoMember turbulenceFilename "hywall-mu_t.dat"
+        std::string turbulenceFilename;
+        
+        #pragma HWPP SerialIoMember energyFilename "hywall-T.dat"
+        std::string energyFilename;
     };
     #pragma HWPP SerialIoStructEnd
 
