@@ -23,6 +23,10 @@
 #include "SolutionProbing.h"
 #include "Testing.h"
 #include "IO.h"
+#include <sstream>
+#include "Indexing.h"
+#include <print.h>
+
 namespace HyWall
 {
     UserSettings settings;
@@ -107,11 +111,49 @@ namespace HyWall
 
     }
     
+    double Interpolate(const double& xs, const std::vector<double>& x, const std::vector<double>& y, const int order = 3)
+    {
+        const int npts = order+1;
+        int imin = 0;
+        int imax = 0;
+        return 0.0;
+    }
+    
     void ReadFileToVariable(const std::string& var_name, const std::string& filename)
     {
+        WriteLine(1, "Reading filename " + filename + " into " + var_name);
         std::vector<double> file_y;
         std::vector<double> file_var;
         std::ifstream ifile (filename);
+        std::string line;
+        while (std::getline(ifile, line))
+        {
+            std::istringstream iss(line);
+            double y, var;
+            iss >> y;
+            iss >> var;
+            if (iss.fail()) break;
+            file_y.push_back(y);
+            file_var.push_back(var);
+        }
+        
+        double* y = (double*)memory.GetVariable("sol:d");
+        double* v = (double*)memory.GetVariable(var_name);
+        const int N = settings.rayDim;
+        for (int i = 0; i < memory.localCpuPoints; i++)
+        {
+            for (int j = 0; j < N; j++)
+            {
+                double y_val = elem(y, i, j);
+                double interp_val = Interpolate(y_val, file_y, file_var);
+                elem(y, i, j) = interp_val;
+            }
+        }
+        
+        print("hello", __FILE__, __LINE__);
+        std::cin.get();
+        
+        
     }
     
     void ReadBufferFiles()
