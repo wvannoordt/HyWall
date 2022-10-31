@@ -133,7 +133,7 @@ namespace HyCore
         totalIts += localIts;
 
         double u1  = elem(u, widx, 1);
-        double mu1 = elem(mu, widx, 1);
+        double mu1 = elem(mu, widx, 0);
         elem(error, widx) = totalError;
         elem(iterations, widx) = numIts;
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
@@ -148,7 +148,7 @@ namespace HyCore
 
     __common void OnFailedSolve(int widx, double localError, int numIts)
     {
-        double u1  = elem(u, widx, 1);
+        double u1  = elem(u, widx, 0);
         double mu1 = elem(mu, widx, 1);
         double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
         if (settings.laminarOnSolveFail)

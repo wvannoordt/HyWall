@@ -26,6 +26,7 @@
 #include <sstream>
 #include "Indexing.h"
 #include <print.h>
+#include "Thermodynamics.h"
 
 namespace HyWall
 {
@@ -40,6 +41,8 @@ namespace HyWall
     double* failuresOutput;
     double* xInput;
     int solveCount;
+    double T_f_dns;
+    double U_f_dns;
     void Initialize(MPI_Comm host_comm_in, int verboseLevel_in)
     {
         WriteLine(1, "Initialize");
@@ -116,7 +119,21 @@ namespace HyWall
         const int npts = order+1;
         int imin = 0;
         int imax = 0;
-        return 0.0;
+        while(imax < x.size()-1 && x[imax] < xs) imax++;
+        imin = imax - (order+1)/2;
+        if (imin < 0) imin = 0;
+        imax = imin + (order);
+        double output = 0.0;
+        for (int j = imin; j <= imax; ++j)
+        {
+            double lj  = 1.0;
+            for (int i = imin; i <= imax; ++i)
+            {
+                if (i != j) lj *= (xs - x[i]) / (x[j] - x[i]);
+            }
+            output += lj*y[j];
+        }
+        return output;
     }
     
     void ReadFileToVariable(const std::string& var_name, const std::string& filename)
@@ -146,14 +163,9 @@ namespace HyWall
             {
                 double y_val = elem(y, i, j);
                 double interp_val = Interpolate(y_val, file_y, file_var);
-                elem(y, i, j) = interp_val;
+                elem(v, i, j) = interp_val;
             }
         }
-        
-        print("hello", __FILE__, __LINE__);
-        std::cin.get();
-        
-        
     }
     
     void ReadBufferFiles()
@@ -280,19 +292,10 @@ namespace HyWall
         memory.SetUserAssociatedVariable(strname, ptr);
     }
     
-    void TEMPORARY_FUNC()
-    {
-        double* tauBuf = (double*)memory.GetVariable("out:tau");
-        for (int i = 0; i < memory.localCpuPoints; i++)
-        {
-            double yy = 2.87*0.1562500000000000E-01;
-            yy = 0.04484375;
-            tauBuf[i] = 20.75*1.0;
-        }
-    }
-    
     void Solve(void)
     {
+        const int N = settings.rayDim;
+        double* u = (double*)memory.GetVariable("sol:u");
         if (isFirstSolve && settings.averageSolution) InitializeAveraging();
         if (solveCount++ % settings.solveSkip == 0)
         {
@@ -309,9 +312,35 @@ namespace HyWall
             WriteLine(1, "Solve start");
             if (settings.enableTransitionSensor) tSensor.OnEverySolve();
             if (memory.localGpuPoints>0) __withCuda(ComputeGpuSolution());
-            // for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
-            WriteLine(1, "========== WARNING ========== || Temporary fix is in place for channel solver! DO NOT USE IF YOU SEE THIS MESSAGE!!!!!");
-            TEMPORARY_FUNC();
+            if (!((settings.momentumEquationType == HyCore::momentum::fromFile) && (settings.energyEquationType == HyCore::energy::fromFile)))
+            {
+                for (int i = 0; i < memory.localCpuPoints; i++) HyCore::MainSolver(i);
+            }
+            else
+            {
+                double* tau = (double*)memory.GetVariable("out:tau");
+                double* qw  = (double*)memory.GetVariable("out:heatflux");
+                double* mu  = (double*)memory.GetVariable("sol:mu");
+                double*  u  = (double*)memory.GetVariable("sol:u");
+                double*  t  = (double*)memory.GetVariable("sol:T");
+                double*  uf = (double*)memory.GetVariable("in:u");
+                double*  tf = (double*)memory.GetVariable("in:T");
+                double tau_DNS;
+                double  qw_DNS;
+                for (int i = 0; i < memory.localCpuPoints; i++)
+                {
+                    HyCore::EquationsOfState(i);
+                    const double u_DNS = elem(u, i, N-1);
+                    const double t_DNS = elem(t, i, N-1);
+                    const double u_LES = elem(uf, i);
+                    const double t_LES = elem(tf, i);
+                    tau_DNS = elem(mu, i, 0)*(elem(u, i, 1)-elem(u, i, 0))/settings.wallSpacing;
+                    qw_DNS  = -settings.fluidCp * (elem(mu, i, 0)/settings.fluidPrandtl)*(elem(t, i, 1)-elem(t, i, 0))/settings.wallSpacing;
+                    elem(tau, i) = tau_DNS * u_LES / u_DNS;
+                    elem(qw,  i) = qw_DNS  * t_LES / t_DNS;
+                }
+                WriteLine(1, "Enforcing DNS profiles:\ntau:   " + std::to_string(tau_DNS) + "\nqw:    " + std::to_string(qw_DNS));
+            }
             double meanIts = Parallel::GlobalAverageAbs(iterationsOutput, memory.localTotalPoints);
             int maxIts = Parallel::GlobalMaxAbs(iterationsOutput, memory.localTotalPoints);
             double maxError = Parallel::GlobalMaxAbs(residualOutput, memory.localTotalPoints);
