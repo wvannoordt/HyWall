@@ -21,7 +21,9 @@ namespace HyCore
     {
         for (int i = 0; i < N; i++)
         {
-            elem(mu_t, widx, i) = elem(mu_t_F, widx)*elem(d, widx, i)/elem(distance, widx);
+            elem(mu_t, widx, i)  = elem(mu_t_F, widx)*elem(d, widx, i)/elem(distance, widx);
+            double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
+            elem(lam_t, widx, i) = settings.fluidCp*elem(mu_t, widx, i)/prt;
             elem(turb, widx, i) = SaBacksolve(elem(mu_t_F, widx), elem(mu_F, widx), elem(rho_F, widx))*elem(d, widx, i)/elem(distance, widx);
         }
     }
@@ -32,6 +34,7 @@ namespace HyCore
         {
             elem(turb, widx, i) = 0.0;
             elem(mu_t, widx, i) = 0.0;
+            elem(lam_t, widx, i) = 0.0;
         }
     }
 
@@ -119,6 +122,18 @@ namespace HyCore
             double ycoord = ComputeYCoord(widx, i, settings.yscaleType);
             double expfactor = 1.0 - exp(-ycoord/settings.vanDriestAPlus);
             elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * ycoord * expfactor*expfactor;
+            double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
+            elem(lam_t, widx, i) = settings.fluidCp*elem(mu_t, widx, i)/prt;
+        }
+    }
+
+    __common void ComputePNLM(const int widx)
+    {
+        if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
+        for (int i = 0; i < N; i++)
+        {            
+            elem(mu_t,  widx, i) = 0.0;
+            elem(lam_t, widx, i) = 0.0;
         }
     }
 
@@ -129,6 +144,13 @@ namespace HyCore
             case turbulence::vanDriest:
             {
                 ComputeVanDriestTurbulence(widx);
+                break;
+            }
+            case turbulence::pnlm:
+            {
+                std::cout << "SSS" << std::endl;
+                ComputeVanDriestTurbulence(widx);
+                // ComputePNLM(widx);
                 break;
             }
             case turbulence::fromFile:
@@ -213,6 +235,11 @@ namespace HyCore
             loc_sq_error = turbSystem[TD_RHS][i]/(elem(mu_t_F, widx)+1e-9);
             *errorOut += loc_sq_error*loc_sq_error;
             elem(turb, widx, i+1) -= settings.turbulenceUnderRelaxationODE*turbSystem[TD_RHS][i];
+        }
+        for (int i = 0; i < N; i++)
+        {
+            double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
+            elem(lam_t, widx, i) = settings.fluidCp*elem(mu_t, widx, i)/prt;
         }
     }
     

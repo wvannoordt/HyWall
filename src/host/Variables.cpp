@@ -70,8 +70,9 @@ namespace HyWall
 
     void DefineTurbulentVariables(void)
     {
-        memory.AddStaticVariable<double>("sol:turb",  &(HyCoreCPU::turb), NULL, settings.rayDim, 1, bflag::solution);
-        memory.AddStaticVariable<double>("sol:mu_t",  &(HyCoreCPU::mu_t), NULL, settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:turb",  &(HyCoreCPU::turb),  NULL, settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:mu_t",  &(HyCoreCPU::mu_t),  NULL, settings.rayDim, 1, bflag::solution);
+        memory.AddStaticVariable<double>("sol:lam_t", &(HyCoreCPU::lam_t), NULL, settings.rayDim, 1, bflag::solution);
 
         if (HyCore::TurbulenceHasJacobian(&settings))
         {

@@ -87,22 +87,16 @@ namespace HyCore
             localtriple(uLoc, u, widx, i);
             localtriple(muLoc, mu, widx, i);
             localtriple(mutLoc, mu_t, widx, i);
+            localtriple(lamtLoc, lam_t, widx, i);
             localtriple(yLoc, d, widx, i);
             localtriple(TLoc, T, widx, i);
-            double prt[3];
-            prt[0] = GetTurbPrandtl(widx, i-1, settings.variablePrandtlT, settings.yscaleType);
-            prt[1] = GetTurbPrandtl(widx, i,   settings.variablePrandtlT, settings.yscaleType);
-            prt[2] = GetTurbPrandtl(widx, i+1, settings.variablePrandtlT, settings.yscaleType);
-
-            double Pr_t_b = 0.5*(prt[0]+prt[1]);
-            double Pr_t_f = 0.5*(prt[2]+prt[1]);
 
             double dy2inv = 1.0 / (0.5*(yLoc[2]-yLoc[0]));
             double dyinvf = 1.0 / (yLoc[2]-yLoc[1]);
             double dyinvb = 1.0 / (yLoc[1]-yLoc[0]);
 
-            double df_engy = 0.5*Cp*((muLoc[1]+muLoc[2])/Pr+iTurb*(mutLoc[1]+mutLoc[2])/Pr_t_f);
-            double db_engy = 0.5*Cp*((muLoc[1]+muLoc[0])/Pr+iTurb*(mutLoc[1]+mutLoc[0])/Pr_t_b);
+            double df_engy = 0.5*(Cp*(muLoc[1]+muLoc[2])/Pr+iTurb*(lamtLoc[1]+lamtLoc[2]));
+            double db_engy = 0.5*(Cp*(muLoc[1]+muLoc[0])/Pr+iTurb*(lamtLoc[1]+lamtLoc[0]));
 
             double df_mom = 0.5*((muLoc[2]+iTurb*mutLoc[2])*uLoc[2] + (muLoc[1]+iTurb*mutLoc[1])*uLoc[1]);
             double db_mom = 0.5*((muLoc[0]+iTurb*mutLoc[0])*uLoc[0] + (muLoc[1]+iTurb*mutLoc[1])*uLoc[1]);

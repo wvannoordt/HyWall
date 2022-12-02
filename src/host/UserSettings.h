@@ -152,6 +152,12 @@ namespace HyWall
         
         #pragma HWPP SerialIoMember energyFilename "hywall-T.dat"
         std::string energyFilename;
+        
+        #pragma HWPP SerialIoMember uDnsFilename "hywall-u.dat"
+        std::string uDnsFilename;
+        
+        #pragma HWPP SerialIoMember TDnsFilename "hywall-T.dat"
+        std::string TDnsFilename;
     };
     #pragma HWPP SerialIoStructEnd
 

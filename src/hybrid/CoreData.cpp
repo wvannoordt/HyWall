@@ -20,6 +20,7 @@ namespace HyCore
     __common double* mu;
     __common double* turb;
     __common double* mu_t;
+    __common double* lam_t;
     __common double* p_F;
     __common double* u_F;
     __common double* v_F;

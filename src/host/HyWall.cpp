@@ -112,7 +112,6 @@ namespace HyWall
     {
 
     }
-    
     double Interpolate(const double& xs, const std::vector<double>& x, const std::vector<double>& y, const int order = 3)
     {
         const int npts = order+1;
@@ -152,7 +151,6 @@ namespace HyWall
             file_y.push_back(y);
             file_var.push_back(var);
         }
-        
         double* y = (double*)memory.GetVariable("sol:d");
         double* v = (double*)memory.GetVariable(var_name);
         const int N = settings.rayDim;
