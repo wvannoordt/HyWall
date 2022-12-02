@@ -112,7 +112,7 @@ namespace HyWall
     {
 
     }
-    double Interpolate(const double& xs, const std::vector<double>& x, const std::vector<double>& y, const int order = 3)
+    double Interpolate(const double& xs, const std::vector<double>& x, const std::vector<double>& y, const int order = 5)
     {
         const int npts = order+1;
         int imin = 0;
@@ -178,6 +178,11 @@ namespace HyWall
         if (settings.energyEquationType     == HyCore::energy::fromFile)
         {
             ReadFileToVariable("sol:T",    settings.energyFilename);
+        }
+        if (settings.turbulenceEquationType == HyCoreCPU::turbulence::pnlm)
+        {
+            ReadFileToVariable("sol:udns", settings.uDnsFilename);
+            ReadFileToVariable("sol:Tdns", settings.TDnsFilename);
         }
     }
     

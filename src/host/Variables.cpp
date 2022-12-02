@@ -81,6 +81,12 @@ namespace HyWall
             memory.AddStaticVariable<double>("jac:turb2", &(HyCoreCPU::turbSystem[TD_SUP]), NULL, settings.rayDim-3, 1, bflag::solution | bflag::serialHostUsage);
             memory.AddStaticVariable<double>("jac:turb3", &(HyCoreCPU::turbSystem[TD_RHS]), NULL, settings.rayDim-2, 1, bflag::solution | bflag::serialHostUsage);
         }
+        
+        if (settings.turbulenceEquationType == HyCoreCPU::turbulence::pnlm)
+        {
+            memory.AddStaticVariable<double>("sol:udns",  &(HyCoreCPU::udns),  NULL, settings.rayDim, 1, bflag::solution);
+            memory.AddStaticVariable<double>("sol:Tdns",  &(HyCoreCPU::Tdns),  NULL, settings.rayDim, 1, bflag::solution);
+        }
     }
 
     void DefineOutputVariables(void)

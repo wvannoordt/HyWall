@@ -8,6 +8,8 @@
 namespace HyCore
 {
     __common extern int N;
+    __common extern double* udns;
+    __common extern double* Tdns;
     __common extern double* u;
     __common extern double* u_SA;
     __common extern double* dpdx;

@@ -130,10 +130,36 @@ namespace HyCore
     __common void ComputePNLM(const int widx)
     {
         if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
+        elem(Tdns, widx, 0) = settings.wallTemperature;
+        elem(T, widx, N-1)  = elem(Tdns, widx, N-1);
         for (int i = 0; i < N; i++)
-        {            
-            elem(mu_t,  widx, i) = 0.0;
-            elem(lam_t, widx, i) = 0.0;
+        {   
+            int iu = i+1;
+            int il = i-1;
+            if (i==0) il = i;
+            if (i==N-1) iu = i;
+            double psi_m     = 0.0; // external forcing term for momentum
+            double psi_e     = 0.0; // external forcing term for energy
+            double mu_loc    = elem(mu, widx, i);
+            double lam_loc   = settings.fluidCp*elem(mu, widx, i)/settings.fluidPrandtl;
+            double mu_w      = elem(mu, widx, 0);
+            double lam_w     = settings.fluidCp*elem(mu, widx, 0)/settings.fluidPrandtl;
+            double tau_loc   =  mu_w*(elem(u, widx, 1) - elem(u, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+            double qw_loc    = lam_w*(elem(T, widx, 1) - elem(T, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+            double u_loc     = elem(u, widx, i);
+            double udns_loc  = elem(udns, widx, i);
+            double Tf        = elem(T, widx, N-1);
+            double Tfdns     = elem(Tdns, widx, N-1);
+            double Uf        = elem(u, widx, N-1);
+            double Ufdns     = elem(udns, widx, N-1);
+            double dudy_loc  = (elem(u, widx, iu) - elem(u, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
+            double du_dns_dy = (elem(udns, widx, iu) - elem(udns, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
+            double dT_dns_dy = (elem(Tdns, widx, iu) - elem(Tdns, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
+            
+            elem(mu_t,  widx, i) = (Uf/Ufdns)*(((psi_m + tau_loc)/du_dns_dy) - mu_loc);
+            
+            double mut_loc   = elem(mu_t, widx, i);
+            elem(lam_t, widx, i) = (Tf/Tfdns)*(((psi_e + qw_loc - (mu_loc + mut_loc)*udns_loc*du_dns_dy)/dT_dns_dy) - lam_loc);
         }
     }
 
@@ -148,9 +174,7 @@ namespace HyCore
             }
             case turbulence::pnlm:
             {
-                std::cout << "SSS" << std::endl;
-                ComputeVanDriestTurbulence(widx);
-                // ComputePNLM(widx);
+                ComputePNLM(widx);
                 break;
             }
             case turbulence::fromFile:

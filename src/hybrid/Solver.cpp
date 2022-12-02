@@ -253,6 +253,11 @@ namespace HyCore
                 turbulenceEquationClassification = equationType::algebraicEq;
                 break;
             }
+            case turbulence::pnlm:
+            {
+                turbulenceEquationClassification = equationType::algebraicEq;
+                break;
+            }
         }
     }
 }
