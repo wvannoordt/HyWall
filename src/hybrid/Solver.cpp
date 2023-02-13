@@ -138,7 +138,8 @@ namespace HyCore
         elem(iterations, widx) = numIts;
         elem(tau, widx) = mu1*u1/settings.wallSpacing;
         elem(vorticity, widx) = u1/settings.wallSpacing;
-        elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+	double qw = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+        elem(heatflux, widx) = qw;
 
         if (d_abs(localError) > settings.errorTolerance || totalError != totalError || localError != localError)
         {
@@ -149,7 +150,7 @@ namespace HyCore
     __common void OnFailedSolve(int widx, double localError, int numIts)
     {
         double u1  = elem(u, widx, 0);
-        double mu1 = elem(mu, widx, 1);
+        double mu1 = PowerLawViscosityRelation(settings.wallTemperature);
         double umag = sqrt(elem(u_F,widx)*elem(u_F,widx) + elem(v_F,widx)*elem(v_F,widx) + elem(w_F,widx)*elem(w_F,widx));
         if (settings.laminarOnSolveFail)
         {
@@ -158,10 +159,17 @@ namespace HyCore
             u1  = elem(u, widx, 1);
             elem(error, widx) = 0;
             elem(iterations, widx) = 0;
-            elem(tau, widx) = elem(mu_F, widx)*umag/elem(distance, widx) ;
+	    double tauw = elem(mu_F, widx)*umag/elem(distance, widx);
+	    double qw   = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T_F,widx)-settings.wallTemperature)/elem(distance, widx);
+            elem(tau, widx) = tauw;
             elem(vorticity, widx) = u1/settings.wallSpacing;
-            elem(heatflux, widx) = -(settings.fluidCp*mu1/settings.fluidPrandtl)*(elem(T, widx, 1)-elem(T, widx, 0))/settings.wallSpacing;
+            elem(heatflux, widx) = qw;
             elem(failurelevel, widx) = 1.0;
+	    if (qw!=qw)
+	      {
+		std::cout << mu1 << ", " << elem(T_F,widx) << std::endl;
+		__erkill("AAAAA");
+	      }
         }
         else
         {

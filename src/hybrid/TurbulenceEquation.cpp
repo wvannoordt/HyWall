@@ -120,8 +120,9 @@ namespace HyCore
         for (int i = 0; i < N; i++)
         {
             double ycoord = ComputeYCoord(widx, i, settings.yscaleType);
+	    double yp     = ComputeYCoord(widx, i, yscale::yPlus);
             double expfactor = 1.0 - exp(-ycoord/settings.vanDriestAPlus);
-            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * ycoord * expfactor*expfactor;
+            elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yp * expfactor*expfactor;
             double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
             elem(lam_t, widx, i) = settings.fluidCp*elem(mu_t, widx, i)/prt;
         }
@@ -155,11 +156,13 @@ namespace HyCore
             double dudy_loc  = (elem(u, widx, iu) - elem(u, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
             double du_dns_dy = (elem(udns, widx, iu) - elem(udns, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
             double dT_dns_dy = (elem(Tdns, widx, iu) - elem(Tdns, widx, il))/(elem(d, widx, iu) - elem(d, widx, il));
-            
-            elem(mu_t,  widx, i) = (Uf/Ufdns)*(((psi_m + tau_loc)/du_dns_dy) - mu_loc);
-            
-            double mut_loc   = elem(mu_t, widx, i);
-            elem(lam_t, widx, i) = (Tf/Tfdns)*(((psi_e + qw_loc - (mu_loc + mut_loc)*udns_loc*du_dns_dy)/dT_dns_dy) - lam_loc);
+
+	    double mut_loc    = (((psi_m + tau_loc)/du_dns_dy) - mu_loc);
+	    double lamt_loc   = (((psi_e + qw_loc - (mu_loc + mut_loc)*udns_loc*du_dns_dy)/dT_dns_dy) - lam_loc);
+	    if (mut_loc < 0.0) mut_loc = 0.0;
+	    if (lamt_loc < 0.0) lamt_loc = 0.0;
+            elem(mu_t,  widx, i) = mut_loc;
+            elem(lam_t, widx, i) = lamt_loc;
         }
     }
 
