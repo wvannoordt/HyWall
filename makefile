@@ -137,13 +137,28 @@ LIB_SOURCES := ${HEADER_FILES} ${SRC_FILES_HYBRID} ${SRC_FILES_HOST} ${SRC_FILES
 export HWPP_OUT=${WM_HDR_DIR}/HWPP.hpp
 export FORCE_NO_CLEAN=1
 
+ifndef STATIC_LIB
+STATIC_LIB := 1
+endif
+
+final_target := final_dynamic
+ifeq (${STATIC_LIB},1)
+final_target := final_static
+endif
+
 .PHONY: final preprocess postprocess
 
 postprocess: final
 	${PY_EXE} ${POSTPROCESSOR}
 
-final: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
+final: ${final_target}
+
+final_dynamic: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
 	${CC_HOST} -fPIC -shared ${LIB_OBJECTS} ${WM_IFLAGS} ${COMPILE_TIME_OPT} ${LZLIB} ${LCUDA} -o ${TARGET}
+
+final_static: ${DO_CLEAN} setup preprocess ${OBJ_FILES_HYBRID_HOST} ${OBJ_FILES_HOST} ${OBJ_FILES_HYBRID_DEVICE} ${OBJ_FILES_CUDA} ${LINK_STEP}
+	ar rcs ${TARGET} ${LIB_OBJECTS}
+
 
 preprocess:
 	${PY_EXE} ${PREPROCESSOR} ${LIB_SOURCES}

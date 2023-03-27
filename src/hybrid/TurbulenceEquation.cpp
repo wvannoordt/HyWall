@@ -120,7 +120,7 @@ namespace HyCore
         for (int i = 0; i < N; i++)
         {
             double ycoord = ComputeYCoord(widx, i, settings.yscaleType);
-	    double yp     = ComputeYCoord(widx, i, yscale::yPlus);
+			double yp     = ComputeYCoord(widx, i, yscale::yPlus);
             double expfactor = 1.0 - exp(-ycoord/settings.vanDriestAPlus);
             elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yp * expfactor*expfactor;
             double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
