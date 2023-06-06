@@ -120,7 +120,7 @@ namespace HyCore
         for (int i = 0; i < N; i++)
         {
             double ycoord = ComputeYCoord(widx, i, settings.yscaleType);
-	    double yp     = ComputeYCoord(widx, i, yscale::yPlus);
+	    double yp     = ycoord;//ComputeYCoord(widx, i, yscale::yPlus);
             double expfactor = 1.0 - exp(-ycoord/settings.vanDriestAPlus);
             elem(mu_t, widx, i) = CONST_SA_KAPPA * elem(mu, widx, i) * yp * expfactor*expfactor;
             double prt = GetTurbPrandtl(widx, i, settings.variablePrandtlT, settings.yscaleType);
@@ -132,7 +132,7 @@ namespace HyCore
     {
         if (settings.enableTransitionSensor && elem(sensorMult, widx)<0.5) return;
         elem(Tdns, widx, 0) = settings.wallTemperature;
-        elem(T, widx, N-1)  = elem(Tdns, widx, N-1);
+        //elem(T, widx, N-1)  = elem(Tdns, widx, N-1);
         for (int i = 0; i < N; i++)
         {   
             int iu = i+1;
@@ -145,8 +145,10 @@ namespace HyCore
             double lam_loc   = settings.fluidCp*elem(mu, widx, i)/settings.fluidPrandtl;
             double mu_w      = elem(mu, widx, 0);
             double lam_w     = settings.fluidCp*elem(mu, widx, 0)/settings.fluidPrandtl;
-            double tau_loc   =  mu_w*(elem(u, widx, 1) - elem(u, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
-            double qw_loc    = lam_w*(elem(T, widx, 1) - elem(T, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+            //double tau_loc   =  mu_w*(elem(u, widx, 1) - elem(u, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+	    double tau_loc   =  mu_w*(elem(udns, widx, 1) - elem(udns, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+            //double qw_loc    = lam_w*(elem(T, widx, 1) - elem(T, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
+	    double qw_loc    = lam_w*(elem(Tdns, widx, 1) - elem(Tdns, widx, 0))/(elem(d, widx, 1) - elem(d, widx, 0));
             double u_loc     = elem(u, widx, i);
             double udns_loc  = elem(udns, widx, i);
             double Tf        = elem(T, widx, N-1);
